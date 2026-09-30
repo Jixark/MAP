@@ -68,3 +68,21 @@ Además de los lugares numerados, el mapa interactivo marca en ambas plantas los
   al tocar un pin se muestra solo ese y cuántas ubicaciones hay.
 - Datos: `DATA[planta].pois` (coordenadas en % de la imagen) y `POI_TYPES` (nombre/categoría) en `index.html`; íconos en `www/ico/`.
 - Aún no incluidos (no se pidieron): Espectáculos y Ruta de la Independencia, que también tienen íconos en el mapa.
+
+## Kioskos y "cómo llegar"
+Cada tablet sabe en qué kiosko está y puede guiar al visitante hasta el lugar que consulte.
+
+**Configurar cada kiosko (una vez, por tablet):**
+1. Mantén pulsado el **logo KidZania (arriba a la izquierda) por 2 segundos**.
+2. Escribe el PIN de administrador (**2468**, cámbialo en `ADMIN_PIN` dentro de `index.html`).
+3. Escribe el nombre del kiosko (p. ej. "Kiosko Barra de Sushi"), pulsa **Colocar en el mapa**, cambia a la planta correcta si hace falta y toca el mapa donde está físicamente el kiosko.
+4. La ubicación se guarda en la tablet y se conserva al reiniciar. **Quitar ubicación** desactiva las rutas en esa tablet.
+
+**Uso:** el visitante toca un lugar (en el mapa o en la lista) y la tarjeta pregunta **"¿Quieres que te ayude a llegar?"**.
+Con **Cómo llegar** se dibuja una línea azul animada desde "Estás aquí" hasta el destino, con pasos, tiempo aproximado y,
+si es otra planta, el paso por escaleras o elevador ("Siguiente: Planta Baja"). **Ruta accesible (elevador)** evita escaleras.
+Si el lugar tiene varias ubicaciones (baños, escaleras, salidas…) se guía a la más cercana.
+Tras 2 minutos sin tocar la pantalla el kiosko vuelve solo a su pantalla inicial (`IDLE_MS`).
+
+**Ajustes en `index.html`:** `GRAPH` (red de pasillos por planta, en píxeles del mapa) y `LINKS` (escaleras/elevador que unen plantas)
+definen por dónde se camina; `WALK_PX_PER_MIN` calibra el tiempo estimado.

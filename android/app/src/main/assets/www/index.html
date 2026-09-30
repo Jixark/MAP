@@ -229,6 +229,63 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .empty b{display:block; color:var(--text); font-family:'Baloo 2',sans-serif; font-size:15px; margin-bottom:4px;}
 
 
+
+[hidden]{display:none !important;}
+/* ---------- route + kiosk ---------- */
+#routeLayer{position:absolute; left:0; top:0; width:var(--iw); height:var(--ih); pointer-events:none; overflow:visible;}
+#routeLayer path{fill:none; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
+#routeLayer .casing{stroke:#fff; stroke-width:12px;}
+#routeLayer .line{stroke:#2563eb; stroke-width:7px;}
+#routeLayer .flow{stroke:#fff; stroke-width:2.5px; stroke-dasharray:2 16; animation:routeflow 1s linear infinite;}
+@keyframes routeflow{ to{ stroke-dashoffset:-18; } }
+.pin.you{
+  width:22px; height:22px; box-sizing:border-box; border-radius:50%; background:#2563eb; border:3px solid #fff; padding:0;
+  transform:translate(-50%,-50%) scale(var(--ps,1)); transform-origin:50% 50%; pointer-events:none; z-index:9;
+  animation:youpulse 1.6s ease-out infinite; filter:none;
+}
+@keyframes youpulse{ 0%{ box-shadow:0 0 0 0 rgba(37,99,235,.6); } 100%{ box-shadow:0 0 0 22px rgba(37,99,235,0); } }
+.pin.you .lbl{
+  position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); white-space:nowrap;
+  background:#2563eb; color:#fff; font-weight:800; font-size:13px; line-height:1; padding:6px 11px; border-radius:999px;
+  border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+@media (prefers-reduced-motion:reduce){ #routeLayer .flow, .pin.you{animation:none;} }
+
+#infoCard .route-ask{display:flex; align-items:center; flex-wrap:wrap; margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+#infoCard .route-ask span{flex:1 1 150px; font-weight:700; font-size:13.5px; margin-right:10px;}
+.btn{border:none; border-radius:999px; padding:11px 18px; font-weight:800; font-size:14px; cursor:pointer; background:var(--red); color:#fff;}
+.btn.ghost{background:var(--surface-2); color:var(--text);}
+.btn.small{padding:8px 13px; font-size:12.5px;}
+.btn:active{transform:scale(.97);}
+
+#routeCard{
+  position:absolute; left:12px; right:12px; bottom:12px; z-index:17; max-width:440px; background:var(--surface);
+  border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:var(--shadow);
+  transform:translateY(160%); opacity:0; transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+}
+#routeCard{bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+#routeCard.show{transform:translateY(0); opacity:1;}
+#routeCard .rc-head{display:flex; align-items:flex-start;}
+#routeCard h3{margin:0; flex:1 1 auto; min-width:0; font-size:16px; line-height:1.2;}
+#routeCard .rc-x{flex:0 0 auto; margin-left:10px; border:none; background:var(--surface-2); color:var(--text-muted); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:15px;}
+#routeCard .rc-step{margin:8px 0 4px; font-size:14px; line-height:1.4;}
+#routeCard .rc-meta{margin:0 0 10px; font-size:12px; font-weight:700; color:var(--text-muted);}
+#routeCard .rc-btns{display:flex; flex-wrap:wrap; align-items:center;}
+#routeCard .rc-btns > *{margin:0 8px 6px 0;}
+#routeCard .rc-acc{margin-left:auto; margin-right:0;}
+
+.modal{position:fixed; top:0; right:0; bottom:0; left:0; z-index:80; background:rgba(20,15,18,.72); display:flex; align-items:center; justify-content:center; padding:16px;}
+.modal-box{width:100%; max-width:440px; background:var(--surface); border-radius:20px; padding:20px; box-shadow:var(--shadow);}
+.modal-box h3{margin:0 0 12px; font-size:20px;}
+.modal-box label{display:block; font-weight:700; font-size:13px; margin:10px 0 5px;}
+.modal-box input{width:100%; box-sizing:border-box; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-size:16px;}
+.modal-box p{margin:8px 0; font-size:13px; color:var(--text-muted); line-height:1.4;}
+.modal-box .err{color:#c0152f; font-weight:700; min-height:1.2em;}
+.modal-box .m-btns{display:flex; flex-wrap:wrap; margin-top:12px;}
+.modal-box .m-btns > *{margin:0 8px 8px 0;}
+#placeBanner{position:absolute; left:50%; top:56px; transform:translateX(-50%); z-index:30; background:#2563eb; color:#fff; border-radius:999px; padding:8px 8px 8px 16px; font-weight:700; font-size:13px; box-shadow:var(--shadow); display:flex; align-items:center; max-width:94%;}
+#placeBanner .btn{margin-left:10px; background:rgba(255,255,255,.22);}
+
 /* ---------- Conoce más (tríptico completo) ---------- */
 .section-switch{display:flex; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
 .section-switch button{
@@ -317,6 +374,7 @@ body.view-more #morePane{display:flex;}
     <div id="viewport">
       <div id="stage" style="--s:1">
         <img id="mapImg" src="" alt="Mapa del piso" draggable="false">
+        <svg id="routeLayer"></svg>
         <div id="pinsLayer"></div>
       </div>
     </div>
@@ -327,12 +385,27 @@ body.view-more #morePane{display:flex;}
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v6h6"/></svg>
       </button>
     </div>
+    <div id="placeBanner" hidden><span>Toca el mapa donde está este kiosko</span><button class="btn small" id="placeCancel" type="button">Cancelar</button></div>
+    <div id="routeCard">
+      <div class="rc-head"><h3 id="rcTitle"></h3><button class="rc-x" id="rcClose" aria-label="Cerrar">&times;</button></div>
+      <p class="rc-step" id="rcStep"></p>
+      <p class="rc-meta" id="rcMeta"></p>
+      <div class="rc-btns">
+        <button class="btn ghost small" id="rcPrev" type="button">Anterior</button>
+        <button class="btn" id="rcNext" type="button">Siguiente</button>
+        <button class="btn ghost small rc-acc" id="rcAcc" type="button">Ruta accesible (elevador)</button>
+      </div>
+    </div>
     <div id="infoCard">
       <div class="badge" id="infoNum">1</div>
       <div class="body">
         <p class="name" id="infoName">&nbsp;</p>
         <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
         <p class="note" id="infoNote"></p>
+        <div class="route-ask" id="routeAsk" hidden>
+          <span>¿Quieres que te ayude a llegar?</span>
+          <button class="btn" id="routeGo" type="button">Cómo llegar</button>
+        </div>
       </div>
       <button class="close" id="infoClose" aria-label="Cerrar">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -363,6 +436,28 @@ body.view-more #morePane{display:flex;}
   </div>
   <div id="viewerBody"><img id="viewerImg" alt="Tríptico KidZania Santa Fe"></div>
 </section>
+
+<div class="modal" id="admin" hidden>
+  <div class="modal-box">
+    <h3>Configurar kiosko</h3>
+    <div id="adminPin">
+      <label for="pinInput">PIN de administrador</label>
+      <input id="pinInput" type="password" inputmode="numeric" autocomplete="off">
+      <p class="err" id="pinErr"></p>
+      <div class="m-btns"><button class="btn" id="pinOk" type="button">Entrar</button><button class="btn ghost" id="pinCancel" type="button">Cancelar</button></div>
+    </div>
+    <div id="adminForm" hidden>
+      <label for="kioskName">Nombre de este kiosko</label>
+      <input id="kioskName" type="text" maxlength="40" placeholder="Ej. Kiosko Barra de Sushi" autocomplete="off">
+      <p id="kioskState"></p>
+      <div class="m-btns">
+        <button class="btn" id="kioskPlace" type="button">Colocar en el mapa</button>
+        <button class="btn ghost" id="kioskClear" type="button">Quitar ubicación</button>
+        <button class="btn ghost" id="adminClose" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // Older Android WebViews (kiosk tablets) lack a few conveniences; add them.
@@ -497,7 +592,11 @@ function loadFloor(floor, opts){
   if(!opts.keepSelection){ state.selected = null; hideInfo(); }
   buildPins();
   renderList();
-  const doFit = ()=>fitToContainer();
+  drawRoute();
+  const doFit = ()=>{
+    fitToContainer();
+    if(state._afterFit){ const fn = state._afterFit; state._afterFit = null; fn(); }   // e.g. route step on a new floor
+  };
   if(els.img.complete && els.img.naturalWidth) doFit();
   else els.img.onload = doFit;
 }
@@ -524,10 +623,22 @@ function buildPins(){
           </svg>
           <span class="num">${it.num}</span>`;
       }
-      btn.addEventListener("click", (e)=>{ e.stopPropagation(); selectPin(it.key, {locate:true, point:pt}); });
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        if(state.placing){ const q = pxOf(state.floor, pt); placeKioskAt(q.x, q.y); return; }
+        selectPin(it.key, {locate:true, point:pt});
+      });
       els.pinsLayer.appendChild(btn);
     });
   });
+  const you = youPoint();
+  if(you && you.floor === state.floor){
+    const f = DATA[state.floor], m = document.createElement("div");
+    m.className = "pin you";
+    m.style.left = (you.x/f.w*100) + "%"; m.style.top = (you.y/f.h*100) + "%";
+    m.innerHTML = '<span class="lbl">' + you.label + '</span>';
+    els.pinsLayer.appendChild(m);
+  }
   markSelected();
 }
 
@@ -541,6 +652,7 @@ function selectPin(key, opts){
   opts = opts || {};
   const it = currentItems().find(i=>i.key===key);
   if(!it) return;
+  if(state.route){ closeRoute(true); }
   state.selected = {floor: state.floor, key: key};
   markSelected();
   showInfo(it);
@@ -566,6 +678,8 @@ function showInfo(it){
     if(it.note) note += " · " + it.note;
   }
   els.infoNote.textContent = note;
+  state.infoItem = it;
+  els.routeAsk.hidden = !state.kiosk;
   els.infoCard.classList.add("show");
 }
 function hideInfo(){ els.infoCard.classList.remove("show"); }
@@ -681,6 +795,7 @@ function onDown(e){
   // Pointer capture is deferred until the finger actually moves; capturing on
   // pointerdown would redirect the "click" away from the pin that was tapped.
   downAt.set(e.pointerId, {x:e.clientX, y:e.clientY, captured:false});
+  state._dragged = false;
   pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
   if(pointers.size===1){ dragging=true; els.viewport.classList.add("grabbing"); }
   if(pointers.size===2){
@@ -696,7 +811,7 @@ function onMove(e){
   const d0 = downAt.get(e.pointerId);
   if(d0 && !d0.captured){
     if(Math.hypot(cur.x-d0.x, cur.y-d0.y) < DRAG_SLOP) return; // still a tap
-    d0.captured = true;
+    d0.captured = true; state._dragged = true;
     try{ els.viewport.setPointerCapture(e.pointerId); }catch(_){}
   }
   pointers.set(e.pointerId, cur);
@@ -846,6 +961,7 @@ document.getElementById("infoClose").addEventListener("click", ()=>{
 document.getElementById("floorSwitch").addEventListener("click", (e)=>{
   const btn = e.target.closest("button[data-floor]");
   if(!btn) return;
+  if(state.route) closeRoute(false);
   loadFloor(btn.dataset.floor);
 });
 
@@ -941,13 +1057,279 @@ document.getElementById("sectionSwitch").addEventListener("click", (e)=>{
 
 // Called by the Android back button: leave "Conoce más" before leaving the app.
 window.handleBack = function(){
+  if(!adminEl.hidden){ adminEl.hidden = true; return true; }
+  if(state.placing){ document.getElementById("placeCancel").click(); return true; }
+  if(state.route){ closeRoute(false); return true; }
   if(document.body.classList.contains("view-more")){ setSection("map"); return true; }
   return false;
 };
 
+
+/* ---------------- Kiosko + cómo llegar ---------------- */
+const ADMIN_PIN = "2468";          // PIN para configurar el kiosko (mantén pulsado el logo 2 s)
+const IDLE_MS = 120000;            // sin tocar la pantalla: vuelve al inicio del kiosko
+const WALK_PX_PER_MIN = 600;       // velocidad usada para estimar el tiempo (píxeles del mapa por minuto)
+const LINK_COST = {stairs:140, elevator:260};
+// Red de pasillos por planta (px de la imagen) y conexiones entre plantas.
+const GRAPH = {"baja":{"nodes":{"a0":[345,390],"a1":[370,470],"a2":[480,480],"a3":[590,480],"a4":[660,470],"a5":[760,470],"a6":[840,480],"l1":[380,570],"l2":[385,700],"l3":[380,860],"l4":[378,1000],"l5":[370,1140],"l6":[372,1290],"l7":[400,1420],"l8":[440,1535],"r1":[770,560],"r2":[830,620],"r3":[775,820],"r4":[710,950],"r5":[705,1090],"r6":[740,1170],"r7":[760,1260],"r8":[750,1340],"r9":[760,1450],"r10":[770,1545],"c1":[600,1205],"d2":[570,1540],"d3":[680,1545],"d4":[790,1580],"e1":[815,1680],"e2":[850,1760],"e3":[900,1810],"s1":[360,1620],"s2":[350,1720],"s3":[340,1820],"s4":[335,1890],"s5":[250,2000],"s6":[250,2180],"st1":[643,430],"st2":[549,738],"st3":[402,1415],"st4":[548,1572],"st5":[894,1773],"el1":[1051,1317]},"edges":[["a0","a1"],["a1","a2"],["a2","a3"],["a3","a4"],["a4","a5"],["a5","a6"],["a4","st1"],["a1","l1"],["l1","l2"],["l2","l3"],["l3","l4"],["l4","l5"],["l5","l6"],["l6","l7"],["l7","l8"],["a5","r1"],["r1","r2"],["r2","r3"],["r3","r4"],["r4","r5"],["r5","r6"],["r6","r7"],["r7","r8"],["r8","r9"],["r9","r10"],["r2","a6"],["l5","c1"],["l6","c1"],["c1","r6"],["l8","d2"],["d2","d3"],["d3","d4"],["d4","r10"],["r10","d3"],["d4","e1"],["e1","e2"],["e2","e3"],["l8","s1"],["s1","s2"],["s2","s3"],["s3","s4"],["s4","s5"],["s5","s6"],["st2","l2"],["st2","l3"],["st3","l7"],["st4","d2"],["st5","e2"],["st5","e3"],["el1","r8"],["el1","r9"]]},"alta":{"nodes":{"u0":[300,430],"u1":[265,560],"u2":[265,700],"u3":[265,850],"u4":[265,1000],"u5":[265,1150],"u6":[265,1290],"u7":[265,1420],"u8":[305,1470],"t1":[360,450],"t2":[440,470],"t3":[520,440],"t4":[600,460],"t5":[700,480],"t6":[790,490],"t7":[850,520],"t8":[860,400],"v1":[880,600],"v2":[885,700],"v3":[880,800],"v4":[860,900],"g1":[300,915],"g2":[400,915],"g4":[597,905],"g5":[700,915],"g6":[770,915],"w1":[860,1000],"w2":[870,1100],"k1":[345,1390],"k2":[440,1390],"k3":[560,1390],"k4":[700,1390],"k5":[780,1385],"m1":[850,1340],"m2":[940,1350],"m3":[1000,1395],"q1":[1040,1440],"q2":[1045,1570],"q3":[1045,1680],"q4":[1040,1790],"q5":[960,1810],"q6":[880,1830],"h0":[620,1700],"h1":[740,1750],"h2":[800,1775],"st1":[460,468],"st2":[483,884],"st3":[338,1478],"st4":[597,1656],"st5":[821,1745],"el1":[1013,1380]},"edges":[["u0","u1"],["u1","u2"],["u2","u3"],["u3","u4"],["u4","u5"],["u5","u6"],["u6","u7"],["u7","u8"],["u0","t1"],["t1","t2"],["t2","t3"],["t3","t4"],["t4","t5"],["t5","t6"],["t6","t7"],["t7","t8"],["t2","st1"],["t7","v1"],["v1","v2"],["v2","v3"],["v3","v4"],["u3","g1"],["g1","g2"],["g2","st2"],["st2","g4"],["g4","g5"],["g5","g6"],["g6","v4"],["v4","w1"],["w1","w2"],["u7","k1"],["k1","k2"],["k2","k3"],["k3","k4"],["k4","k5"],["k5","m1"],["m1","m2"],["m2","m3"],["m3","el1"],["m3","q1"],["q1","q2"],["q2","q3"],["q3","q4"],["q4","q5"],["q5","q6"],["q6","h2"],["h2","h1"],["h1","h0"],["u8","st3"],["u8","u7"],["h0","st4"],["h2","st5"],["q6","st5"]]}};
+const LINKS = [["st1","st1","stairs"],["st2","st2","stairs"],["st3","st3","stairs"],["st4","st4","stairs"],["st5","st5","stairs"],["el1","el1","elevator"]];
+
+els.routeLayer = document.getElementById("routeLayer");
+els.routeAsk = document.getElementById("routeAsk");
+state.kiosk = null; state.route = null; state.placing = false; state.infoItem = null;
+
+function loadKiosk(){ try{ const v = localStorage.getItem("kidzania_kiosk"); return v ? JSON.parse(v) : null; }catch(_){ return null; } }
+function saveKiosk(k){ try{ if(k) localStorage.setItem("kidzania_kiosk", JSON.stringify(k)); else localStorage.removeItem("kidzania_kiosk"); }catch(_){} }
+state.kiosk = loadKiosk();
+function kioskName(){ return (state.kiosk && state.kiosk.name) ? state.kiosk.name : "este kiosko"; }
+function pxOf(floor, p){ const f = DATA[floor]; return {x: f.w*p.x/100, y: f.h*p.y/100}; }
+function pctOf(floor, x, y){ const f = DATA[floor]; return {x: x/f.w*100, y: y/f.h*100}; }
+
+let _adj = null;
+function adjacency(){
+  if(_adj) return _adj;
+  const adj = {};
+  const add = (a,b,w,kind)=>{ (adj[a]=adj[a]||[]).push({to:b,w:w,kind:kind}); (adj[b]=adj[b]||[]).push({to:a,w:w,kind:kind}); };
+  Object.keys(GRAPH).forEach(fl=>{
+    const g = GRAPH[fl];
+    g.edges.forEach(e=>{ const a=g.nodes[e[0]], b=g.nodes[e[1]]; add(fl+":"+e[0], fl+":"+e[1], Math.hypot(a[0]-b[0], a[1]-b[1]), null); });
+  });
+  LINKS.forEach(l=>add("baja:"+l[0], "alta:"+l[1], LINK_COST[l[2]], l[2]));
+  _adj = adj; return adj;
+}
+function nearestNodes(floor, x, y, n){
+  const nodes = GRAPH[floor].nodes;
+  return Object.keys(nodes).map(id=>({id:floor+":"+id, d:Math.hypot(nodes[id][0]-x, nodes[id][1]-y)}))
+    .sort((a,b)=>a.d-b.d).slice(0,n);
+}
+function nodeXY(key){ const p = key.split(":"); return GRAPH[p[0]].nodes[p[1]]; }
+
+// Shortest walk between two map points (possibly on different floors). Returns {segs, len, transfers, cost}.
+function routeBetween(fromFloor, from, toFloor, to, accessible){
+  const base = adjacency(), adj = {};
+  Object.keys(base).forEach(k=>{ adj[k] = base[k].slice(); });
+  adj.S = []; adj.D = [];
+  nearestNodes(fromFloor, from.x, from.y, 2).forEach(n=>{ adj.S.push({to:n.id,w:n.d,kind:null}); adj[n.id].push({to:"S",w:n.d,kind:null}); });
+  nearestNodes(toFloor, to.x, to.y, 2).forEach(n=>{ adj.D.push({to:n.id,w:n.d,kind:null}); adj[n.id].push({to:"D",w:n.d,kind:null}); });
+  const dist = {}, prev = {}, done = {};
+  Object.keys(adj).forEach(k=>{ dist[k] = Infinity; });
+  dist.S = 0;
+  for(;;){
+    let u = null, best = Infinity;
+    for(const k in dist){ if(!done[k] && dist[k] < best){ best = dist[k]; u = k; } }
+    if(u === null || u === "D") break;
+    done[u] = true;
+    adj[u].forEach(e=>{
+      if(accessible && e.kind === "stairs") return;
+      const nd = dist[u] + e.w;
+      if(nd < dist[e.to]){ dist[e.to] = nd; prev[e.to] = {from:u, kind:e.kind}; }
+    });
+  }
+  if(dist.D === Infinity) return null;
+  const chain = []; let cur = "D";
+  while(cur !== "S"){ chain.push({key:cur, kind:prev[cur].kind}); cur = prev[cur].from; }
+  chain.push({key:"S", kind:null}); chain.reverse();
+  const segs = []; let transfers = 0, len = 0, last = null;
+  chain.forEach(it=>{
+    let floor, xy;
+    if(it.key === "S"){ floor = fromFloor; xy = [from.x, from.y]; }
+    else if(it.key === "D"){ floor = toFloor; xy = [to.x, to.y]; }
+    else { floor = it.key.split(":")[0]; xy = nodeXY(it.key); }
+    if(it.kind){ segs[segs.length-1].via = it.kind; segs.push({floor:floor, points:[[xy[0],xy[1]]], via:null}); transfers++; }
+    else if(!segs.length){ segs.push({floor:floor, points:[[xy[0],xy[1]]], via:null}); }
+    else {
+      const pts = segs[segs.length-1].points, p = pts[pts.length-1];
+      len += Math.hypot(xy[0]-p[0], xy[1]-p[1]);
+      pts.push([xy[0],xy[1]]);
+    }
+  });
+  return {segs:segs, len:len, transfers:transfers, cost:dist.D};
+}
+
+function startRoute(item, accessible){
+  const k = state.kiosk; if(!k || !item) return;
+  const itemFloor = state.selected ? state.selected.floor : state.floor;
+  let best = null;
+  item.points.forEach(pt=>{
+    const r = routeBetween(k.floor, {x:k.x, y:k.y}, itemFloor, pxOf(itemFloor, pt), !!accessible);
+    if(r && (!best || r.cost < best.cost)) best = r;
+  });
+  if(!best){ els.infoNote.textContent = "No encontré una ruta accesible hasta aquí."; return; }
+  state.route = {item:item, itemFloor:itemFloor, segs:best.segs, len:best.len, transfers:best.transfers,
+                 step:0, accessible:!!accessible, nearest:item.points.length>1};
+  hideInfo();
+  gotoRouteStep(0);
+}
+
+function routeText(r){
+  const last = r.step === r.segs.length-1, seg = r.segs[r.step];
+  const dest = r.item.name + (r.nearest ? " (ubicación más cercana)" : "");
+  const via = v => v === "elevator" ? "el elevador" : "las escaleras";
+  if(last){
+    if(r.segs.length === 1) return "Sigue la línea azul desde " + kioskName() + " hasta " + dest + ".";
+    return (r.segs[r.step-1].via === "elevator" ? "Sal del elevador" : "Sal de las escaleras") + " y sigue la línea azul hasta " + dest + ". ¡Ya casi llegas!";
+  }
+  const nf = r.segs[r.step+1].floor;
+  return "Sigue la línea azul hasta " + via(seg.via) + " y " + (nf === "alta" ? "sube" : "baja") + " a " + FLOOR_NAMES[nf] + ".";
+}
+
+function renderRouteCard(){
+  const r = state.route, card = document.getElementById("routeCard");
+  if(!r){ card.classList.remove("show"); return; }
+  const last = r.step === r.segs.length-1;
+  document.getElementById("rcTitle").textContent = "Cómo llegar a " + r.item.name;
+  document.getElementById("rcStep").textContent = routeText(r);
+  const mins = r.len/WALK_PX_PER_MIN + r.transfers*0.5;
+  const t = mins < 1 ? "menos de 1 min" : "≈ " + Math.round(mins) + " min";
+  document.getElementById("rcMeta").textContent = t + " caminando · Paso " + (r.step+1) + " de " + r.segs.length + " · " + FLOOR_NAMES[r.segs[r.step].floor];
+  document.getElementById("rcPrev").hidden = r.step === 0;
+  document.getElementById("rcNext").textContent = last ? "Listo" : "Siguiente: " + FLOOR_NAMES[r.segs[r.step+1].floor];
+  const acc = document.getElementById("rcAcc");
+  acc.textContent = r.accessible ? "Ruta con escaleras" : "Ruta accesible (elevador)";
+  card.classList.add("show");
+}
+
+function drawRoute(){
+  const svg = els.routeLayer;
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+  const r = state.route; if(!r) return;
+  const seg = r.segs[r.step];
+  if(!seg || seg.floor !== state.floor) return;
+  const f = DATA[state.floor];
+  svg.setAttribute("viewBox", "0 0 " + f.w + " " + f.h);
+  const d = "M" + seg.points.map(p=>p[0] + " " + p[1]).join(" L");
+  ["casing","line","flow"].forEach(cls=>{
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("class", cls); path.setAttribute("d", d); svg.appendChild(path);
+  });
+}
+
+function gotoRouteStep(i){
+  const r = state.route; if(!r) return;
+  r.step = Math.max(0, Math.min(r.segs.length-1, i));
+  const seg = r.segs[r.step];
+  const pts = seg.points.map(p=>pctOf(seg.floor, p[0], p[1]));
+  const locate = ()=>{ locateOnPoints(pts.length > 1 ? pts : pts.concat(pts), {animate:true}); };
+  if(seg.floor !== state.floor){ state._afterFit = locate; loadFloor(seg.floor, {keepSelection:true}); }
+  else { buildPins(); locate(); }
+  drawRoute(); renderRouteCard(); hideHint();
+}
+
+function closeRoute(keepSelection){
+  state.route = null;
+  drawRoute(); renderRouteCard();
+  if(!keepSelection){ state.selected = null; hideInfo(); }
+  buildPins(); markSelected();
+}
+document.getElementById("rcClose").addEventListener("click", ()=>closeRoute(false));
+document.getElementById("rcPrev").addEventListener("click", ()=>gotoRouteStep(state.route.step-1));
+document.getElementById("rcNext").addEventListener("click", ()=>{
+  const r = state.route; if(!r) return;
+  if(r.step === r.segs.length-1) closeRoute(false); else gotoRouteStep(r.step+1);
+});
+document.getElementById("rcAcc").addEventListener("click", ()=>{
+  const r = state.route; if(!r) return;
+  const item = r.item, acc = !r.accessible;
+  state.selected = {floor:r.itemFloor, key:item.key};
+  state.route = null; startRoute(item, acc);
+});
+document.getElementById("routeGo").addEventListener("click", ()=>{ if(state.infoItem) startRoute(state.infoItem, false); });
+
+// "Estás aquí": the kiosk itself, or the arrival point of the current route step.
+function youPoint(){
+  const r = state.route;
+  if(r){
+    const seg = r.segs[r.step], p = seg.points[0];
+    return {floor:seg.floor, x:p[0], y:p[1], label: r.step === 0 ? "Estás aquí" : "Llegas aquí"};
+  }
+  const k = state.kiosk;
+  return k ? {floor:k.floor, x:k.x, y:k.y, label:"Estás aquí"} : null;
+}
+
+/* ---- configuración del kiosko (mantener pulsado el logo) ---- */
+const adminEl = document.getElementById("admin");
+const adminUI = {pin:document.getElementById("adminPin"), form:document.getElementById("adminForm"),
+  pinInput:document.getElementById("pinInput"), pinErr:document.getElementById("pinErr"),
+  name:document.getElementById("kioskName"), stateP:document.getElementById("kioskState"), banner:document.getElementById("placeBanner")};
+function renderKioskState(){
+  const k = state.kiosk;
+  adminUI.stateP.textContent = k ? "Ubicación guardada en " + FLOOR_NAMES[k.floor] + ". Las consultas en esta tablet ofrecerán rutas desde aquí."
+                                 : "Sin ubicación: esta tablet no ofrecerá rutas hasta que la coloques en el mapa.";
+}
+function openAdmin(){
+  adminEl.hidden = false; adminUI.pin.hidden = false; adminUI.form.hidden = true;
+  adminUI.pinInput.value = ""; adminUI.pinErr.textContent = "";
+  setTimeout(()=>{ try{ adminUI.pinInput.focus(); }catch(_){} }, 60);
+}
+function showAdminForm(){
+  adminEl.hidden = false; adminUI.pin.hidden = true; adminUI.form.hidden = false;
+  adminUI.name.value = state.kiosk ? state.kiosk.name : (state.pendingName || "");
+  renderKioskState();
+}
+document.getElementById("pinOk").addEventListener("click", ()=>{
+  if(adminUI.pinInput.value === ADMIN_PIN) showAdminForm();
+  else adminUI.pinErr.textContent = "PIN incorrecto";
+});
+adminUI.pinInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") document.getElementById("pinOk").click(); });
+document.getElementById("pinCancel").addEventListener("click", ()=>{ adminEl.hidden = true; });
+document.getElementById("adminClose").addEventListener("click", ()=>{ adminEl.hidden = true; });
+adminUI.name.addEventListener("input", ()=>{
+  state.pendingName = adminUI.name.value;
+  if(state.kiosk){ state.kiosk.name = adminUI.name.value; saveKiosk(state.kiosk); }
+});
+document.getElementById("kioskClear").addEventListener("click", ()=>{
+  state.kiosk = null; saveKiosk(null); closeRoute(false); renderKioskState();
+});
+document.getElementById("kioskPlace").addEventListener("click", ()=>{
+  state.pendingName = adminUI.name.value;
+  state.placing = true; adminEl.hidden = true; adminUI.banner.hidden = false;
+  if(state.section === "more" || document.body.classList.contains("view-more")) setSection("map");
+});
+document.getElementById("placeCancel").addEventListener("click", ()=>{
+  state.placing = false; adminUI.banner.hidden = true; showAdminForm();
+});
+function placeKioskAt(x, y){
+  const f = DATA[state.floor];
+  state.kiosk = {name:(state.pendingName || "").trim(), floor:state.floor,
+                 x:Math.round(Math.max(0, Math.min(f.w, x))), y:Math.round(Math.max(0, Math.min(f.h, y)))};
+  saveKiosk(state.kiosk);
+  state.placing = false; adminUI.banner.hidden = true;
+  closeRoute(false); showAdminForm();
+}
+els.viewport.addEventListener("click", (e)=>{
+  if(!state.placing || state._dragged) return;
+  const r = els.viewport.getBoundingClientRect();
+  placeKioskAt((e.clientX - r.left - state.tx)/state.scale, (e.clientY - r.top - state.ty)/state.scale);
+});
+// Long-press (2 s) on the logo opens the admin dialog.
+(function(){
+  const brand = document.querySelector(".brand"); let timer = null;
+  const start = ()=>{ clearTimeout(timer); timer = setTimeout(openAdmin, 2000); };
+  const stop = ()=>{ clearTimeout(timer); };
+  ["touchstart","mousedown"].forEach(ev=>brand.addEventListener(ev, start, false));
+  ["touchend","touchcancel","touchmove","mouseup","mouseleave"].forEach(ev=>brand.addEventListener(ev, stop, false));
+})();
+
+// Kiosk behaviour: after a while without touches, go back to the start screen of this kiosk.
+(function(){
+  let t = null;
+  function reset(){
+    if(state.placing || !adminEl.hidden) return;
+    if(state.route) closeRoute(false);
+    state.selected = null; hideInfo();
+    state.query = ""; els.search.value = ""; els.searchClear.classList.remove("show"); state.cat = null; buildChips();
+    if(document.body.classList.contains("view-more")) setSection("map");
+    if(state.view === "list") setView("map");
+    loadFloor(state.kiosk ? state.kiosk.floor : "baja");
+  }
+  function bump(){ clearTimeout(t); t = setTimeout(reset, IDLE_MS); }
+  ["pointerdown","touchstart","mousedown","keydown"].forEach(ev=>document.addEventListener(ev, bump, true));
+  bump();
+})();
+
 /* init */
 buildChips();
-loadFloor("baja");
+loadFloor(state.kiosk ? state.kiosk.floor : "baja");
 setTimeout(hideHint, 4500);
 </script>
 
