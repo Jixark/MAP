@@ -48,7 +48,7 @@ inferior) cualquier error de JavaScript para poder diagnosticarlo sin depurador.
 
 ## Sección "Conoce más de nuestra gran ciudad"
 Botón **Conoce más** junto a **Mapa** en la cabecera. Muestra el tríptico (`2026_Santa_Fe_editado.pdf`) **completo**, sin recortes:
-pestañas **Interior** (Planta Baja, simbología, términos, B·KidZanian) y **Exterior** (Planta Alta, Guardianes, fiestas,
+pestañas **Pág. 1** (Planta Baja, simbología, términos, B·KidZanian) y **Pág. 2** (Planta Alta, Guardianes, fiestas,
 KidZania en el mundo, contacto y socios). Se ve la página entera al abrir; acerca con pellizco o con los botones + / − y
 arrastra para moverte. El botón Atrás de Android regresa al mapa y solo después sale de la app.
 
@@ -59,3 +59,12 @@ Para actualizar el folleto, reemplaza esos dos `.jpg` (mismo nombre).
 ## Mapas
 `map_baja.jpg` y `map_alta.jpg` incluyen ahora el logo "KidZania Santa Fe" completo (antes se cortaba abajo). Los botones de
 zoom del mapa están a media altura del borde derecho para no tapar el logo.
+
+## Servicios, dónde comer/comprar y circulación en el mapa
+Además de los lugares numerados, el mapa interactivo marca en ambas plantas los íconos de la leyenda del tríptico:
+**Servicios**, **Para comer**, **Para comprar** y **Circulación** (elevador, escaleras, salidas de emergencia).
+- Aparecen como pines redondos con su ícono, aparte de los pines numerados, y también en la lista lateral (con chips de filtro y búsqueda).
+- Al elegir un servicio de la lista se resaltan **todas** sus ubicaciones en esa planta (p. ej. "Escaleras ×5") y el mapa se ajusta para mostrarlas;
+  al tocar un pin se muestra solo ese y cuántas ubicaciones hay.
+- Datos: `DATA[planta].pois` (coordenadas en % de la imagen) y `POI_TYPES` (nombre/categoría) en `index.html`; íconos en `www/ico/`.
+- Aún no incluidos (no se pidieron): Espectáculos y Ruta de la Independencia, que también tienen íconos en el mapa.
