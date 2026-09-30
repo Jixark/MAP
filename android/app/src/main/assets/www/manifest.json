@@ -1,0 +1,14 @@
+{
+  "name": "Mapa KidZania Santa Fe",
+  "short_name": "KidZania Mapa",
+  "description": "Mapa interactivo de KidZania Santa Fe con pines tocables por establecimiento",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f1ea",
+  "theme_color": "#b50031",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

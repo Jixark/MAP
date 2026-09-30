@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Mapa KidZania Santa Fe</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#b50031">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --red:#b50031; --red-ink:#8a0026; --orange:#ee8a21;
+  --bg:#f6f1ea; --surface:#ffffff; --surface-2:#efe8dc; --line:#e6dccb;
+  --text:#2a2422; --text-muted:#8a7f78; --shadow:0 10px 30px rgba(70,35,20,.14);
+  --cat-comercio:#c9820a; --cat-educacion:#2563eb; --cat-entretenimiento:#7c3aed;
+  --cat-industria:#57534e; --cat-medios:#0d9488; --cat-residencial:#16a34a;
+  --cat-restaurantes:#ea580c; --cat-salud:#e11d48; --cat-financiero:#4f46e5;
+  --cat-privados:#a16207; --cat-publicos:#b50031; --cat-tecnologia:#0891b2;
+  --cat-transporte:#64748b; --cat-deportes:#65a30d;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#17151a; --surface:#211f25; --surface-2:#2a2730; --line:#3a3640;
+    --text:#f1ece6; --text-muted:#a89e9a; --red:#ff5577; --red-ink:#ff7a95; --orange:#ffab52;
+    --shadow:0 10px 30px rgba(0,0,0,.4); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#17151a; --surface:#211f25; --surface-2:#2a2730; --line:#3a3640;
+  --text:#f1ece6; --text-muted:#a89e9a; --red:#ff5577; --red-ink:#ff7a95; --orange:#ffab52;
+  --shadow:0 10px 30px rgba(0,0,0,.4); color-scheme:dark;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Figtree',system-ui,-apple-system,sans-serif;
+  display:flex; flex-direction:column; overflow:hidden;
+}
+h1,h2,.display{font-family:'Baloo 2',system-ui,sans-serif;}
+button{font-family:inherit;}
+
+/* ---------- Header ---------- */
+header{
+  flex:0 0 auto; background:var(--surface); border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  box-shadow:0 1px 0 rgba(0,0,0,.02); z-index:20; position:relative;
+}
+.brand{display:flex; align-items:center; gap:10px; margin-right:4px;}
+.brand-mark{
+  width:34px; height:34px; border-radius:10px; background:var(--red); flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+}
+.brand-mark svg{width:19px; height:19px;}
+.brand-text{display:flex; flex-direction:column; line-height:1.15;}
+.brand-text b{font-family:'Baloo 2',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:.2px;}
+.brand-text span{font-size:11px; color:var(--text-muted); font-weight:600;}
+
+.floor-switch{
+  display:flex; background:var(--surface-2); border-radius:999px; padding:3px; gap:2px; flex:0 0 auto;
+}
+.floor-switch button{
+  border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px;
+  padding:8px 16px; border-radius:999px; cursor:pointer; transition:background .18s,color .18s;
+  white-space:nowrap;
+}
+.floor-switch button.active{background:var(--red); color:#fff; box-shadow:var(--shadow);}
+
+.search-wrap{
+  position:relative; flex:1 1 220px; min-width:160px; max-width:420px;
+}
+.search-wrap input{
+  width:100%; padding:9px 14px 9px 36px; border-radius:999px; border:1px solid var(--line);
+  background:var(--surface-2); color:var(--text); font-size:14px; outline:none;
+}
+.search-wrap input:focus{border-color:var(--red);}
+.search-wrap svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text-muted); pointer-events:none;}
+.search-clear{
+  position:absolute; right:6px; top:50%; transform:translateY(-50%); border:none; background:none;
+  color:var(--text-muted); cursor:pointer; padding:6px; display:none; border-radius:50%;
+}
+.search-clear.show{display:flex;}
+
+.view-toggle{display:none; gap:2px; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
+.view-toggle button{border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13px; padding:8px 14px; border-radius:999px; cursor:pointer;}
+.view-toggle button.active{background:var(--text); color:var(--surface);}
+
+/* ---------- Layout ---------- */
+main{flex:1 1 auto; display:flex; min-height:0;}
+#mapPane{position:relative; flex:1 1 0%; min-width:0; background:
+  radial-gradient(ellipse at 50% 0%, var(--surface-2), var(--bg));
+  overflow:hidden; touch-action:none;}
+#viewport{position:absolute; inset:0; overflow:hidden; cursor:grab;}
+#viewport.grabbing{cursor:grabbing;}
+#stage{position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform;}
+#stage img{display:block; width:var(--iw); height:var(--ih); max-width:none; user-select:none; -webkit-user-drag:none; pointer-events:none;}
+
+.pin{
+  position:absolute; left:0; top:0; transform:translate(-50%,-100%) scale(calc(1 / var(--s,1)));
+  transform-origin:50% 100%; width:34px; height:42px; border:none; background:none; padding:0;
+  cursor:pointer; filter:drop-shadow(0 2px 4px rgba(0,0,0,.35)); z-index:5;
+}
+.pin svg{width:100%; height:100%; display:block;}
+.pin .num{
+  position:absolute; left:0; top:0; width:34px; height:29px; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:800; font-size:14px; font-family:'Baloo 2',sans-serif; pointer-events:none;
+}
+.pin.selected{z-index:8;}
+.pin.selected .halo{animation:pulse 1.4s ease-out infinite;}
+@keyframes pulse{
+  0%{ r:15; opacity:.55; }
+  100%{ r:30; opacity:0; }
+}
+@media (prefers-reduced-motion:reduce){ .pin.selected .halo{animation:none;} }
+
+.map-controls{
+  position:absolute; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); z-index:15;
+  display:flex; flex-direction:column; gap:8px;
+}
+.map-controls button{
+  width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
+  color:var(--text); font-size:19px; font-weight:700; cursor:pointer; box-shadow:var(--shadow);
+  display:flex; align-items:center; justify-content:center;
+}
+.map-controls button:active{transform:scale(.94);}
+
+.floor-badge{
+  position:absolute; left:12px; top:12px; z-index:15; background:var(--surface); border:1px solid var(--line);
+  border-radius:999px; padding:6px 14px 6px 10px; font-weight:700; font-size:12.5px; box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:6px; color:var(--text-muted);
+}
+.floor-badge b{color:var(--text); font-family:'Baloo 2',sans-serif;}
+
+.hint{
+  position:absolute; left:50%; top:12px; transform:translateX(-50%); z-index:14; background:var(--surface);
+  border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:12px; color:var(--text-muted);
+  box-shadow:var(--shadow); opacity:.92; pointer-events:none; white-space:nowrap;
+  transition:opacity .3s;
+}
+
+/* info sheet */
+#infoCard{
+  position:absolute; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); z-index:16;
+  max-width:360px; background:var(--surface); border:1px solid var(--line); border-radius:18px;
+  padding:14px 16px; box-shadow:var(--shadow); display:flex; gap:12px; align-items:flex-start;
+  transform:translateY(140%); transition:transform .28s cubic-bezier(.2,.9,.3,1.2); opacity:0;
+}
+#infoCard.show{transform:translateY(0); opacity:1;}
+#infoCard .badge{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--red); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-family:'Baloo 2',sans-serif; font-size:14px;
+}
+#infoCard .body{flex:1 1 auto; min-width:0;}
+#infoCard .name{font-weight:700; font-size:15.5px; line-height:1.25; margin:0 0 4px;}
+#infoCard .pill{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; padding:3px 9px 3px 7px; border-radius:999px; background:var(--surface-2); background:color-mix(in srgb, var(--pc) 16%, var(--surface)); color:var(--pc);}
+#infoCard .pill::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--pc);}
+#infoCard .close{flex:0 0 auto; border:none; background:var(--surface-2); color:var(--text-muted); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center;}
+
+/* ---------- List pane ---------- */
+#listPane{
+  flex:0 0 340px; background:var(--surface); border-left:1px solid var(--line);
+  display:flex; flex-direction:column; min-height:0;
+}
+.list-head{padding:14px 16px 8px; flex:0 0 auto;}
+.list-count{font-size:12.5px; color:var(--text-muted); font-weight:600; margin:0 0 10px;}
+.chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--surface); color:var(--text-muted);
+  font-size:12.5px; font-weight:700; padding:7px 13px; border-radius:999px; cursor:pointer; white-space:nowrap;
+  display:flex; align-items:center; gap:6px;
+}
+.chip::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
+.chip.active{background:var(--pc); border-color:var(--pc); color:#fff;}
+.chip.active::before{background:#fff;}
+
+#list{flex:1 1 auto; overflow-y:auto; padding:4px 10px 20px;}
+.cat-heading{
+  position:sticky; top:0; background:var(--surface); font-size:11.5px; font-weight:800; letter-spacing:.4px;
+  text-transform:uppercase; color:var(--pc); padding:12px 8px 6px; z-index:2;
+}
+.row{
+  display:flex; align-items:center; gap:11px; padding:9px 8px; border-radius:12px; cursor:pointer;
+  border:1px solid transparent;
+}
+.row:hover{background:var(--surface-2);}
+.row.active{background:var(--surface-2); background:color-mix(in srgb, var(--red) 10%, var(--surface)); border-color:var(--line); border-color:color-mix(in srgb, var(--red) 30%, var(--surface));}
+.row .num{
+  flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:var(--pc); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12.5px; font-family:'Baloo 2',sans-serif;
+}
+.row .name{flex:1 1 auto; font-size:13.8px; font-weight:600; line-height:1.3; min-width:0;}
+.row .go{flex:0 0 auto; color:var(--text-muted); font-size:16px;}
+.empty{padding:40px 20px; text-align:center; color:var(--text-muted); font-size:13.5px;}
+.empty b{display:block; color:var(--text); font-family:'Baloo 2',sans-serif; font-size:15px; margin-bottom:4px;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:860px){
+  #listPane{flex-basis:300px;}
+}
+@media (max-width:680px){
+  .view-toggle{display:flex;}
+  main{position:relative;}
+  #mapPane, #listPane{
+    position:absolute; inset:0; border-left:none;
+  }
+  #listPane{transform:translateX(100%); transition:transform .25s ease; z-index:10;}
+  #mapPane{transition:opacity .2s;}
+  body.view-list #listPane{transform:translateX(0);}
+  body.view-list #mapPane{opacity:0; pointer-events:none;}
+  .brand-text span{display:none;}
+  #infoCard{max-width:none;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8Z" fill="#fff"/><circle cx="12" cy="10" r="3.2" fill="#b50031"/></svg>
+    </div>
+    <div class="brand-text">
+      <b>KidZania Santa Fe</b>
+      <span>Mapa interactivo</span>
+    </div>
+  </div>
+
+  <div class="floor-switch" id="floorSwitch">
+    <button data-floor="baja" class="active">Planta Baja</button>
+    <button data-floor="alta">Planta Alta</button>
+  </div>
+
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="Buscar establecimiento..." autocomplete="off">
+    <button class="search-clear" id="searchClear" aria-label="Limpiar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="view-toggle" id="viewToggle">
+    <button data-view="map" class="active">Mapa</button>
+    <button data-view="list">Lista</button>
+  </div>
+</header>
+
+<main>
+  <div id="mapPane">
+    <div class="floor-badge"><span>Piso</span><b id="floorLabel">Planta Baja</b></div>
+    <div class="hint" id="hint">Pellizca para hacer zoom &middot; arrastra para mover</div>
+    <div id="viewport">
+      <div id="stage" style="--s:1">
+        <img id="mapImg" src="" alt="Mapa del piso" draggable="false">
+        <div id="pinsLayer"></div>
+      </div>
+    </div>
+    <div class="map-controls">
+      <button id="zoomIn" aria-label="Acercar">+</button>
+      <button id="zoomOut" aria-label="Alejar">&minus;</button>
+      <button id="zoomReset" aria-label="Restablecer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v6h6"/></svg>
+      </button>
+    </div>
+    <div id="infoCard">
+      <div class="badge" id="infoNum">1</div>
+      <div class="body">
+        <p class="name" id="infoName">&nbsp;</p>
+        <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
+      </div>
+      <button class="close" id="infoClose" aria-label="Cerrar">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="listPane">
+    <div class="list-head">
+      <p class="list-count" id="listCount">35 lugares en Planta Baja</p>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div id="list"></div>
+  </div>
+</main>
+
+<script>
+const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":25.2,"y":50.08},{"num":2,"name":"Hospital","cat":"Salud","x":25.2,"y":46.17},{"num":3,"name":"Universidad","cat":"Educación","x":25.2,"y":41.62},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":25.2,"y":38.29},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":24.88,"y":32.88},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":25.04,"y":30.21},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":25.04,"y":26.92},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":25.2,"y":24.29},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":25.04,"y":21.58},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":25.2,"y":13.38},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":42.64,"y":13.38},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":54.96,"y":13.38},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":65.76,"y":13.38},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":70.24,"y":17.38},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":70.24,"y":21.58},{"num":16,"name":"Supermercado","cat":"Comercio","x":68.24,"y":28.12},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":64.48,"y":32.88},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":64.48,"y":36.29},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":64.48,"y":38.92},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":64.48,"y":41.58},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":64.48,"y":46.17},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":64.48,"y":54.29},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":76.24,"y":54.29},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":82.88,"y":61.71},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":76.24,"y":64.92},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":83.52,"y":67.79},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":76.24,"y":70.33},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":70.24,"y":70.33},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":50.16,"y":54.29},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":50.16,"y":32.88},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":42.64,"y":32.88},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":42.64,"y":26.92},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":54.96,"y":24.29},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":42.64,"y":21.58},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":54.96,"y":21.58}]},"alta":{"img":"map_alta.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":15.76,"y":61.04},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":15.76,"y":56.92},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":15.76,"y":53.29},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":15.76,"y":48.04},{"num":5,"name":"Purina","cat":"Salud","x":15.76,"y":42.46},{"num":7,"name":"Adidas","cat":"Tecnología","x":15.76,"y":30.5},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":15.76,"y":22.04},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":15.76,"y":18.46},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":24.96,"y":16.12},{"num":12,"name":"Heladería","cat":"Restaurantes","x":35.68,"y":16.12},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":53.2,"y":16.12},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":64.56,"y":10.67},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":70.0,"y":18.46},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":70.0,"y":25.29},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":70.0,"y":27.96},{"num":18,"name":"Ducto de Aire Acondicionado","cat":"Industria","x":70.0,"y":30.5},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":70.0,"y":33.08},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":70.0,"y":38.83},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":84.16,"y":56.92},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":84.16,"y":64.88},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":84.16,"y":72.17},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":53.2,"y":72.17}]}};
+
+const CAT_COLOR = {
+  "Comercio":"var(--cat-comercio)","Educación":"var(--cat-educacion)","Entretenimiento":"var(--cat-entretenimiento)",
+  "Industria":"var(--cat-industria)","Medios de Comunicación":"var(--cat-medios)","Residencial":"var(--cat-residencial)",
+  "Restaurantes":"var(--cat-restaurantes)","Salud":"var(--cat-salud)","Servicio Financiero":"var(--cat-financiero)",
+  "Servicios Privados":"var(--cat-privados)","Servicios Públicos":"var(--cat-publicos)","Tecnología":"var(--cat-tecnologia)",
+  "Transporte":"var(--cat-transporte)","Deportes":"var(--cat-deportes)"
+};
+// resolved hex (for color-mix fallback contexts / inline styles that need a concrete value)
+const CAT_HEX = {
+  "Comercio":"#c9820a","Educación":"#2563eb","Entretenimiento":"#7c3aed","Industria":"#57534e",
+  "Medios de Comunicación":"#0d9488","Residencial":"#16a34a","Restaurantes":"#ea580c","Salud":"#e11d48",
+  "Servicio Financiero":"#4f46e5","Servicios Privados":"#a16207","Servicios Públicos":"#b50031",
+  "Tecnología":"#0891b2","Transporte":"#64748b","Deportes":"#65a30d"
+};
+
+const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
+
+const state = {
+  floor: "baja",
+  query: "",
+  cat: null,
+  selected: null,   // {floor, num}
+  scale: 1, tx: 0, ty: 0,
+  view: "map"
+};
+
+const els = {
+  viewport: document.getElementById("viewport"),
+  stage: document.getElementById("stage"),
+  img: document.getElementById("mapImg"),
+  pinsLayer: document.getElementById("pinsLayer"),
+  list: document.getElementById("list"),
+  listCount: document.getElementById("listCount"),
+  chips: document.getElementById("chips"),
+  search: document.getElementById("search"),
+  searchClear: document.getElementById("searchClear"),
+  floorLabel: document.getElementById("floorLabel"),
+  infoCard: document.getElementById("infoCard"),
+  infoNum: document.getElementById("infoNum"),
+  infoName: document.getElementById("infoName"),
+  infoCat: document.getElementById("infoCat"),
+  hint: document.getElementById("hint"),
+};
+
+function normalize(s){
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+}
+
+function currentPins(){
+  return DATA[state.floor].pins;
+}
+
+function filteredPins(){
+  const q = normalize(state.query.trim());
+  return currentPins().filter(p=>{
+    if(state.cat && p.cat !== state.cat) return false;
+    if(q && !normalize(p.name).includes(q)) return false;
+    return true;
+  });
+}
+
+/* ---------------- Map: image + pins ---------------- */
+function loadFloor(floor, opts){
+  opts = opts || {};
+  state.floor = floor;
+  const f = DATA[floor];
+  els.img.src = f.img;
+  els.stage.style.setProperty("--iw", f.w+"px");
+  els.stage.style.setProperty("--ih", f.h+"px");
+  els.floorLabel.textContent = FLOOR_NAMES[floor];
+  document.querySelectorAll("#floorSwitch button").forEach(b=>b.classList.toggle("active", b.dataset.floor===floor));
+  if(!opts.keepSelection){ state.selected = null; hideInfo(); }
+  buildPins();
+  renderList();
+  const doFit = ()=>fitToContainer();
+  if(els.img.complete && els.img.naturalWidth) doFit();
+  else els.img.onload = doFit;
+}
+
+function buildPins(){
+  els.pinsLayer.innerHTML = "";
+  currentPins().forEach(p=>{
+    const btn = document.createElement("button");
+    btn.className = "pin";
+    btn.style.left = p.x + "%";
+    btn.style.top = p.y + "%";
+    btn.dataset.num = p.num;
+    const color = CAT_HEX[p.cat] || "#b50031";
+    btn.innerHTML = `
+      <svg viewBox="0 0 34 42">
+        <circle class="halo" cx="17" cy="15" r="15" fill="${color}"/>
+        <path d="M17 41S2 24.8 2 15C2 7.3 8.6 1 17 1s15 6.3 15 14c0 9.8-15 26-15 26Z" fill="${color}" stroke="#fff" stroke-width="2"/>
+      </svg>
+      <span class="num">${p.num}</span>`;
+    btn.addEventListener("click", (e)=>{ e.stopPropagation(); selectPin(p.num, {locate:true}); });
+    els.pinsLayer.appendChild(btn);
+  });
+  markSelected();
+}
+
+function markSelected(){
+  document.querySelectorAll(".pin").forEach(el=>{
+    el.classList.toggle("selected", state.selected && state.selected.floor===state.floor && String(el.dataset.num)===String(state.selected.num));
+  });
+  document.querySelectorAll(".row").forEach(el=>{
+    el.classList.toggle("active", state.selected && state.selected.floor===state.floor && String(el.dataset.num)===String(state.selected.num));
+  });
+}
+
+function selectPin(num, opts){
+  opts = opts || {};
+  const p = currentPins().find(p=>p.num===num);
+  if(!p) return;
+  state.selected = {floor: state.floor, num: num};
+  markSelected();
+  showInfo(p);
+  if(opts.locate) locateOn(p, {animate:true});
+  hideHint();
+}
+
+function showInfo(p){
+  els.infoNum.textContent = p.num;
+  els.infoName.textContent = p.name;
+  els.infoCat.textContent = p.cat;
+  els.infoCat.style.setProperty("--pc", CAT_HEX[p.cat] || "#b50031");
+  els.infoCard.classList.add("show");
+}
+function hideInfo(){ els.infoCard.classList.remove("show"); }
+
+function hideHint(){ els.hint.style.opacity = "0"; }
+
+/* ---------------- Pan / zoom ---------------- */
+const MIN_SCALE = 0.6, MAX_SCALE = 6;
+
+function applyTransform(){
+  els.stage.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
+  els.stage.style.setProperty("--s", state.scale);
+}
+
+function fitToContainer(){
+  const vw = els.viewport.clientWidth, vh = els.viewport.clientHeight;
+  // The container can briefly report 0x0 right after the WebView first
+  // loads the page (layout hasn't settled yet). Retry on the next frame
+  // instead of locking the map at a zero/degenerate scale.
+  if(!vw || !vh){ requestAnimationFrame(fitToContainer); return; }
+  const f = DATA[state.floor];
+  const s = Math.min(vw / f.w, vh / f.h) * 0.96;
+  state.scale = s;
+  state.tx = (vw - f.w * s) / 2;
+  state.ty = (vh - f.h * s) / 2;
+  state._fit = {s, vw, vh};
+  applyTransform();
+}
+
+// Extra safety net: keep the map correctly fitted whenever the viewport's
+// actual size changes (covers rotation, keyboard, and any WebView where
+// the initial layout timing is unreliable). Falls back to a plain load
+// listener on engines without ResizeObserver.
+if(window.ResizeObserver){
+  let firstFit = true;
+  new ResizeObserver(()=>{
+    if(firstFit){ firstFit = false; return; } // avoid double-fit with the img.onload path
+    fitToContainer();
+  }).observe(els.viewport);
+} else {
+  window.addEventListener("load", fitToContainer);
+}
+
+function clampScale(s){ return Math.max(MIN_SCALE, Math.min(MAX_SCALE, s)); }
+
+function zoomAround(px, py, factor){
+  const ns = clampScale(state.scale * factor);
+  const k = ns / state.scale;
+  state.tx = px - k * (px - state.tx);
+  state.ty = py - k * (py - state.ty);
+  state.scale = ns;
+  applyTransform();
+}
+
+function animateTo(targetTx, targetTy, targetScale, dur){
+  dur = dur || 420;
+  const startTx=state.tx, startTy=state.ty, startS=state.scale, t0=performance.now();
+  function step(t){
+    let p = Math.min(1, (t-t0)/dur);
+    p = 1 - Math.pow(1-p, 3);
+    state.tx = startTx + (targetTx-startTx)*p;
+    state.ty = startTy + (targetTy-startTy)*p;
+    state.scale = startS + (targetScale-startS)*p;
+    applyTransform();
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function locateOn(p, opts){
+  opts = opts || {};
+  const f = DATA[state.floor];
+  const vw = els.viewport.clientWidth, vh = els.viewport.clientHeight;
+  const targetScale = clampScale(Math.max(state.scale, 2.1));
+  const cx = f.w * p.x/100, cy = f.h * p.y/100;
+  const targetTx = vw/2 - cx*targetScale;
+  const targetTy = vh/2 - cy*targetScale*0.72; // bias up so info card doesn't cover the pin
+  if(opts.animate) animateTo(targetTx, targetTy, targetScale);
+  else { state.tx=targetTx; state.ty=targetTy; state.scale=targetScale; applyTransform(); }
+}
+
+/* pointer pan + pinch */
+const pointers = new Map();
+let dragging = false, lastMid = null, lastDist = null;
+
+els.viewport.addEventListener("pointerdown", (e)=>{
+  els.viewport.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  if(pointers.size===1){ dragging=true; els.viewport.classList.add("grabbing"); }
+  if(pointers.size===2){
+    const pts=[...pointers.values()];
+    lastDist = Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
+    lastMid = {x:(pts[0].x+pts[1].x)/2, y:(pts[0].y+pts[1].y)/2};
+  }
+});
+els.viewport.addEventListener("pointermove", (e)=>{
+  if(!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId);
+  const cur = {x:e.clientX, y:e.clientY};
+  pointers.set(e.pointerId, cur);
+  if(pointers.size===1 && dragging){
+    state.tx += cur.x - prev.x;
+    state.ty += cur.y - prev.y;
+    applyTransform();
+  } else if(pointers.size===2){
+    const pts=[...pointers.values()];
+    const dist = Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
+    const mid = {x:(pts[0].x+pts[1].x)/2, y:(pts[0].y+pts[1].y)/2};
+    const rect = els.viewport.getBoundingClientRect();
+    const localMid = {x: mid.x-rect.left, y: mid.y-rect.top};
+    if(lastDist){
+      const factor = dist/lastDist;
+      zoomAround(localMid.x, localMid.y, factor);
+    }
+    lastDist = dist; lastMid = mid;
+  }
+});
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(pointers.size<2){ lastDist=null; }
+  if(pointers.size===0){ dragging=false; els.viewport.classList.remove("grabbing"); }
+}
+els.viewport.addEventListener("pointerup", endPointer);
+els.viewport.addEventListener("pointercancel", endPointer);
+els.viewport.addEventListener("pointerleave", (e)=>{ if(e.buttons===0) endPointer(e); });
+
+els.viewport.addEventListener("wheel", (e)=>{
+  e.preventDefault();
+  const rect = els.viewport.getBoundingClientRect();
+  const factor = Math.pow(1.0018, -e.deltaY);
+  zoomAround(e.clientX-rect.left, e.clientY-rect.top, factor);
+}, {passive:false});
+
+document.getElementById("zoomIn").addEventListener("click", ()=>{
+  zoomAround(els.viewport.clientWidth/2, els.viewport.clientHeight/2, 1.35);
+});
+document.getElementById("zoomOut").addEventListener("click", ()=>{
+  zoomAround(els.viewport.clientWidth/2, els.viewport.clientHeight/2, 1/1.35);
+});
+document.getElementById("zoomReset").addEventListener("click", ()=>{
+  const f = DATA[state.floor];
+  const vw = els.viewport.clientWidth, vh = els.viewport.clientHeight;
+  const s = Math.min(vw/f.w, vh/f.h)*0.96;
+  animateTo((vw-f.w*s)/2, (vh-f.h*s)/2, s);
+});
+
+window.addEventListener("resize", ()=>{ fitToContainer(); });
+
+/* ---------------- List / search / chips ---------------- */
+const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios de Comunicación","Residencial",
+  "Restaurantes","Salud","Servicio Financiero","Servicios Privados","Servicios Públicos","Tecnología","Transporte","Deportes"];
+
+function buildChips(){
+  const catsHere = new Set(currentPins().map(p=>p.cat));
+  els.chips.innerHTML = "";
+  const allChip = document.createElement("button");
+  allChip.className = "chip" + (state.cat===null ? " active":"");
+  allChip.textContent = "Todos";
+  allChip.style.setProperty("--pc", "#8a7f78");
+  allChip.addEventListener("click", ()=>{ state.cat=null; buildChips(); renderList(); });
+  els.chips.appendChild(allChip);
+  ALL_CATS.filter(c=>catsHere.has(c)).forEach(cat=>{
+    const chip = document.createElement("button");
+    chip.className = "chip" + (state.cat===cat ? " active":"");
+    chip.textContent = cat;
+    chip.style.setProperty("--pc", CAT_HEX[cat]);
+    chip.addEventListener("click", ()=>{ state.cat = (state.cat===cat? null : cat); buildChips(); renderList(); });
+    els.chips.appendChild(chip);
+  });
+}
+
+function renderList(){
+  const items = filteredPins().slice().sort((a,b)=> a.cat.localeCompare(b.cat,'es') || a.name.localeCompare(b.name,'es'));
+  els.list.innerHTML = "";
+  els.listCount.textContent = `${items.length} lugar${items.length===1?'':'es'} en ${FLOOR_NAMES[state.floor]}`;
+
+  if(items.length===0){
+    const div = document.createElement("div");
+    div.className = "empty";
+    div.innerHTML = `<b>Sin resultados</b>Prueba con otro nombre o quita el filtro de categoría.`;
+    els.list.appendChild(div);
+    return;
+  }
+
+  let lastCat = null;
+  items.forEach(p=>{
+    if(p.cat !== lastCat){
+      const h = document.createElement("div");
+      h.className = "cat-heading";
+      h.style.setProperty("--pc", CAT_HEX[p.cat]);
+      h.textContent = p.cat;
+      els.list.appendChild(h);
+      lastCat = p.cat;
+    }
+    const row = document.createElement("div");
+    row.className = "row";
+    row.dataset.num = p.num;
+    row.style.setProperty("--pc", CAT_HEX[p.cat]);
+    row.innerHTML = `<span class="num">${p.num}</span><span class="name">${p.name}</span><span class="go">&rsaquo;</span>`;
+    row.addEventListener("click", ()=>{
+      selectPin(p.num, {locate:true});
+      if(state.view==="list" && window.innerWidth<=680) setView("map");
+    });
+    els.list.appendChild(row);
+  });
+  markSelected();
+}
+
+els.search.addEventListener("input", ()=>{
+  state.query = els.search.value;
+  els.searchClear.classList.toggle("show", state.query.length>0);
+  renderList();
+});
+els.searchClear.addEventListener("click", ()=>{
+  els.search.value=""; state.query=""; els.searchClear.classList.remove("show"); renderList(); els.search.focus();
+});
+
+document.getElementById("infoClose").addEventListener("click", ()=>{
+  state.selected = null; hideInfo(); markSelected();
+});
+
+document.getElementById("floorSwitch").addEventListener("click", (e)=>{
+  const btn = e.target.closest("button[data-floor]");
+  if(!btn) return;
+  loadFloor(btn.dataset.floor);
+});
+
+/* mobile view toggle */
+function setView(v){
+  state.view = v;
+  document.body.classList.toggle("view-list", v==="list");
+  document.querySelectorAll("#viewToggle button").forEach(b=>b.classList.toggle("active", b.dataset.view===v));
+}
+document.getElementById("viewToggle").addEventListener("click", (e)=>{
+  const btn = e.target.closest("button[data-view]");
+  if(!btn) return;
+  setView(btn.dataset.view);
+});
+
+/* init */
+buildChips();
+loadFloor("baja");
+setTimeout(hideHint, 4500);
+</script>
+
+</body>
+</html>
