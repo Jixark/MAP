@@ -47,12 +47,15 @@ solo como mejora opcional, usa eventos táctiles si el WebView no tiene Pointer 
 inferior) cualquier error de JavaScript para poder diagnosticarlo sin depurador.
 
 ## Sección "Conoce más de nuestra gran ciudad"
-Botón **Conoce más** junto a **Mapa** en la cabecera. Muestra tarjetas con la información del tríptico (`2026_Santa_Fe_editado.pdf`):
-espectáculos y Ruta de la Independencia, Guardianes de los Derechos, fiestas, programa B·KidZanian, servicios/comer/comprar,
-simbología, términos y condiciones, KidZania en el mundo, horarios/contacto, socios y las dos caras completas del tríptico.
-Al tocar una tarjeta se abre un visor a pantalla completa con zoom (+ / −) y desplazamiento. El botón Atrás de Android
-cierra el visor, luego la sección, y solo después sale de la app.
+Botón **Conoce más** junto a **Mapa** en la cabecera. Muestra el tríptico (`2026_Santa_Fe_editado.pdf`) **completo**, sin recortes:
+pestañas **Interior** (Planta Baja, simbología, términos, B·KidZanian) y **Exterior** (Planta Alta, Guardianes, fiestas,
+KidZania en el mundo, contacto y socios). Se ve la página entera al abrir; acerca con pellizco o con los botones + / − y
+arrastra para moverte. El botón Atrás de Android regresa al mapa y solo después sale de la app.
 
-Las imágenes están en `android/app/src/main/assets/www/info/` (recortes del PDF a resolución original + miniaturas `t_*.jpg`).
+Las páginas están en `android/app/src/main/assets/www/info/` (`triptico_1.jpg`, `triptico_2.jpg`, 2200 px de ancho).
 Se usan imágenes y no el PDF directamente porque los WebView antiguos (Android 7) no pueden mostrar PDFs.
-Para cambiar el contenido: reemplaza los `.jpg` (mismo nombre) o edita la lista `INFO` en `index.html`.
+Para actualizar el folleto, reemplaza esos dos `.jpg` (mismo nombre).
+
+## Mapas
+`map_baja.jpg` y `map_alta.jpg` incluyen ahora el logo "KidZania Santa Fe" completo (antes se cortaba abajo). Los botones de
+zoom del mapa están a media altura del borde derecho para no tapar el logo.

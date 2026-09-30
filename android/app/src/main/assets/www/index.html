@@ -123,10 +123,9 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 @media (prefers-reduced-motion:reduce){ .pin.selected .halo{animation:none;} }
 
 .map-controls{
-  position:absolute; right:12px; bottom:12px; z-index:15;
+  position:absolute; right:12px; top:50%; margin-top:-68px; z-index:15;
   display:flex; flex-direction:column;
 }
-.map-controls{bottom:calc(12px + env(safe-area-inset-bottom,0px));}
 .map-controls > * + *{margin-top:8px;}
 .map-controls button{
   width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
@@ -212,7 +211,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .empty b{display:block; color:var(--text); font-family:'Baloo 2',sans-serif; font-size:15px; margin-bottom:4px;}
 
 
-/* ---------- Conoce más (tríptico) ---------- */
+/* ---------- Conoce más (tríptico completo) ---------- */
 .section-switch{display:flex; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
 .section-switch button{
   border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px;
@@ -222,40 +221,21 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .section-switch button.active{background:var(--text); color:var(--surface);}
 body.view-more .floor-switch, body.view-more .search-wrap, body.view-more .view-toggle{display:none;}
 body.view-more main{display:none;}
-#morePane{display:none; flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
-body.view-more #morePane{display:block;}
-.more-inner{max-width:1180px; margin:0 auto; padding:22px 16px 40px;}
-.more-inner h2{margin:0 0 6px; font-size:27px; line-height:1.15; color:var(--red);}
-.more-sub{margin:0 0 14px; color:var(--text-muted); font-size:14.5px; line-height:1.4;}
-.more-grid{display:flex; flex-wrap:wrap; margin:0 -8px;}
-.more-card{width:33.3333%; padding:8px; box-sizing:border-box;}
-.more-card button{
-  display:block; width:100%; padding:0; text-align:left; cursor:pointer; overflow:hidden;
-  background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow);
-}
-.more-card button:active{transform:scale(.985);}
-.more-thumb{height:230px; background:var(--surface-2); overflow:hidden;}
-.more-thumb img{display:block; width:100%; height:100%; object-fit:cover; object-position:top center;}
-.more-thumb.contain img{object-fit:contain; object-position:center;}
-.more-cap{padding:12px 14px 14px;}
-.more-cap b{display:block; font-family:'Baloo 2',system-ui,sans-serif; font-size:16.5px; line-height:1.2; margin-bottom:3px;}
-.more-cap span{font-size:12.5px; color:var(--text-muted); font-weight:600;}
-@media (max-width:860px){ .more-card{width:50%;} }
-@media (max-width:560px){ .more-card{width:100%;} .more-inner h2{font-size:22px;} }
-
-/* full-screen viewer */
-#viewer{display:none; position:fixed; top:0; right:0; bottom:0; left:0; z-index:60; background:#140f12; flex-direction:column;}
-#viewer.open{display:flex;}
-.viewer-bar{flex:0 0 auto; display:flex; align-items:center; padding:10px 12px; color:#fff;}
-.viewer-bar > * + *{margin-left:8px;}
-.viewer-title{flex:1 1 auto; min-width:0; font-family:'Baloo 2',system-ui,sans-serif; font-weight:700; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.viewer-bar button{
-  flex:0 0 auto; min-width:44px; height:44px; padding:0 14px; border-radius:12px; border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.12); color:#fff; font-size:20px; font-weight:700; cursor:pointer;
-}
-.viewer-bar button.close{background:var(--red); border-color:transparent; font-size:15px;}
-#viewerBody{flex:1 1 auto; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; padding:0 8px 12px;}
-#viewerImg{display:block; margin:0 auto; max-width:none; background:#fff; border-radius:8px;}
+#morePane{display:none; flex:1 1 auto; min-height:0; flex-direction:column;}
+body.view-more #morePane{display:flex;}
+.more-bar{flex:0 0 auto; display:flex; align-items:center; flex-wrap:wrap; padding:8px 12px 6px; background:var(--surface); border-bottom:1px solid var(--line);}
+.more-bar h2{margin:2px 12px 2px 0; font-size:19px; line-height:1.15; color:var(--red); flex:1 1 260px; min-width:0;}
+.more-bar h2 small{display:block; font-family:'Figtree',system-ui,sans-serif; font-size:12px; font-weight:600; color:var(--text-muted);}
+.more-tools{display:flex; align-items:center; flex:0 0 auto; margin:2px 0;}
+.more-tools > * + *{margin-left:8px;}
+.page-tabs{display:flex; background:var(--surface-2); border-radius:999px; padding:3px;}
+.page-tabs > * + *{margin-left:2px;}
+.page-tabs button{border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13px; padding:8px 13px; border-radius:999px; cursor:pointer; white-space:nowrap;}
+.page-tabs button.active{background:var(--red); color:#fff;}
+.zoom-btn{width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--text); font-size:20px; font-weight:700; cursor:pointer; padding:0;}
+.zoom-btn:active{transform:scale(.94);}
+#viewerBody{flex:1 1 auto; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; background:var(--surface-2);}
+#viewerImg{display:block; margin:0 auto; max-width:none; background:#fff; user-select:none; -webkit-user-drag:none;}
 
 /* ---------- Responsive ---------- */
 @media (max-width:860px){
@@ -351,22 +331,19 @@ body.view-more #morePane{display:block;}
 </main>
 
 <section id="morePane" aria-label="Conoce más de nuestra gran ciudad">
-  <div class="more-inner">
-    <h2 class="display">¡Conoce más de nuestra gran ciudad!</h2>
-    <p class="more-sub">Todo lo que puedes hacer, ver y disfrutar en KidZania Santa Fe. Toca cualquier tarjeta para verla en grande.</p>
-    <div class="more-grid" id="moreGrid"></div>
+  <div class="more-bar">
+    <h2 class="display">¡Conoce más de nuestra gran ciudad!<small>Tríptico completo · pellizca o usa + / − para acercar y arrastra para mover</small></h2>
+    <div class="more-tools">
+      <div class="page-tabs" id="pageTabs">
+        <button data-page="0" class="active">Interior</button>
+        <button data-page="1">Exterior</button>
+      </div>
+      <button class="zoom-btn" id="viewerOut" aria-label="Alejar">&minus;</button>
+      <button class="zoom-btn" id="viewerIn" aria-label="Acercar">+</button>
+    </div>
   </div>
+  <div id="viewerBody"><img id="viewerImg" alt="Tríptico KidZania Santa Fe"></div>
 </section>
-
-<div id="viewer" role="dialog" aria-modal="true">
-  <div class="viewer-bar">
-    <div class="viewer-title" id="viewerTitle"></div>
-    <button id="viewerOut" aria-label="Alejar">&minus;</button>
-    <button id="viewerIn" aria-label="Acercar">+</button>
-    <button class="close" id="viewerClose">Cerrar</button>
-  </div>
-  <div id="viewerBody"><img id="viewerImg" alt=""></div>
-</div>
 
 <script>
 // Older Android WebViews (kiosk tablets) lack a few conveniences; add them.
@@ -381,7 +358,7 @@ window.addEventListener("error", function(ev){
     b.textContent += (ev.message||"error") + " (" + (ev.lineno||"?") + ")\n";
   }catch(_){}
 });
-const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":25.2,"y":50.08},{"num":2,"name":"Hospital","cat":"Salud","x":25.2,"y":46.17},{"num":3,"name":"Universidad","cat":"Educación","x":25.2,"y":41.62},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":25.2,"y":38.29},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":24.88,"y":32.88},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":25.04,"y":30.21},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":25.04,"y":26.92},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":25.2,"y":24.29},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":25.04,"y":21.58},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":25.2,"y":13.38},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":42.64,"y":13.38},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":54.96,"y":13.38},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":65.76,"y":13.38},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":70.24,"y":17.38},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":70.24,"y":21.58},{"num":16,"name":"Supermercado","cat":"Comercio","x":68.24,"y":28.12},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":64.48,"y":32.88},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":64.48,"y":36.29},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":64.48,"y":38.92},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":64.48,"y":41.58},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":64.48,"y":46.17},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":64.48,"y":54.29},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":76.24,"y":54.29},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":82.88,"y":61.71},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":76.24,"y":64.92},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":83.52,"y":67.79},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":76.24,"y":70.33},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":70.24,"y":70.33},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":50.16,"y":54.29},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":50.16,"y":32.88},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":42.64,"y":32.88},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":42.64,"y":26.92},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":54.96,"y":24.29},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":42.64,"y":21.58},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":54.96,"y":21.58}]},"alta":{"img":"map_alta.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":15.76,"y":61.04},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":15.76,"y":56.92},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":15.76,"y":53.29},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":15.76,"y":48.04},{"num":5,"name":"Purina","cat":"Salud","x":15.76,"y":42.46},{"num":7,"name":"Adidas","cat":"Tecnología","x":15.76,"y":30.5},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":15.76,"y":22.04},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":15.76,"y":18.46},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":24.96,"y":16.12},{"num":12,"name":"Heladería","cat":"Restaurantes","x":35.68,"y":16.12},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":53.2,"y":16.12},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":64.56,"y":10.67},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":70.0,"y":18.46},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":70.0,"y":25.29},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":70.0,"y":27.96},{"num":18,"name":"Ducto de Aire Acondicionado","cat":"Industria","x":70.0,"y":30.5},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":70.0,"y":33.08},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":70.0,"y":38.83},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":84.16,"y":56.92},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":84.16,"y":64.88},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":84.16,"y":72.17},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":53.2,"y":72.17}]}};
+const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":25.2,"y":48.37},{"num":2,"name":"Hospital","cat":"Salud","x":25.2,"y":44.59},{"num":3,"name":"Universidad","cat":"Educación","x":25.2,"y":40.2},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":25.2,"y":36.98},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":24.88,"y":31.76},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":25.04,"y":29.18},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":25.04,"y":26.0},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":25.2,"y":23.46},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":25.04,"y":20.84},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":25.2,"y":12.92},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":42.64,"y":12.92},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":54.96,"y":12.92},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":65.76,"y":12.92},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":70.24,"y":16.79},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":70.24,"y":20.84},{"num":16,"name":"Supermercado","cat":"Comercio","x":68.24,"y":27.16},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":64.48,"y":31.76},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":64.48,"y":35.05},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":64.48,"y":37.59},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":64.48,"y":40.16},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":64.48,"y":44.59},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":64.48,"y":52.43},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":76.24,"y":52.43},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":82.88,"y":59.6},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":76.24,"y":62.7},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":83.52,"y":65.47},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":76.24,"y":67.92},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":70.24,"y":67.92},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":50.16,"y":52.43},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":50.16,"y":31.76},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":42.64,"y":31.76},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":42.64,"y":26.0},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":54.96,"y":23.46},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":42.64,"y":20.84},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":54.96,"y":20.84}]},"alta":{"img":"map_alta.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":15.76,"y":58.95},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":15.76,"y":54.97},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":15.76,"y":51.47},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":15.76,"y":46.4},{"num":5,"name":"Purina","cat":"Salud","x":15.76,"y":41.01},{"num":7,"name":"Adidas","cat":"Tecnología","x":15.76,"y":29.46},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":15.76,"y":21.29},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":15.76,"y":17.83},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":24.96,"y":15.57},{"num":12,"name":"Heladería","cat":"Restaurantes","x":35.68,"y":15.57},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":53.2,"y":15.57},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":64.56,"y":10.31},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":70.0,"y":17.83},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":70.0,"y":24.42},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":70.0,"y":27.0},{"num":18,"name":"Ducto de Aire Acondicionado","cat":"Industria","x":70.0,"y":29.46},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":70.0,"y":31.95},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":70.0,"y":37.5},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":84.16,"y":54.97},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":84.16,"y":62.66},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":84.16,"y":69.7},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":53.2,"y":69.7}]}};
 
 const CAT_COLOR = {
   "Comercio":"var(--cat-comercio)","Educación":"var(--cat-educacion)","Entretenimiento":"var(--cat-entretenimiento)",
@@ -781,93 +758,90 @@ document.getElementById("viewToggle").addEventListener("click", (e)=>{
 });
 
 
-/* ---------------- Conoce más (tríptico) ---------------- */
-const INFO = [
-  {id:"espectaculos", title:"Espectáculos y Ruta de la Independencia", sub:"Horarios fijos para no perderte nada"},
-  {id:"guardianes",   title:"Conoce a los Guardianes de los Derechos", sub:"Bekha, Ureano, Beebop, Chika, Vita y Bache"},
-  {id:"fiestas",      title:"¡Las fiestas más divertidas!", sub:"Mi cumple KidZania · 10% de descuento si contratas hoy"},
-  {id:"beneficios",   title:"Inscríbete al programa B·KidZanian", sub:"Más kidZos, descuentos y mucha más diversión"},
-  {id:"servicios",    title:"Servicios, dónde comer y comprar", sub:"Baños, primeros auxilios, dulcería, souvenirs y más"},
-  {id:"simbologia",   title:"Simbología y circulación", sub:"Qué significa cada ícono, elevadores y escaleras"},
-  {id:"terminos",     title:"Términos y condiciones para los visitantes", sub:"Acceso, dentro de KidZania y establecimientos"},
-  {id:"mundo",        title:"KidZania en el mundo", sub:"Presente en decenas de ciudades · Hecho en México", contain:true},
-  {id:"contacto",     title:"Horarios y contacto", sub:"Centro Comercial Santa Fe · mexico.kidzania.com"},
-  {id:"socios",       title:"Socios de propósito", sub:"Las marcas que hacen posible KidZania", contain:true},
-  {id:"triptico_1",   title:"Tríptico completo · Planta Baja", sub:"Cara interior del folleto"},
-  {id:"triptico_2",   title:"Tríptico completo · Planta Alta", sub:"Cara exterior del folleto"}
-];
+/* ---------------- Conoce más: tríptico completo ---------------- */
+const TRIPTICO = ["info/triptico_1.jpg", "info/triptico_2.jpg"];
+const viewer = {body:document.getElementById("viewerBody"), img:document.getElementById("viewerImg"), z:1, page:-1};
+const Z_MIN = 1, Z_MAX = 6;
 
-function buildMore(){
-  const grid = document.getElementById("moreGrid");
-  INFO.forEach(it=>{
-    const card = document.createElement("div");
-    card.className = "more-card";
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.innerHTML =
-      '<div class="more-thumb'+(it.contain?' contain':'')+'"><img src="info/t_'+it.id+'.jpg" alt=""></div>'+
-      '<div class="more-cap"><b></b><span></span></div>';
-    btn.querySelector("b").textContent = it.title;
-    btn.querySelector("span").textContent = it.sub;
-    btn.addEventListener("click", ()=>openViewer(it));
-    card.appendChild(btn);
-    grid.appendChild(card);
-  });
+function baseWidth(){
+  const iw = viewer.img.naturalWidth, ih = viewer.img.naturalHeight;
+  if(!iw || !ih) return 0;
+  const cw = viewer.body.clientWidth, ch = viewer.body.clientHeight;
+  return iw * Math.min(cw/iw, ch/ih);   // whole page fits on screen at zoom 1
 }
+function layoutViewer(){
+  const b = baseWidth(); if(!b) return;
+  viewer.img.style.width = Math.round(b * viewer.z) + "px";
+}
+// Zoom keeping the point (mx,my) (relative to the scroll box) fixed on screen.
+function setZoom(nz, mx, my){
+  nz = Math.max(Z_MIN, Math.min(Z_MAX, nz));
+  if(nz === viewer.z) return;
+  const body = viewer.body, img = viewer.img;
+  const w0 = img.offsetWidth, h0 = img.offsetHeight;
+  if(mx == null){ mx = body.clientWidth/2; my = body.clientHeight/2; }
+  const fx = w0 ? (body.scrollLeft + mx - img.offsetLeft) / w0 : 0.5;
+  const fy = h0 ? (body.scrollTop  + my - img.offsetTop ) / h0 : 0.5;
+  viewer.z = nz; layoutViewer();
+  body.scrollLeft = img.offsetLeft + fx*img.offsetWidth  - mx;
+  body.scrollTop  = img.offsetTop  + fy*img.offsetHeight - my;
+}
+function showPage(i){
+  if(i === viewer.page) return;
+  viewer.page = i; viewer.z = 1;
+  document.querySelectorAll("#pageTabs button").forEach(b=>b.classList.toggle("active", Number(b.dataset.page)===i));
+  viewer.img.style.width = "auto";
+  viewer.img.onload = layoutViewer;
+  viewer.img.src = TRIPTICO[i];
+  viewer.body.scrollTop = 0; viewer.body.scrollLeft = 0;
+  if(viewer.img.complete && viewer.img.naturalWidth) layoutViewer();
+}
+document.getElementById("pageTabs").addEventListener("click", (e)=>{
+  const btn = e.target.closest("button[data-page]");
+  if(btn) showPage(Number(btn.dataset.page));
+});
+document.getElementById("viewerIn").addEventListener("click", ()=>setZoom(viewer.z*1.5));
+document.getElementById("viewerOut").addEventListener("click", ()=>setZoom(viewer.z/1.5));
+window.addEventListener("resize", layoutViewer);
+
+// Two-finger pinch (single finger scrolls natively).
+(function(){
+  let lastDist = null;
+  const dist = (t)=>Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY);
+  viewer.body.addEventListener("touchstart", (e)=>{ lastDist = e.touches.length===2 ? dist(e.touches) : null; }, false);
+  viewer.body.addEventListener("touchmove", (e)=>{
+    if(e.touches.length!==2){ lastDist = null; return; }
+    e.preventDefault();
+    const d = dist(e.touches);
+    if(lastDist){
+      const r = viewer.body.getBoundingClientRect();
+      const mx = (e.touches[0].clientX+e.touches[1].clientX)/2 - r.left;
+      const my = (e.touches[0].clientY+e.touches[1].clientY)/2 - r.top;
+      setZoom(viewer.z * d/lastDist, mx, my);
+    }
+    lastDist = d;
+  }, {passive:false});
+  viewer.body.addEventListener("touchend", (e)=>{ lastDist = e.touches.length===2 ? dist(e.touches) : null; }, false);
+})();
 
 function setSection(sec){
   document.body.classList.toggle("view-more", sec==="more");
   document.querySelectorAll("#sectionSwitch button").forEach(b=>b.classList.toggle("active", b.dataset.section===sec));
-  if(sec==="map") requestAnimationFrame(fitToContainer);
-  else closeViewer();
+  if(sec==="more"){ if(viewer.page<0) showPage(0); else layoutViewer(); }
+  else requestAnimationFrame(fitToContainer);
 }
 document.getElementById("sectionSwitch").addEventListener("click", (e)=>{
   const btn = e.target.closest("button[data-section]");
   if(btn) setSection(btn.dataset.section);
 });
 
-/* viewer: image fitted to the screen, zoom with + / - and scroll to move around */
-const viewer = {el:document.getElementById("viewer"), body:document.getElementById("viewerBody"),
-                img:document.getElementById("viewerImg"), z:1};
-const VIEWER_ZOOMS = [1, 1.5, 2.25, 3.5];
-function layoutViewer(){
-  const iw = viewer.img.naturalWidth, ih = viewer.img.naturalHeight;
-  if(!iw || !ih) return;
-  const cw = viewer.body.clientWidth - 16, ch = viewer.body.clientHeight - 12;
-  const base = Math.min(cw/iw, ch/ih);
-  viewer.img.style.width = Math.round(iw * base * VIEWER_ZOOMS[viewer.z]) + "px";
-}
-function openViewer(it){
-  document.getElementById("viewerTitle").textContent = it.title;
-  viewer.z = 0;
-  viewer.img.style.width = "auto";
-  viewer.img.onload = layoutViewer;
-  viewer.img.src = "info/"+it.id+".jpg";
-  viewer.el.classList.add("open");
-  viewer.body.scrollTop = 0; viewer.body.scrollLeft = 0;
-  if(viewer.img.complete) layoutViewer();
-}
-function closeViewer(){ viewer.el.classList.remove("open"); }
-function zoomViewer(d){
-  const nz = Math.max(0, Math.min(VIEWER_ZOOMS.length-1, viewer.z + d));
-  if(nz===viewer.z) return;
-  viewer.z = nz; layoutViewer();
-}
-document.getElementById("viewerClose").addEventListener("click", closeViewer);
-document.getElementById("viewerIn").addEventListener("click", ()=>zoomViewer(1));
-document.getElementById("viewerOut").addEventListener("click", ()=>zoomViewer(-1));
-window.addEventListener("resize", ()=>{ if(viewer.el.classList.contains("open")) layoutViewer(); });
-
-// Called by the Android back button: close what's open before leaving the app.
+// Called by the Android back button: leave "Conoce más" before leaving the app.
 window.handleBack = function(){
-  if(viewer.el.classList.contains("open")){ closeViewer(); return true; }
   if(document.body.classList.contains("view-more")){ setSection("map"); return true; }
   return false;
 };
 
-
 /* init */
-buildMore();
 buildChips();
 loadFloor("baja");
 setTimeout(hideHint, 4500);
