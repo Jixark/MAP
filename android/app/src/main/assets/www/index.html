@@ -101,8 +101,8 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #stage img{display:block; width:var(--iw); height:var(--ih); max-width:none; user-select:none; -webkit-user-drag:none; pointer-events:none;}
 
 .pin{
-  position:absolute; left:0; top:0; transform:translate(-50%,-100%) scale(calc(1 / var(--s,1)));
-  transform-origin:50% 100%; width:34px; height:42px; border:none; background:none; padding:0;
+  position:absolute; left:0; top:0; transform:translate(-50%,-35.7%) scale(var(--ps,1));
+  transform-origin:50% 35.7%; width:34px; height:42px; border:none; background:none; padding:0;
   cursor:pointer; filter:drop-shadow(0 2px 4px rgba(0,0,0,.35)); z-index:5;
 }
 .pin svg{width:100%; height:100%; display:block;}
@@ -137,7 +137,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .floor-badge b{color:var(--text); font-family:'Baloo 2',sans-serif;}
 
 .hint{
-  position:absolute; left:50%; top:12px; transform:translateX(-50%); z-index:14; background:var(--surface);
+  position:absolute; left:50%; top:56px; transform:translateX(-50%); z-index:14; background:var(--surface);
   border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:12px; color:var(--text-muted);
   box-shadow:var(--shadow); opacity:.92; pointer-events:none; white-space:nowrap;
   transition:opacity .3s;
@@ -163,12 +163,13 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 
 /* ---------- List pane ---------- */
 #listPane{
-  flex:0 0 340px; background:var(--surface); border-left:1px solid var(--line);
+  flex:0 0 340px; width:340px; min-width:0; max-width:100%; overflow:hidden;
+  background:var(--surface); border-left:1px solid var(--line);
   display:flex; flex-direction:column; min-height:0;
 }
 .list-head{padding:14px 16px 8px; flex:0 0 auto;}
 .list-count{font-size:12.5px; color:var(--text-muted); font-weight:600; margin:0 0 10px;}
-.chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;}
+.chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; min-width:0; max-width:100%;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{
   flex:0 0 auto; border:1px solid var(--line); background:var(--surface); color:var(--text-muted);
@@ -201,13 +202,13 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 
 /* ---------- Responsive ---------- */
 @media (max-width:860px){
-  #listPane{flex-basis:300px;}
+  #listPane{flex-basis:300px; width:300px;}
 }
 @media (max-width:680px){
   .view-toggle{display:flex;}
   main{position:relative;}
   #mapPane, #listPane{
-    position:absolute; inset:0; border-left:none;
+    position:absolute; inset:0; border-left:none; width:auto; max-width:none;
   }
   #listPane{transform:translateX(100%); transition:transform .25s ease; z-index:10;}
   #mapPane{transition:opacity .2s;}
@@ -427,6 +428,10 @@ const MIN_SCALE = 0.6, MAX_SCALE = 6;
 function applyTransform(){
   els.stage.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
   els.stage.style.setProperty("--s", state.scale);
+  // Pins keep a roughly constant on-screen size, but shrink a bit when the whole
+  // map is fitted on screen so neighbouring pins don't pile on top of each other.
+  const visual = Math.min(1, Math.max(0.6, state.scale * 1.2));
+  els.stage.style.setProperty("--ps", visual / state.scale);
 }
 
 function fitToContainer(){
@@ -491,7 +496,7 @@ function locateOn(p, opts){
   const targetScale = clampScale(Math.max(state.scale, 2.1));
   const cx = f.w * p.x/100, cy = f.h * p.y/100;
   const targetTx = vw/2 - cx*targetScale;
-  const targetTy = vh/2 - cy*targetScale*0.72; // bias up so info card doesn't cover the pin
+  const targetTy = vh*0.42 - cy*targetScale; // sit a bit above centre so the info card doesn't cover the pin
   if(opts.animate) animateTo(targetTx, targetTy, targetScale);
   else { state.tx=targetTx; state.ty=targetTy; state.scale=targetScale; applyTransform(); }
 }
@@ -500,8 +505,12 @@ function locateOn(p, opts){
 const pointers = new Map();
 let dragging = false, lastMid = null, lastDist = null;
 
+const DRAG_SLOP = 6;
+const downAt = new Map();
 els.viewport.addEventListener("pointerdown", (e)=>{
-  els.viewport.setPointerCapture(e.pointerId);
+  // Pointer capture is deferred until the finger actually moves; capturing on
+  // pointerdown would redirect the "click" away from the pin that was tapped.
+  downAt.set(e.pointerId, {x:e.clientX, y:e.clientY, captured:false});
   pointers.set(e.pointerId, {x:e.clientX, y:e.clientY});
   if(pointers.size===1){ dragging=true; els.viewport.classList.add("grabbing"); }
   if(pointers.size===2){
@@ -514,6 +523,12 @@ els.viewport.addEventListener("pointermove", (e)=>{
   if(!pointers.has(e.pointerId)) return;
   const prev = pointers.get(e.pointerId);
   const cur = {x:e.clientX, y:e.clientY};
+  const d0 = downAt.get(e.pointerId);
+  if(d0 && !d0.captured){
+    if(Math.hypot(cur.x-d0.x, cur.y-d0.y) < DRAG_SLOP) return; // still a tap
+    d0.captured = true;
+    try{ els.viewport.setPointerCapture(e.pointerId); }catch(_){}
+  }
   pointers.set(e.pointerId, cur);
   if(pointers.size===1 && dragging){
     state.tx += cur.x - prev.x;
@@ -534,6 +549,7 @@ els.viewport.addEventListener("pointermove", (e)=>{
 });
 function endPointer(e){
   pointers.delete(e.pointerId);
+  downAt.delete(e.pointerId);
   if(pointers.size<2){ lastDist=null; }
   if(pointers.size===0){ dragging=false; els.viewport.classList.remove("grabbing"); }
 }
