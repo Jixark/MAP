@@ -47,11 +47,14 @@ button{font-family:inherit;}
 /* ---------- Header ---------- */
 header{
   flex:0 0 auto; background:var(--surface); border-bottom:1px solid var(--line);
-  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
-  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:7px 9px;
+  padding:calc(7px + env(safe-area-inset-top,0px)) 9px 7px;
+  display:flex; align-items:center; flex-wrap:wrap;
   box-shadow:0 1px 0 rgba(0,0,0,.02); z-index:20; position:relative;
 }
-.brand{display:flex; align-items:center; gap:10px; margin-right:4px;}
+header > *{margin:3px 7px;}
+.brand{display:flex; align-items:center;}
+.brand > * + *{margin-left:10px;}
 .brand-mark{
   width:34px; height:34px; border-radius:10px; background:var(--red); flex:0 0 auto;
   display:flex; align-items:center; justify-content:center;
@@ -62,8 +65,9 @@ header{
 .brand-text span{font-size:11px; color:var(--text-muted); font-weight:600;}
 
 .floor-switch{
-  display:flex; background:var(--surface-2); border-radius:999px; padding:3px; gap:2px; flex:0 0 auto;
+  display:flex; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;
 }
+.floor-switch > * + *, .view-toggle > * + *{margin-left:2px;}
 .floor-switch button{
   border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px;
   padding:8px 16px; border-radius:999px; cursor:pointer; transition:background .18s,color .18s;
@@ -86,7 +90,7 @@ header{
 }
 .search-clear.show{display:flex;}
 
-.view-toggle{display:none; gap:2px; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
+.view-toggle{display:none; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
 .view-toggle button{border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13px; padding:8px 14px; border-radius:999px; cursor:pointer;}
 .view-toggle button.active{background:var(--text); color:var(--surface);}
 
@@ -95,7 +99,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #mapPane{position:relative; flex:1 1 0%; min-width:0; background:
   radial-gradient(ellipse at 50% 0%, var(--surface-2), var(--bg));
   overflow:hidden; touch-action:none;}
-#viewport{position:absolute; inset:0; overflow:hidden; cursor:grab;}
+#viewport{position:absolute; top:0; right:0; bottom:0; left:0; overflow:hidden; cursor:grab;}
 #viewport.grabbing{cursor:grabbing;}
 #stage{position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform;}
 #stage img{display:block; width:var(--iw); height:var(--ih); max-width:none; user-select:none; -webkit-user-drag:none; pointer-events:none;}
@@ -119,9 +123,11 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 @media (prefers-reduced-motion:reduce){ .pin.selected .halo{animation:none;} }
 
 .map-controls{
-  position:absolute; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); z-index:15;
-  display:flex; flex-direction:column; gap:8px;
+  position:absolute; right:12px; bottom:12px; z-index:15;
+  display:flex; flex-direction:column;
 }
+.map-controls{bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+.map-controls > * + *{margin-top:8px;}
 .map-controls button{
   width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:var(--surface);
   color:var(--text); font-size:19px; font-weight:700; cursor:pointer; box-shadow:var(--shadow);
@@ -132,8 +138,9 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .floor-badge{
   position:absolute; left:12px; top:12px; z-index:15; background:var(--surface); border:1px solid var(--line);
   border-radius:999px; padding:6px 14px 6px 10px; font-weight:700; font-size:12.5px; box-shadow:var(--shadow);
-  display:flex; align-items:center; gap:6px; color:var(--text-muted);
+  display:flex; align-items:center; color:var(--text-muted);
 }
+.floor-badge > * + *{margin-left:6px;}
 .floor-badge b{color:var(--text); font-family:'Baloo 2',sans-serif;}
 
 .hint{
@@ -145,20 +152,22 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 
 /* info sheet */
 #infoCard{
-  position:absolute; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); z-index:16;
+  position:absolute; left:12px; right:12px; bottom:12px; z-index:16;
   max-width:360px; background:var(--surface); border:1px solid var(--line); border-radius:18px;
-  padding:14px 16px; box-shadow:var(--shadow); display:flex; gap:12px; align-items:flex-start;
+  padding:14px 16px; box-shadow:var(--shadow); display:flex; align-items:flex-start;
   transform:translateY(140%); transition:transform .28s cubic-bezier(.2,.9,.3,1.2); opacity:0;
 }
 #infoCard.show{transform:translateY(0); opacity:1;}
+#infoCard{bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+#infoCard > * + *{margin-left:12px;}
 #infoCard .badge{
   flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--red); color:#fff;
   display:flex; align-items:center; justify-content:center; font-weight:800; font-family:'Baloo 2',sans-serif; font-size:14px;
 }
 #infoCard .body{flex:1 1 auto; min-width:0;}
 #infoCard .name{font-weight:700; font-size:15.5px; line-height:1.25; margin:0 0 4px;}
-#infoCard .pill{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; padding:3px 9px 3px 7px; border-radius:999px; background:var(--surface-2); background:color-mix(in srgb, var(--pc) 16%, var(--surface)); color:var(--pc);}
-#infoCard .pill::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--pc);}
+#infoCard .pill{display:inline-flex; align-items:center; font-size:11.5px; font-weight:700; padding:3px 9px 3px 7px; border-radius:999px; background:var(--surface-2); background:color-mix(in srgb, var(--pc) 16%, var(--surface)); color:var(--pc);}
+#infoCard .pill::before{content:""; margin-right:5px; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--pc);}
 #infoCard .close{flex:0 0 auto; border:none; background:var(--surface-2); color:var(--text-muted); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center;}
 
 /* ---------- List pane ---------- */
@@ -169,14 +178,15 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 }
 .list-head{padding:14px 16px 8px; flex:0 0 auto;}
 .list-count{font-size:12.5px; color:var(--text-muted); font-weight:600; margin:0 0 10px;}
-.chips{display:flex; gap:7px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; min-width:0; max-width:100%;}
+.chips > * + *{margin-left:7px;}
+.chips{display:flex; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; min-width:0; max-width:100%;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{
   flex:0 0 auto; border:1px solid var(--line); background:var(--surface); color:var(--text-muted);
   font-size:12.5px; font-weight:700; padding:7px 13px; border-radius:999px; cursor:pointer; white-space:nowrap;
-  display:flex; align-items:center; gap:6px;
+  display:flex; align-items:center;
 }
-.chip::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
+.chip::before{content:""; margin-right:6px; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
 .chip.active{background:var(--pc); border-color:var(--pc); color:#fff;}
 .chip.active::before{background:#fff;}
 
@@ -186,9 +196,10 @@ main{flex:1 1 auto; display:flex; min-height:0;}
   text-transform:uppercase; color:var(--pc); padding:12px 8px 6px; z-index:2;
 }
 .row{
-  display:flex; align-items:center; gap:11px; padding:9px 8px; border-radius:12px; cursor:pointer;
+  display:flex; align-items:center; padding:9px 8px; border-radius:12px; cursor:pointer;
   border:1px solid transparent;
 }
+.row > * + *{margin-left:11px;}
 .row:hover{background:var(--surface-2);}
 .row.active{background:var(--surface-2); background:color-mix(in srgb, var(--red) 10%, var(--surface)); border-color:var(--line); border-color:color-mix(in srgb, var(--red) 30%, var(--surface));}
 .row .num{
@@ -208,7 +219,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
   .view-toggle{display:flex;}
   main{position:relative;}
   #mapPane, #listPane{
-    position:absolute; inset:0; border-left:none; width:auto; max-width:none;
+    position:absolute; top:0; right:0; bottom:0; left:0; border-left:none; width:auto; max-width:none;
   }
   #listPane{transform:translateX(100%); transition:transform .25s ease; z-index:10;}
   #mapPane{transition:opacity .2s;}
@@ -289,6 +300,18 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 </main>
 
 <script>
+// Older Android WebViews (kiosk tablets) lack a few conveniences; add them.
+if(window.NodeList && !NodeList.prototype.forEach){ NodeList.prototype.forEach = Array.prototype.forEach; }
+// Show script errors on screen so a kiosk without a debugger can still report them.
+window.addEventListener("error", function(ev){
+  try{
+    var b = document.getElementById("errBanner");
+    if(!b){ b = document.createElement("div"); b.id="errBanner";
+      b.style.cssText="position:fixed;left:0;right:0;bottom:0;z-index:99;background:#b50031;color:#fff;font:12px monospace;padding:6px 10px;white-space:pre-wrap;";
+      document.body.appendChild(b); }
+    b.textContent += (ev.message||"error") + " (" + (ev.lineno||"?") + ")\n";
+  }catch(_){}
+});
 const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":25.2,"y":50.08},{"num":2,"name":"Hospital","cat":"Salud","x":25.2,"y":46.17},{"num":3,"name":"Universidad","cat":"Educación","x":25.2,"y":41.62},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":25.2,"y":38.29},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":24.88,"y":32.88},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":25.04,"y":30.21},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":25.04,"y":26.92},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":25.2,"y":24.29},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":25.04,"y":21.58},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":25.2,"y":13.38},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":42.64,"y":13.38},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":54.96,"y":13.38},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":65.76,"y":13.38},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":70.24,"y":17.38},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":70.24,"y":21.58},{"num":16,"name":"Supermercado","cat":"Comercio","x":68.24,"y":28.12},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":64.48,"y":32.88},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":64.48,"y":36.29},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":64.48,"y":38.92},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":64.48,"y":41.58},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":64.48,"y":46.17},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":64.48,"y":54.29},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":76.24,"y":54.29},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":82.88,"y":61.71},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":76.24,"y":64.92},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":83.52,"y":67.79},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":76.24,"y":70.33},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":70.24,"y":70.33},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":50.16,"y":54.29},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":50.16,"y":32.88},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":42.64,"y":32.88},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":42.64,"y":26.92},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":54.96,"y":24.29},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":42.64,"y":21.58},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":54.96,"y":21.58}]},"alta":{"img":"map_alta.jpg","w":1250,"h":2400,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":15.76,"y":61.04},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":15.76,"y":56.92},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":15.76,"y":53.29},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":15.76,"y":48.04},{"num":5,"name":"Purina","cat":"Salud","x":15.76,"y":42.46},{"num":7,"name":"Adidas","cat":"Tecnología","x":15.76,"y":30.5},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":15.76,"y":22.04},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":15.76,"y":18.46},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":24.96,"y":16.12},{"num":12,"name":"Heladería","cat":"Restaurantes","x":35.68,"y":16.12},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":53.2,"y":16.12},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":64.56,"y":10.67},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":70.0,"y":18.46},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":70.0,"y":25.29},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":70.0,"y":27.96},{"num":18,"name":"Ducto de Aire Acondicionado","cat":"Industria","x":70.0,"y":30.5},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":70.0,"y":33.08},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":70.0,"y":38.83},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":84.16,"y":56.92},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":84.16,"y":64.88},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":84.16,"y":72.17},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":53.2,"y":72.17}]}};
 
 const CAT_COLOR = {
@@ -507,7 +530,7 @@ let dragging = false, lastMid = null, lastDist = null;
 
 const DRAG_SLOP = 6;
 const downAt = new Map();
-els.viewport.addEventListener("pointerdown", (e)=>{
+function onDown(e){
   // Pointer capture is deferred until the finger actually moves; capturing on
   // pointerdown would redirect the "click" away from the pin that was tapped.
   downAt.set(e.pointerId, {x:e.clientX, y:e.clientY, captured:false});
@@ -518,8 +541,8 @@ els.viewport.addEventListener("pointerdown", (e)=>{
     lastDist = Math.hypot(pts[0].x-pts[1].x, pts[0].y-pts[1].y);
     lastMid = {x:(pts[0].x+pts[1].x)/2, y:(pts[0].y+pts[1].y)/2};
   }
-});
-els.viewport.addEventListener("pointermove", (e)=>{
+}
+function onMove(e){
   if(!pointers.has(e.pointerId)) return;
   const prev = pointers.get(e.pointerId);
   const cur = {x:e.clientX, y:e.clientY};
@@ -546,16 +569,34 @@ els.viewport.addEventListener("pointermove", (e)=>{
     }
     lastDist = dist; lastMid = mid;
   }
-});
+}
 function endPointer(e){
   pointers.delete(e.pointerId);
   downAt.delete(e.pointerId);
   if(pointers.size<2){ lastDist=null; }
   if(pointers.size===0){ dragging=false; els.viewport.classList.remove("grabbing"); }
 }
-els.viewport.addEventListener("pointerup", endPointer);
-els.viewport.addEventListener("pointercancel", endPointer);
-els.viewport.addEventListener("pointerleave", (e)=>{ if(e.buttons===0) endPointer(e); });
+if(window.PointerEvent){
+  els.viewport.addEventListener("pointerdown", onDown);
+  els.viewport.addEventListener("pointermove", onMove);
+  els.viewport.addEventListener("pointerup", endPointer);
+  els.viewport.addEventListener("pointercancel", endPointer);
+  els.viewport.addEventListener("pointerleave", (e)=>{ if(e.buttons===0) endPointer(e); });
+} else {
+  // WebViews older than Chrome 55 have no Pointer Events: drive the same code from touch events.
+  const fromTouch = (fn)=>(ev)=>{
+    for(let k=0;k<ev.changedTouches.length;k++){
+      const t = ev.changedTouches[k];
+      fn({pointerId:t.identifier, clientX:t.clientX, clientY:t.clientY, buttons:1});
+    }
+    if(ev.type==="touchmove") ev.preventDefault();
+  };
+  els.viewport.addEventListener("touchstart", fromTouch(onDown), false);
+  els.viewport.addEventListener("touchmove", fromTouch(onMove), {passive:false});
+  els.viewport.addEventListener("touchend", fromTouch(endPointer), false);
+  els.viewport.addEventListener("touchcancel", fromTouch(endPointer), false);
+}
+
 
 els.viewport.addEventListener("wheel", (e)=>{
   e.preventDefault();

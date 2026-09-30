@@ -39,3 +39,9 @@ Este repo ya sube `networkTimeout` del wrapper de 10 s a 120 s para evitar desca
 en la tableta, elige el dispositivo en la barra superior de Android Studio y pulsa **Run ▶** (`app`).
 
 **En el emulador de la laptop:** *Tools > Device Manager > Create Device* (p. ej. Pixel Tablet, imagen API 34) y **Run ▶**.
+
+## Kioscos con Android antiguo (p. ej. Android 7.1.2)
+El WebView de esos equipos es de 2017-2018 y no entiende CSS moderno. Síntomas: mapa en blanco, textos pegados/encimados,
+botones de zoom arriba en vez de abajo. `index.html` ya no usa `gap` en flexbox ni `inset`, deja `env(safe-area-inset-*)`
+solo como mejora opcional, usa eventos táctiles si el WebView no tiene Pointer Events, y muestra en pantalla (franja roja
+inferior) cualquier error de JavaScript para poder diagnosticarlo sin depurador.
