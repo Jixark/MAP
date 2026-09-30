@@ -53,7 +53,7 @@ header{
   box-shadow:0 1px 0 rgba(0,0,0,.02); z-index:20; position:relative;
 }
 header > *{margin:3px 7px;}
-.brand{display:flex; align-items:center;}
+.brand{display:flex; align-items:center; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; -webkit-tap-highlight-color:transparent;}
 .brand > * + *{margin-left:10px;}
 .brand-mark{
   width:34px; height:34px; border-radius:10px; background:var(--red); flex:0 0 auto;
@@ -1301,13 +1301,23 @@ els.viewport.addEventListener("click", (e)=>{
   const r = els.viewport.getBoundingClientRect();
   placeKioskAt((e.clientX - r.left - state.tx)/state.scale, (e.clientY - r.top - state.ty)/state.scale);
 });
-// Long-press (2 s) on the logo opens the admin dialog.
+// Admin dialog: tap the logo 5 times within 4 s, or press and hold it for 2 s.
 (function(){
-  const brand = document.querySelector(".brand"); let timer = null;
-  const start = ()=>{ clearTimeout(timer); timer = setTimeout(openAdmin, 2000); };
-  const stop = ()=>{ clearTimeout(timer); };
-  ["touchstart","mousedown"].forEach(ev=>brand.addEventListener(ev, start, false));
-  ["touchend","touchcancel","touchmove","mouseup","mouseleave"].forEach(ev=>brand.addEventListener(ev, stop, false));
+  const brand = document.querySelector(".brand");
+  let timer = null, sx = 0, sy = 0, taps = [];
+  const startHold = (x, y)=>{ clearTimeout(timer); sx = x; sy = y; timer = setTimeout(openAdmin, 2000); };
+  const stopHold = ()=>{ clearTimeout(timer); };
+  brand.addEventListener("touchstart", (e)=>{ const t = e.touches[0]; startHold(t.clientX, t.clientY); }, false);
+  brand.addEventListener("touchmove", (e)=>{ const t = e.touches[0]; if(Math.hypot(t.clientX-sx, t.clientY-sy) > 30) stopHold(); }, false);
+  ["touchend","touchcancel","mouseup","mouseleave"].forEach(ev=>brand.addEventListener(ev, stopHold, false));
+  brand.addEventListener("mousedown", (e)=>startHold(e.clientX, e.clientY), false);
+  brand.addEventListener("mousemove", (e)=>{ if(e.buttons && Math.hypot(e.clientX-sx, e.clientY-sy) > 30) stopHold(); }, false);
+  brand.addEventListener("contextmenu", (e)=>e.preventDefault());
+  brand.addEventListener("click", ()=>{
+    const now = Date.now();
+    taps = taps.filter(t=>now - t < 4000); taps.push(now);
+    if(taps.length >= 5){ taps = []; openAdmin(); }
+  });
 })();
 
 // Kiosk behaviour: after a while without touches, go back to the start screen of this kiosk.

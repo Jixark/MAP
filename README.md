@@ -73,10 +73,12 @@ Además de los lugares numerados, el mapa interactivo marca en ambas plantas los
 Cada tablet sabe en qué kiosko está y puede guiar al visitante hasta el lugar que consulte.
 
 **Configurar cada kiosko (una vez, por tablet):**
-1. Mantén pulsado el **logo KidZania (arriba a la izquierda) por 2 segundos**.
+1. Toca **5 veces seguidas el logo KidZania** (arriba a la izquierda, en 4 segundos) o mantenlo pulsado 2 segundos.
 2. Escribe el PIN de administrador (**2468**, cámbialo en `ADMIN_PIN` dentro de `index.html`).
 3. Escribe el nombre del kiosko (p. ej. "Kiosko Barra de Sushi"), pulsa **Colocar en el mapa**, cambia a la planta correcta si hace falta y toca el mapa donde está físicamente el kiosko.
 4. La ubicación se guarda en la tablet y se conserva al reiniciar. **Quitar ubicación** desactiva las rutas en esa tablet.
+
+**Sin este paso la pregunta "¿Quieres que te ayude a llegar?" no aparece** (la tablet no sabe dónde está).
 
 **Uso:** el visitante toca un lugar (en el mapa o en la lista) y la tarjeta pregunta **"¿Quieres que te ayude a llegar?"**.
 Con **Cómo llegar** se dibuja una línea azul animada desde "Estás aquí" hasta el destino, con pasos, tiempo aproximado y,
