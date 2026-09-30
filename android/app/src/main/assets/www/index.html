@@ -211,6 +211,52 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .empty{padding:40px 20px; text-align:center; color:var(--text-muted); font-size:13.5px;}
 .empty b{display:block; color:var(--text); font-family:'Baloo 2',sans-serif; font-size:15px; margin-bottom:4px;}
 
+
+/* ---------- Conoce más (tríptico) ---------- */
+.section-switch{display:flex; background:var(--surface-2); border-radius:999px; padding:3px; flex:0 0 auto;}
+.section-switch button{
+  border:none; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px;
+  padding:8px 16px; border-radius:999px; cursor:pointer; white-space:nowrap;
+}
+.section-switch > * + *{margin-left:2px;}
+.section-switch button.active{background:var(--text); color:var(--surface);}
+body.view-more .floor-switch, body.view-more .search-wrap, body.view-more .view-toggle{display:none;}
+body.view-more main{display:none;}
+#morePane{display:none; flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+body.view-more #morePane{display:block;}
+.more-inner{max-width:1180px; margin:0 auto; padding:22px 16px 40px;}
+.more-inner h2{margin:0 0 6px; font-size:27px; line-height:1.15; color:var(--red);}
+.more-sub{margin:0 0 14px; color:var(--text-muted); font-size:14.5px; line-height:1.4;}
+.more-grid{display:flex; flex-wrap:wrap; margin:0 -8px;}
+.more-card{width:33.3333%; padding:8px; box-sizing:border-box;}
+.more-card button{
+  display:block; width:100%; padding:0; text-align:left; cursor:pointer; overflow:hidden;
+  background:var(--surface); color:var(--text); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow);
+}
+.more-card button:active{transform:scale(.985);}
+.more-thumb{height:230px; background:var(--surface-2); overflow:hidden;}
+.more-thumb img{display:block; width:100%; height:100%; object-fit:cover; object-position:top center;}
+.more-thumb.contain img{object-fit:contain; object-position:center;}
+.more-cap{padding:12px 14px 14px;}
+.more-cap b{display:block; font-family:'Baloo 2',system-ui,sans-serif; font-size:16.5px; line-height:1.2; margin-bottom:3px;}
+.more-cap span{font-size:12.5px; color:var(--text-muted); font-weight:600;}
+@media (max-width:860px){ .more-card{width:50%;} }
+@media (max-width:560px){ .more-card{width:100%;} .more-inner h2{font-size:22px;} }
+
+/* full-screen viewer */
+#viewer{display:none; position:fixed; top:0; right:0; bottom:0; left:0; z-index:60; background:#140f12; flex-direction:column;}
+#viewer.open{display:flex;}
+.viewer-bar{flex:0 0 auto; display:flex; align-items:center; padding:10px 12px; color:#fff;}
+.viewer-bar > * + *{margin-left:8px;}
+.viewer-title{flex:1 1 auto; min-width:0; font-family:'Baloo 2',system-ui,sans-serif; font-weight:700; font-size:16px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.viewer-bar button{
+  flex:0 0 auto; min-width:44px; height:44px; padding:0 14px; border-radius:12px; border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.12); color:#fff; font-size:20px; font-weight:700; cursor:pointer;
+}
+.viewer-bar button.close{background:var(--red); border-color:transparent; font-size:15px;}
+#viewerBody{flex:1 1 auto; min-height:0; overflow:auto; -webkit-overflow-scrolling:touch; padding:0 8px 12px;}
+#viewerImg{display:block; margin:0 auto; max-width:none; background:#fff; border-radius:8px;}
+
 /* ---------- Responsive ---------- */
 @media (max-width:860px){
   #listPane{flex-basis:300px; width:300px;}
@@ -240,6 +286,11 @@ main{flex:1 1 auto; display:flex; min-height:0;}
       <b>KidZania Santa Fe</b>
       <span>Mapa interactivo</span>
     </div>
+  </div>
+
+  <div class="section-switch" id="sectionSwitch">
+    <button data-section="map" class="active">Mapa</button>
+    <button data-section="more">Conoce más</button>
   </div>
 
   <div class="floor-switch" id="floorSwitch">
@@ -298,6 +349,24 @@ main{flex:1 1 auto; display:flex; min-height:0;}
     <div id="list"></div>
   </div>
 </main>
+
+<section id="morePane" aria-label="Conoce más de nuestra gran ciudad">
+  <div class="more-inner">
+    <h2 class="display">¡Conoce más de nuestra gran ciudad!</h2>
+    <p class="more-sub">Todo lo que puedes hacer, ver y disfrutar en KidZania Santa Fe. Toca cualquier tarjeta para verla en grande.</p>
+    <div class="more-grid" id="moreGrid"></div>
+  </div>
+</section>
+
+<div id="viewer" role="dialog" aria-modal="true">
+  <div class="viewer-bar">
+    <div class="viewer-title" id="viewerTitle"></div>
+    <button id="viewerOut" aria-label="Alejar">&minus;</button>
+    <button id="viewerIn" aria-label="Acercar">+</button>
+    <button class="close" id="viewerClose">Cerrar</button>
+  </div>
+  <div id="viewerBody"><img id="viewerImg" alt=""></div>
+</div>
 
 <script>
 // Older Android WebViews (kiosk tablets) lack a few conveniences; add them.
@@ -711,7 +780,94 @@ document.getElementById("viewToggle").addEventListener("click", (e)=>{
   setView(btn.dataset.view);
 });
 
+
+/* ---------------- Conoce más (tríptico) ---------------- */
+const INFO = [
+  {id:"espectaculos", title:"Espectáculos y Ruta de la Independencia", sub:"Horarios fijos para no perderte nada"},
+  {id:"guardianes",   title:"Conoce a los Guardianes de los Derechos", sub:"Bekha, Ureano, Beebop, Chika, Vita y Bache"},
+  {id:"fiestas",      title:"¡Las fiestas más divertidas!", sub:"Mi cumple KidZania · 10% de descuento si contratas hoy"},
+  {id:"beneficios",   title:"Inscríbete al programa B·KidZanian", sub:"Más kidZos, descuentos y mucha más diversión"},
+  {id:"servicios",    title:"Servicios, dónde comer y comprar", sub:"Baños, primeros auxilios, dulcería, souvenirs y más"},
+  {id:"simbologia",   title:"Simbología y circulación", sub:"Qué significa cada ícono, elevadores y escaleras"},
+  {id:"terminos",     title:"Términos y condiciones para los visitantes", sub:"Acceso, dentro de KidZania y establecimientos"},
+  {id:"mundo",        title:"KidZania en el mundo", sub:"Presente en decenas de ciudades · Hecho en México", contain:true},
+  {id:"contacto",     title:"Horarios y contacto", sub:"Centro Comercial Santa Fe · mexico.kidzania.com"},
+  {id:"socios",       title:"Socios de propósito", sub:"Las marcas que hacen posible KidZania", contain:true},
+  {id:"triptico_1",   title:"Tríptico completo · Planta Baja", sub:"Cara interior del folleto"},
+  {id:"triptico_2",   title:"Tríptico completo · Planta Alta", sub:"Cara exterior del folleto"}
+];
+
+function buildMore(){
+  const grid = document.getElementById("moreGrid");
+  INFO.forEach(it=>{
+    const card = document.createElement("div");
+    card.className = "more-card";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.innerHTML =
+      '<div class="more-thumb'+(it.contain?' contain':'')+'"><img src="info/t_'+it.id+'.jpg" alt=""></div>'+
+      '<div class="more-cap"><b></b><span></span></div>';
+    btn.querySelector("b").textContent = it.title;
+    btn.querySelector("span").textContent = it.sub;
+    btn.addEventListener("click", ()=>openViewer(it));
+    card.appendChild(btn);
+    grid.appendChild(card);
+  });
+}
+
+function setSection(sec){
+  document.body.classList.toggle("view-more", sec==="more");
+  document.querySelectorAll("#sectionSwitch button").forEach(b=>b.classList.toggle("active", b.dataset.section===sec));
+  if(sec==="map") requestAnimationFrame(fitToContainer);
+  else closeViewer();
+}
+document.getElementById("sectionSwitch").addEventListener("click", (e)=>{
+  const btn = e.target.closest("button[data-section]");
+  if(btn) setSection(btn.dataset.section);
+});
+
+/* viewer: image fitted to the screen, zoom with + / - and scroll to move around */
+const viewer = {el:document.getElementById("viewer"), body:document.getElementById("viewerBody"),
+                img:document.getElementById("viewerImg"), z:1};
+const VIEWER_ZOOMS = [1, 1.5, 2.25, 3.5];
+function layoutViewer(){
+  const iw = viewer.img.naturalWidth, ih = viewer.img.naturalHeight;
+  if(!iw || !ih) return;
+  const cw = viewer.body.clientWidth - 16, ch = viewer.body.clientHeight - 12;
+  const base = Math.min(cw/iw, ch/ih);
+  viewer.img.style.width = Math.round(iw * base * VIEWER_ZOOMS[viewer.z]) + "px";
+}
+function openViewer(it){
+  document.getElementById("viewerTitle").textContent = it.title;
+  viewer.z = 0;
+  viewer.img.style.width = "auto";
+  viewer.img.onload = layoutViewer;
+  viewer.img.src = "info/"+it.id+".jpg";
+  viewer.el.classList.add("open");
+  viewer.body.scrollTop = 0; viewer.body.scrollLeft = 0;
+  if(viewer.img.complete) layoutViewer();
+}
+function closeViewer(){ viewer.el.classList.remove("open"); }
+function zoomViewer(d){
+  const nz = Math.max(0, Math.min(VIEWER_ZOOMS.length-1, viewer.z + d));
+  if(nz===viewer.z) return;
+  viewer.z = nz; layoutViewer();
+}
+document.getElementById("viewerClose").addEventListener("click", closeViewer);
+document.getElementById("viewerIn").addEventListener("click", ()=>zoomViewer(1));
+document.getElementById("viewerOut").addEventListener("click", ()=>zoomViewer(-1));
+window.addEventListener("resize", ()=>{ if(viewer.el.classList.contains("open")) layoutViewer(); });
+
+// Called by the Android back button: close what's open before leaving the app.
+window.handleBack = function(){
+  if(viewer.el.classList.contains("open")){ closeViewer(); return true; }
+  if(document.body.classList.contains("view-more")){ setSection("map"); return true; }
+  return false;
+};
+
+
 /* init */
+buildMore();
 buildChips();
 loadFloor("baja");
 setTimeout(hideHint, 4500);

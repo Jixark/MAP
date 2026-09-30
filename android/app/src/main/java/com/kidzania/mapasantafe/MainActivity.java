@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -93,8 +94,19 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            webView.goBack();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // Let the page close its viewer / "Conoce más" section first;
+            // leave the app only when there is nothing left to close.
+            webView.evaluateJavascript(
+                    "(window.handleBack ? window.handleBack() : false)",
+                    new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String handled) {
+                            if (!"true".equals(handled)) {
+                                finish();
+                            }
+                        }
+                    });
             return true;
         }
         return super.onKeyDown(keyCode, event);
