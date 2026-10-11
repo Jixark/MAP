@@ -203,17 +203,15 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .chip::before{content:""; margin-right:6px; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
 .chip.active{background:var(--pc); border-color:var(--pc); color:#fff;}
 .chip.active::before{background:#fff;}
-.chip.pj.active{color:#2e1065;}
-.chip.pj.active::before{background:#2e1065;}
-.pin.pj .num{color:#2e1065;}
-.row .num.pj{color:#2e1065;}
-#infoCard .badge.pj{background:#b79cf2; color:#2e1065;}
-#infoCard .pill.pj{background:#e9defc; color:#4c1d95; margin-left:6px;}
-#infoCard .pill.pj::before{background:#b79cf2;}
+.chip.pj::before{background:linear-gradient(135deg, #ffd400 50%, #141414 50%);}
+.chip.pj.active{background:#ffd400; border-color:#141414; color:#111;}
+.chip.pj.active::before{background:linear-gradient(135deg, #ffd400 50%, #141414 50%); box-shadow:0 0 0 1px #141414;}
+#infoCard .pill.pj{background:#ffd400; color:#111; margin-left:6px;}
+#infoCard .pill.pj::before{background:#141414;}
 #infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#ffd400; color:#111; font-weight:800; font-size:12.5px; line-height:1.3;}
-/* Upgrade de Papás Juegan: círculo partido amarillo / negro (como el brazalete) */
+/* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
 .up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #ffd400 50%, #141414 50%) !important;}
-#infoCard .badge.up, .row .num.up, .pin.extra .num{
+#infoCard .badge.up, .row .num.up, .pin.pj .num{
   color:#fff; text-shadow:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 3px #000;
 }
 .pin.extra::after{
@@ -221,7 +219,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
   background:#ffd400; color:#111; font-weight:800; font-size:20px; line-height:30px; text-align:center;
   border:1.5px solid #111; box-sizing:border-box; pointer-events:none;
 }
-.pin.poi.extra{border-color:#ffd400 #141414 #141414 #ffd400;}
+.pin.poi.pj{border-color:#ffd400 #141414 #141414 #ffd400;}
 .row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#ffd400; color:#111; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
 .pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#ffd400; color:#111; font-size:12.5px; font-weight:800;}
 
@@ -510,7 +508,7 @@ const CAT_HEX = {
   "Medios de Comunicación":"#0d9488","Residencial":"#16a34a","Restaurantes":"#ea580c","Salud":"#e11d48",
   "Servicio Financiero":"#4f46e5","Servicios Privados":"#a16207","Servicios Públicos":"#b50031",
   "Tecnología":"#0891b2","Transporte":"#64748b","Deportes":"#65a30d",
-  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f","Papás Juegan":"#b79cf2"
+  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f","Papás Juegan":"#ffd400"
 };
 
 // Services shown in the brochure legend (icons already drawn on the floor images).
@@ -543,8 +541,8 @@ const POI_TYPES = {
   salida:{name:"Salidas de Emergencia",cat:"Circulación"}
 };
 
-// Sistema "Papás Juegan": actividades marcadas en morado claro (número de pin por planta).
-const PJ_NAME = "Papás Juegan", PJ_COLOR = "#b79cf2", PJ_INK = "#2e1065";
+// Sistema "Papás Juegan": actividades marcadas con el círculo partido amarillo/negro (número de pin por planta).
+const PJ_NAME = "Papás Juegan", PJ_COLOR = "#ffd400", PJ_INK = "#141414";
 const PAPAS_JUEGAN = {
   baja:[2,   // Hospital (Cirugía)
         3,   // Universidad
@@ -683,7 +681,7 @@ function buildPins(){
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
         let color = colorOf(it), defs = "";
-        if(it.extra){   // Upgrade de Papás Juegan: pin partido en amarillo y negro
+        if(it.pj){   // Papás Juegan: pin partido en amarillo y negro
           color = "url(#up-" + it.key + ")";
           defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + UP_YELLOW + '"/><stop offset="0.5" stop-color="' + UP_BLACK + '"/></linearGradient></defs>';
         }
@@ -733,10 +731,10 @@ function selectPin(key, opts){
 
 function showInfo(it){
   if(it.icon){
-    els.infoNum.className = "badge icon" + (it.pj ? " pj" : "") + (it.extra ? " up" : "");
+    els.infoNum.className = "badge icon" + (it.pj ? " pj up" : "");
     els.infoNum.innerHTML = '<img src="'+it.icon+'" alt="">';
   } else {
-    els.infoNum.className = "badge" + (it.pj ? " pj" : "") + (it.extra ? " up" : "");
+    els.infoNum.className = "badge" + (it.pj ? " pj up" : "");
     els.infoNum.textContent = it.num;
   }
   els.infoName.textContent = it.name;
@@ -1022,7 +1020,7 @@ function renderList(){
     row.className = "row";
     row.dataset.key = p.key;
     row.style.setProperty("--pc", colorOf(p));
-    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj" : ""}${p.extra ? " up" : ""}">${p.num}</span>`;
+    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj up" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
     row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + PJ_EXTRA_TEXT + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{
