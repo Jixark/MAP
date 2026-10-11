@@ -801,7 +801,9 @@ function hideHint(){}   // la guía ahora se muestra/oculta con refreshChrome()
 function refreshChrome(){
   const busy = els.infoCard.classList.contains("show") || document.getElementById("routeCard").classList.contains("show") || state.placing;
   document.getElementById("hint").hidden = busy;
-  document.getElementById("upBar").hidden = busy;
+  // El aviso del Upgrade solo aparece cuando hay un filtro activo y la lista incluye una actividad del Upgrade
+  // (ventana de Papás Juegan, o p. ej. "Comer" en Planta Baja por la Pizzería); no en la pantalla inicial.
+  document.getElementById("upBar").hidden = busy || state.cat === null || !filteredItems().some(i=>i.extra);
   const label = state.kiosk ? "Cómo llegar" : "Ver tienda";
   document.getElementById("upGo").textContent = label;
   document.getElementById("buyGo").textContent = state.kiosk ? "Llévame a la tienda" : "Ver tienda";
@@ -1039,6 +1041,7 @@ function renderList(){
   els.list.innerHTML = "";
   els.listCount.textContent = `${items.length} lugar${items.length===1?'':'es'} en ${FLOOR_NAMES[state.floor]}`;
 
+  refreshChrome();
   if(items.length===0){
     const div = document.createElement("div");
     div.className = "empty";

@@ -112,8 +112,10 @@ La tienda interior muestra "Adquiere aquí tu Upgrade para Papás Juegan", y cad
   Papás Juegan, Comer, Tiendas, Servicios y Escaleras y salidas (más "Todos"). El resto se encuentra con la lista agrupada o la búsqueda.
   El botón de reinicio del mapa ahora dice **"Ver todo"**.
 - **Guía de uso:** una línea arriba del mapa ("Toca un lugar del mapa o de la lista para ver qué es y cómo llegar") que desaparece cuando hay una tarjeta abierta.
-- **Upgrade de Papás Juegan siempre presente:** un aviso abajo ("¿Quieres tu Upgrade de Papás Juegan? Se adquiere en la Tienda interior") con el botón
-  **Cómo llegar** (o **Ver tienda** si el kiosko no está configurado). Se oculta mientras hay otra tarjeta abierta y vuelve al cerrarla.
+- **Aviso del Upgrade de Papás Juegan:** un aviso abajo ("¿Quieres tu Upgrade de Papás Juegan? Se adquiere en la Tienda interior") con el botón
+  **Cómo llegar** (o **Ver tienda** si el kiosko no está configurado). **Solo aparece cuando hay un filtro activo y la lista incluye una actividad del Upgrade**:
+  en la ventana de **Papás Juegan** (ambas plantas) y, p. ej., en **Comer de Planta Baja** (por la Pizzería); no en la pantalla inicial ni en Comer de Planta Alta.
+  Se oculta mientras hay otra tarjeta abierta y vuelve al cerrarla.
 - **En cada actividad del Upgrade:** la tarjeta pregunta primero "¿Quieres que te ayude a llegar?" y después "¿Aún no tienes tu Upgrade? Se adquiere en la Tienda interior"
   con el botón **Llévame a la tienda**. Al terminar una ruta a una actividad del Upgrade vuelve a ofrecerlo.
 - **Tienda interior:** pregunta "¿Quieres que te ayude a llegar?" y al llegar muestra "Adquiere aquí tu Upgrade para Papás Juegan".
