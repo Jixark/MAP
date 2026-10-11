@@ -203,6 +203,13 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .chip::before{content:""; margin-right:6px; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
 .chip.active{background:var(--pc); border-color:var(--pc); color:#fff;}
 .chip.active::before{background:#fff;}
+.chip.pj.active{color:#2e1065;}
+.chip.pj.active::before{background:#2e1065;}
+.pin.pj .num{color:#2e1065;}
+.row .num.pj{color:#2e1065;}
+#infoCard .badge.pj{background:#b79cf2; color:#2e1065;}
+#infoCard .pill.pj{background:#e9defc; color:#4c1d95; margin-left:6px;}
+#infoCard .pill.pj::before{background:#b79cf2;}
 
 #list{flex:1 1 auto; overflow-y:auto; padding:4px 10px 20px;}
 .cat-heading{
@@ -401,6 +408,7 @@ body.view-more #morePane{display:flex;}
       <div class="body">
         <p class="name" id="infoName">&nbsp;</p>
         <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
+        <span class="pill pj" id="infoPj" hidden>Papás Juegan</span>
         <p class="note" id="infoNote"></p>
         <div class="route-ask" id="routeAsk" hidden>
           <span>¿Quieres que te ayude a llegar?</span>
@@ -487,7 +495,7 @@ const CAT_HEX = {
   "Medios de Comunicación":"#0d9488","Residencial":"#16a34a","Restaurantes":"#ea580c","Salud":"#e11d48",
   "Servicio Financiero":"#4f46e5","Servicios Privados":"#a16207","Servicios Públicos":"#b50031",
   "Tecnología":"#0891b2","Transporte":"#64748b","Deportes":"#65a30d",
-  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f"
+  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f","Papás Juegan":"#b79cf2"
 };
 
 // Services shown in the brochure legend (icons already drawn on the floor images).
@@ -519,6 +527,34 @@ const POI_TYPES = {
   escaleras:{name:"Escaleras",cat:"Circulación"},
   salida:{name:"Salidas de Emergencia",cat:"Circulación"}
 };
+
+// Sistema "Papás Juegan": actividades marcadas en morado claro (número de pin por planta).
+const PJ_NAME = "Papás Juegan", PJ_COLOR = "#b79cf2", PJ_INK = "#2e1065";
+const PAPAS_JUEGAN = {
+  baja:[2,   // Hospital (Cirugía)
+        3,   // Universidad
+        14,  // Restaurante
+        15,  // Pizzería
+        16,  // Supermercado
+        18,  // Fábrica de Pastelillos (Gansito)
+        21,  // Teatro (Foro)
+        35], // Autobús Turístico (Turi)
+  alta:[5,   // Purina (Veterinaria)
+        7,   // Adidas
+        9,   // Barra de Jugos
+        11,  // Estudio de Diseño
+        12,  // Heladería
+        13,  // Disco Lounge
+        15,  // Escuela Culinaria
+        16,  // Fábrica de Dulces
+        17,  // Fábrica de Cuadernos
+        19,  // Fábrica de Mantequilla
+        20,  // Hamburguesería (McDonald's)
+        22]  // Barra de Sushi
+};
+// Los pines de ícono de esos mismos negocios también se pintan en morado claro.
+const PJ_POI = ["restaurante","pizzeria","heladeria","hamburgueseria","sushi"];
+function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
 
@@ -559,10 +595,11 @@ function normalize(s){
 function itemsForFloor(floor){
   const f = DATA[floor];
   if(f._items) return f._items;
-  const items = f.pins.map(p=>({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, points:[{x:p.x, y:p.y}]}));
+  const pjNums = PAPAS_JUEGAN[floor] || [];
+  const items = f.pins.map(p=>({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, pj:pjNums.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}));
   Object.keys(f.pois || {}).forEach(id=>{
     const t = POI_TYPES[id];
-    items.push({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", icon:"ico/"+id+".png",
+    items.push({key:"p:"+id, id:id, name:t.name, cat:t.cat, pj:PJ_POI.indexOf(id) >= 0, note:t.note || "", icon:"ico/"+id+".png",
                 points:f.pois[id].map(a=>({x:a[0], y:a[1]}))});
   });
   f._items = items;
@@ -573,7 +610,8 @@ function currentItems(){ return itemsForFloor(state.floor); }
 function filteredItems(){
   const q = normalize(state.query.trim());
   return currentItems().filter(p=>{
-    if(state.cat && p.cat !== state.cat) return false;
+    if(state.cat === PJ_NAME){ if(!p.pj || p.icon) return false; }   // el ícono de servicio del mismo negocio no se repite en la lista
+    else if(state.cat && p.cat !== state.cat) return false;
     if(q && !normalize(p.name).includes(q)) return false;
     return true;
   });
@@ -606,16 +644,16 @@ function buildPins(){
   currentItems().forEach(it=>{
     it.points.forEach(pt=>{
       const btn = document.createElement("button");
-      btn.className = "pin" + (it.icon ? " poi" : "");
+      btn.className = "pin" + (it.icon ? " poi" : "") + (it.pj ? " pj" : "");
       btn.style.left = pt.x + "%";
       btn.style.top = pt.y + "%";
       btn.dataset.key = it.key;
       btn.setAttribute("aria-label", it.name);
       if(it.icon){
-        btn.style.setProperty("--pc", CAT_HEX[it.cat] || "#1f5fa8");
+        btn.style.setProperty("--pc", colorOf(it));
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
-        const color = CAT_HEX[it.cat] || "#b50031";
+        const color = colorOf(it);
         btn.innerHTML = `
           <svg viewBox="0 0 34 42">
             <circle class="halo" cx="17" cy="15" r="15" fill="${color}"/>
@@ -662,13 +700,14 @@ function selectPin(key, opts){
 
 function showInfo(it){
   if(it.icon){
-    els.infoNum.className = "badge icon";
+    els.infoNum.className = "badge icon" + (it.pj ? " pj" : "");
     els.infoNum.innerHTML = '<img src="'+it.icon+'" alt="">';
   } else {
-    els.infoNum.className = "badge";
+    els.infoNum.className = "badge" + (it.pj ? " pj" : "");
     els.infoNum.textContent = it.num;
   }
   els.infoName.textContent = it.name;
+  document.getElementById("infoPj").hidden = !it.pj;
   els.infoCat.textContent = it.cat;
   els.infoCat.style.setProperty("--pc", CAT_HEX[it.cat] || "#b50031");
   let note = "";
@@ -889,6 +928,7 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
 
 function buildChips(){
   const catsHere = new Set(currentItems().map(p=>p.cat));
+  const hasPj = currentItems().some(p=>p.pj);
   els.chips.innerHTML = "";
   const allChip = document.createElement("button");
   allChip.className = "chip" + (state.cat===null ? " active":"");
@@ -904,6 +944,14 @@ function buildChips(){
     chip.addEventListener("click", ()=>{ state.cat = (state.cat===cat? null : cat); buildChips(); renderList(); });
     els.chips.appendChild(chip);
   });
+  if(hasPj){
+    const chip = document.createElement("button");
+    chip.className = "chip pj" + (state.cat===PJ_NAME ? " active":"");
+    chip.textContent = PJ_NAME;
+    chip.style.setProperty("--pc", PJ_COLOR);
+    chip.addEventListener("click", ()=>{ state.cat = (state.cat===PJ_NAME ? null : PJ_NAME); buildChips(); renderList(); });
+    els.chips.appendChild(chip);
+  }
 }
 
 function renderList(){
@@ -932,8 +980,8 @@ function renderList(){
     const row = document.createElement("div");
     row.className = "row";
     row.dataset.key = p.key;
-    row.style.setProperty("--pc", CAT_HEX[p.cat]);
-    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num">${p.num}</span>`;
+    row.style.setProperty("--pc", colorOf(p));
+    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
     row.innerHTML = `${lead}<span class="name">${p.name}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{

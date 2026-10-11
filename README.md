@@ -88,3 +88,10 @@ Tras 2 minutos sin tocar la pantalla el kiosko vuelve solo a su pantalla inicial
 
 **Ajustes en `index.html`:** `GRAPH` (red de pasillos por planta, en píxeles del mapa) y `LINKS` (escaleras/elevador que unen plantas)
 definen por dónde se camina; `WALK_PX_PER_MIN` calibra el tiempo estimado.
+
+## Sistema "Papás Juegan"
+Las actividades del sistema Papás Juegan se marcan en **morado claro** en el mapa (pin, lista y tarjeta) y tienen su propio chip de filtro **Papás Juegan**.
+La lista está en `PAPAS_JUEGAN` (números de pin por planta) dentro de `index.html`; para agregar o quitar una actividad basta editar esa lista.
+Actualmente: Baja → Hospital, Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos, Teatro, Autobús Turístico.
+Alta → Purina, Adidas, Barra de Jugos, Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria, Fábrica de Dulces, Fábrica de Cuadernos,
+Fábrica de Mantequilla, Hamburguesería, Barra de Sushi. (Pendiente de confirmar: "Vinci".)
