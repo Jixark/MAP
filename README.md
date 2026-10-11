@@ -106,3 +106,15 @@ El Upgrade de Papás Juegan se vende en la **KidZania Shop · Tienda interior** 
 **KidZania Shop · Tienda exterior**. Son dos entradas separadas en la lista ("Para comprar") y se pueden elegir por separado con "Cómo llegar".
 La tienda interior muestra "Adquiere aquí tu Upgrade para Papás Juegan", y cada actividad del Upgrade (con asterisco) tiene el botón
 "Dónde comprarlo: Tienda interior", que cambia a Planta Baja y abre esa tienda. Datos: `POI_TYPES.kzshop_int` / `kzshop_ext`, `UPGRADE_SHOP_*` en `index.html`.
+
+## Pantalla simplificada y guiada
+- **Menos botones:** se quitaron el letrero "Piso …" (ya lo indica el selector de planta) y el aviso de zoom. Los 18 filtros por categoría pasaron a **5 filtros claros**:
+  Papás Juegan, Comer, Tiendas, Servicios y Escaleras y salidas (más "Todos"). El resto se encuentra con la lista agrupada o la búsqueda.
+  El botón de reinicio del mapa ahora dice **"Ver todo"**.
+- **Guía de uso:** una línea arriba del mapa ("Toca un lugar del mapa o de la lista para ver qué es y cómo llegar") que desaparece cuando hay una tarjeta abierta.
+- **Upgrade de Papás Juegan siempre presente:** un aviso abajo ("¿Quieres tu Upgrade de Papás Juegan? Se adquiere en la Tienda interior") con el botón
+  **Cómo llegar** (o **Ver tienda** si el kiosko no está configurado). Se oculta mientras hay otra tarjeta abierta y vuelve al cerrarla.
+- **En cada actividad del Upgrade:** la tarjeta pregunta primero "¿Quieres que te ayude a llegar?" y después "¿Aún no tienes tu Upgrade? Se adquiere en la Tienda interior"
+  con el botón **Llévame a la tienda**. Al terminar una ruta a una actividad del Upgrade vuelve a ofrecerlo.
+- **Tienda interior:** pregunta "¿Quieres que te ayude a llegar?" y al llegar muestra "Adquiere aquí tu Upgrade para Papás Juegan".
+- **Ruta:** el botón principal es **Siguiente / Listo**; "Ruta sin escaleras (elevador)" quedó como enlace discreto.

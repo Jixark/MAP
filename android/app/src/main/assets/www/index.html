@@ -145,19 +145,11 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 }
 .map-controls button:active{transform:scale(.94);}
 
-.floor-badge{
-  position:absolute; left:12px; top:12px; z-index:15; background:var(--surface); border:1px solid var(--line);
-  border-radius:999px; padding:6px 14px 6px 10px; font-weight:700; font-size:12.5px; box-shadow:var(--shadow);
-  display:flex; align-items:center; color:var(--text-muted);
-}
-.floor-badge > * + *{margin-left:6px;}
-.floor-badge b{color:var(--text); font-family:'Baloo 2',sans-serif;}
 
 .hint{
-  position:absolute; left:50%; top:56px; transform:translateX(-50%); z-index:14; background:var(--surface);
-  border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:12px; color:var(--text-muted);
-  box-shadow:var(--shadow); opacity:.92; pointer-events:none; white-space:nowrap;
-  transition:opacity .3s;
+  position:absolute; left:50%; top:12px; transform:translateX(-50%); z-index:14; background:var(--surface);
+  border:1px solid var(--line); border-radius:16px; padding:9px 16px; font-size:14px; font-weight:600; color:var(--text);
+  box-shadow:var(--shadow); pointer-events:none; text-align:center; width:max-content; max-width:calc(100% - 100px);
 }
 
 /* info sheet */
@@ -192,8 +184,8 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 }
 .list-head{padding:14px 16px 8px; flex:0 0 auto;}
 .list-count{font-size:12.5px; color:var(--text-muted); font-weight:600; margin:0 0 10px;}
-.chips > * + *{margin-left:7px;}
-.chips{display:flex; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; min-width:0; max-width:100%;}
+.chips{display:flex; flex-wrap:wrap; min-width:0; max-width:100%;}
+.chips .chip{margin:0 7px 7px 0;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{
   flex:0 0 auto; border:1px solid var(--line); background:var(--surface); color:var(--text-muted);
@@ -250,6 +242,24 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 
 
 [hidden]{display:none !important;}
+/* ---------- guía + Upgrade ---------- */
+.map-controls button.wide{width:auto; padding:0 12px; font-size:13px; font-weight:800;}
+.map-controls{pointer-events:none;}
+.map-controls button{pointer-events:auto;}
+#upBar{
+  position:absolute; left:12px; right:12px; bottom:12px; z-index:16; max-width:440px; box-sizing:border-box;
+  display:flex; align-items:center; background:#e2c677; color:#322e2b; border-radius:18px; padding:11px 12px 11px 16px; box-shadow:var(--shadow);
+}
+#upBar{bottom:calc(12px + env(safe-area-inset-bottom,0px));}
+#upBar .up-text{flex:1 1 auto; min-width:0; margin-right:12px;}
+#upBar .up-text b{display:block; font-size:14.5px; line-height:1.2;}
+#upBar .up-text span{display:block; margin-top:2px; font-size:12.5px; font-weight:600;}
+#upBar .btn, #infoCard .buy-ask .btn, #routeCard .rc-buy .btn{background:#615c57; color:#fff;}
+#infoCard .buy-ask{margin-top:8px;}
+#routeCard .rc-buy{display:flex; align-items:center; flex-wrap:wrap; margin:0 0 10px; padding:9px 11px; border-radius:12px; background:#e2c677; color:#322e2b; font-weight:700; font-size:13px;}
+#routeCard .rc-buy span{flex:1 1 150px; margin-right:10px;}
+#routeCard .rc-acc{margin-left:auto; margin-right:0; border:none; background:none; color:var(--text-muted); text-decoration:underline; font-weight:700; font-size:12.5px; padding:6px 0; cursor:pointer;}
+
 /* ---------- route + kiosk ---------- */
 #routeLayer{position:absolute; left:0; top:0; width:var(--iw); height:var(--ih); pointer-events:none; overflow:visible;}
 #routeLayer path{fill:none; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke;}
@@ -374,7 +384,7 @@ body.view-more #morePane{display:flex;}
 
   <div class="search-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input id="search" type="text" placeholder="Buscar establecimiento..." autocomplete="off">
+    <input id="search" type="text" placeholder="Buscar un lugar..." autocomplete="off">
     <button class="search-clear" id="searchClear" aria-label="Limpiar">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
@@ -388,8 +398,7 @@ body.view-more #morePane{display:flex;}
 
 <main>
   <div id="mapPane">
-    <div class="floor-badge"><span>Piso</span><b id="floorLabel">Planta Baja</b></div>
-    <div class="hint" id="hint">Pellizca para hacer zoom &middot; arrastra para mover</div>
+    <div class="hint" id="hint">Toca un lugar del mapa o de la lista para ver qué es y cómo llegar</div>
     <div id="viewport">
       <div id="stage" style="--s:1">
         <img id="mapImg" src="" alt="Mapa del piso" draggable="false">
@@ -400,19 +409,22 @@ body.view-more #morePane{display:flex;}
     <div class="map-controls">
       <button id="zoomIn" aria-label="Acercar">+</button>
       <button id="zoomOut" aria-label="Alejar">&minus;</button>
-      <button id="zoomReset" aria-label="Restablecer">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v6h6"/></svg>
-      </button>
+      <button id="zoomReset" class="wide" aria-label="Ver todo el mapa">Ver todo</button>
     </div>
     <div id="placeBanner" hidden><span>Toca el mapa donde está este kiosko</span><button class="btn small" id="placeCancel" type="button">Cancelar</button></div>
+    <div id="upBar" hidden>
+      <div class="up-text"><b>¿Quieres tu Upgrade de Papás Juegan?</b><span>Se adquiere en la Tienda interior</span></div>
+      <button class="btn" id="upGo" type="button">Ver tienda</button>
+    </div>
     <div id="routeCard">
       <div class="rc-head"><h3 id="rcTitle"></h3><button class="rc-x" id="rcClose" aria-label="Cerrar">&times;</button></div>
       <p class="rc-step" id="rcStep"></p>
       <p class="rc-meta" id="rcMeta"></p>
+      <div class="rc-buy" id="rcBuy" hidden><span id="rcBuyText"></span><button class="btn small" id="rcBuyGo" type="button" hidden>Llévame a la tienda</button></div>
       <div class="rc-btns">
         <button class="btn ghost small" id="rcPrev" type="button">Anterior</button>
         <button class="btn" id="rcNext" type="button">Siguiente</button>
-        <button class="btn ghost small rc-acc" id="rcAcc" type="button">Ruta accesible (elevador)</button>
+        <button class="rc-acc" id="rcAcc" type="button">Ruta sin escaleras (elevador)</button>
       </div>
     </div>
     <div id="infoCard">
@@ -423,10 +435,13 @@ body.view-more #morePane{display:flex;}
         <span class="pill pj" id="infoPj" hidden>Papás Juegan</span>
         <p class="note" id="infoNote"></p>
         <p class="note extra-note" id="infoExtra" hidden></p>
-        <button class="btn small ghost" id="infoBuy" type="button" hidden>Dónde comprarlo: Tienda interior &rsaquo;</button>
         <div class="route-ask" id="routeAsk" hidden>
           <span>¿Quieres que te ayude a llegar?</span>
           <button class="btn" id="routeGo" type="button">Cómo llegar</button>
+        </div>
+        <div class="route-ask buy-ask" id="buyAsk" hidden>
+          <span>¿Aún no tienes tu Upgrade? Se adquiere en la Tienda interior.</span>
+          <button class="btn" id="buyGo" type="button">Ver tienda</button>
         </div>
       </div>
       <button class="close" id="infoClose" aria-label="Cerrar">
@@ -607,7 +622,6 @@ const els = {
   chips: document.getElementById("chips"),
   search: document.getElementById("search"),
   searchClear: document.getElementById("searchClear"),
-  floorLabel: document.getElementById("floorLabel"),
   infoCard: document.getElementById("infoCard"),
   infoNum: document.getElementById("infoNum"),
   infoName: document.getElementById("infoName"),
@@ -641,8 +655,11 @@ function currentItems(){ return itemsForFloor(state.floor); }
 function filteredItems(){
   const q = normalize(state.query.trim());
   return currentItems().filter(p=>{
-    if(state.cat === PJ_NAME){ if(!p.pj || p.icon) return false; }   // el ícono de servicio del mismo negocio no se repite en la lista
-    else if(state.cat && p.cat !== state.cat) return false;
+    const g = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
+    if(g){
+      if(g.pj){ if(!p.pj || p.icon) return false; }   // el ícono de servicio del mismo negocio no se repite en la lista
+      else if(g.cats.indexOf(p.cat) < 0) return false;
+    }
     if(q && !normalize(p.name).includes(q)) return false;
     return true;
   });
@@ -656,7 +673,6 @@ function loadFloor(floor, opts){
   els.img.src = f.img;
   els.stage.style.setProperty("--iw", f.w+"px");
   els.stage.style.setProperty("--ih", f.h+"px");
-  els.floorLabel.textContent = FLOOR_NAMES[floor];
   document.querySelectorAll("#floorSwitch button").forEach(b=>b.classList.toggle("active", b.dataset.floor===floor));
   if(!opts.keepSelection){ state.selected = null; hideInfo(); }
   buildPins();
@@ -739,7 +755,16 @@ function goToItem(floor, key){
   if(state.floor !== floor){ state._afterFit = go; loadFloor(floor); }
   else go();
 }
-document.getElementById("infoBuy").addEventListener("click", ()=>goToItem(UPGRADE_SHOP_FLOOR, UPGRADE_SHOP_KEY));
+// Lleva al visitante a la tienda donde se adquiere el Upgrade: con ruta si el kiosko está configurado, si no abre la tienda.
+function routeToUpgradeShop(){
+  if(!state.kiosk){ goToItem(UPGRADE_SHOP_FLOOR, UPGRADE_SHOP_KEY); return; }
+  const it = itemsForFloor(UPGRADE_SHOP_FLOOR).find(i=>i.key===UPGRADE_SHOP_KEY);
+  if(!it) return;
+  if(state.route) closeRoute(true);
+  state.selected = {floor:UPGRADE_SHOP_FLOOR, key:UPGRADE_SHOP_KEY};
+  startRoute(it, false);
+}
+["upGo","buyGo","rcBuyGo"].forEach(id=>document.getElementById(id).addEventListener("click", routeToUpgradeShop));
 
 function showInfo(it){
   if(it.icon){
@@ -754,7 +779,6 @@ function showInfo(it){
   const ex = document.getElementById("infoExtra");
   ex.hidden = !(it.extra || it.upgradeShop);
   ex.textContent = it.upgradeShop ? UPGRADE_SHOP_TEXT : (it.extra ? PJ_EXTRA_TEXT : "");
-  document.getElementById("infoBuy").hidden = !it.extra;
   els.infoCat.textContent = it.cat;
   els.infoCat.style.setProperty("--pc", CAT_HEX[it.cat] || "#b50031");
   let note = "";
@@ -766,11 +790,22 @@ function showInfo(it){
   els.infoNote.textContent = note;
   state.infoItem = it;
   els.routeAsk.hidden = !state.kiosk;
+  document.getElementById("buyAsk").hidden = !it.extra;
   els.infoCard.classList.add("show");
+  refreshChrome();
 }
-function hideInfo(){ els.infoCard.classList.remove("show"); }
+function hideInfo(){ els.infoCard.classList.remove("show"); refreshChrome(); }
 
-function hideHint(){ els.hint.style.opacity = "0"; }
+function hideHint(){}   // la guía ahora se muestra/oculta con refreshChrome()
+// Muestra la guía de uso y el aviso del Upgrade solo cuando no hay ninguna tarjeta abierta.
+function refreshChrome(){
+  const busy = els.infoCard.classList.contains("show") || document.getElementById("routeCard").classList.contains("show") || state.placing;
+  document.getElementById("hint").hidden = busy;
+  document.getElementById("upBar").hidden = busy;
+  const label = state.kiosk ? "Cómo llegar" : "Ver tienda";
+  document.getElementById("upGo").textContent = label;
+  document.getElementById("buyGo").textContent = state.kiosk ? "Llévame a la tienda" : "Ver tienda";
+}
 
 /* ---------------- Pan / zoom ---------------- */
 const MIN_SCALE = 0.2, MAX_SCALE = 6;
@@ -973,43 +1008,41 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
   "Restaurantes","Salud","Servicio Financiero","Servicios Privados","Servicios Públicos","Tecnología","Transporte","Deportes",
   "Servicios","Para comer","Para comprar","Circulación"];
 
+// Filtros simples (en vez de una categoría por cada tipo de lugar).
+const CHIP_GROUPS = [
+  {name:PJ_NAME, pj:true},
+  {name:"Comer", cats:["Restaurantes","Para comer"], color:"#6b3a1f"},
+  {name:"Tiendas", cats:["Para comprar"], color:"#2b2b2b"},
+  {name:"Servicios", cats:["Servicios"], color:"#1f5fa8"},
+  {name:"Escaleras y salidas", cats:["Circulación"], color:"#2fa84f"}
+];
 function buildChips(){
-  const catsHere = new Set(currentItems().map(p=>p.cat));
-  const hasPj = currentItems().some(p=>p.pj);
   els.chips.innerHTML = "";
-  const allChip = document.createElement("button");
-  allChip.className = "chip" + (state.cat===null ? " active":"");
-  allChip.textContent = "Todos";
-  allChip.style.setProperty("--pc", "#8a7f78");
-  allChip.addEventListener("click", ()=>{ state.cat=null; buildChips(); renderList(); });
-  els.chips.appendChild(allChip);
-  ALL_CATS.filter(c=>catsHere.has(c)).forEach(cat=>{
+  const mk = (label, cls, color, value)=>{
     const chip = document.createElement("button");
-    chip.className = "chip" + (state.cat===cat ? " active":"");
-    chip.textContent = cat;
-    chip.style.setProperty("--pc", CAT_HEX[cat]);
-    chip.addEventListener("click", ()=>{ state.cat = (state.cat===cat? null : cat); buildChips(); renderList(); });
+    chip.className = "chip" + (cls ? " " + cls : "") + (state.cat===value ? " active":"");
+    chip.textContent = label;
+    chip.style.setProperty("--pc", color);
+    chip.addEventListener("click", ()=>{ state.cat = (value===null || state.cat===value) ? null : value; buildChips(); renderList(); });
     els.chips.appendChild(chip);
+  };
+  mk("Todos", "", "#8a7f78", null);
+  const items = currentItems();
+  CHIP_GROUPS.forEach(g=>{
+    const has = g.pj ? items.some(p=>p.pj && !p.icon) : items.some(p=>g.cats.indexOf(p.cat) >= 0);
+    if(has) mk(g.name, g.pj ? "pj" : "", g.pj ? PJ_COLOR : g.color, g.name);
   });
-  if(hasPj){
-    const chip = document.createElement("button");
-    chip.className = "chip pj" + (state.cat===PJ_NAME ? " active":"");
-    chip.textContent = PJ_NAME;
-    chip.style.setProperty("--pc", PJ_COLOR);
-    chip.addEventListener("click", ()=>{ state.cat = (state.cat===PJ_NAME ? null : PJ_NAME); buildChips(); renderList(); });
-    els.chips.appendChild(chip);
-  }
 }
 
 function renderList(){
   const items = filteredItems().slice().sort((a,b)=> a.cat.localeCompare(b.cat,'es') || a.name.localeCompare(b.name,'es'));
   els.list.innerHTML = "";
-  els.listCount.textContent = `${items.length} lugar${items.length===1?'':'es'} y servicio${items.length===1?'':'s'} en ${FLOOR_NAMES[state.floor]}`;
+  els.listCount.textContent = `${items.length} lugar${items.length===1?'':'es'} en ${FLOOR_NAMES[state.floor]}`;
 
   if(items.length===0){
     const div = document.createElement("div");
     div.className = "empty";
-    div.innerHTML = `<b>Sin resultados</b>Prueba con otro nombre o quita el filtro de categoría.`;
+    div.innerHTML = `<b>Sin resultados</b>Prueba con otro nombre o toca «Todos».`;
     els.list.appendChild(div);
     return;
   }
@@ -1276,7 +1309,7 @@ function routeText(r){
 
 function renderRouteCard(){
   const r = state.route, card = document.getElementById("routeCard");
-  if(!r){ card.classList.remove("show"); return; }
+  if(!r){ card.classList.remove("show"); refreshChrome(); return; }
   const last = r.step === r.segs.length-1;
   document.getElementById("rcTitle").textContent = "Cómo llegar a " + r.item.name;
   document.getElementById("rcStep").textContent = routeText(r);
@@ -1286,8 +1319,18 @@ function renderRouteCard(){
   document.getElementById("rcPrev").hidden = r.step === 0;
   document.getElementById("rcNext").textContent = last ? "Listo" : "Siguiente: " + FLOOR_NAMES[r.segs[r.step+1].floor];
   const acc = document.getElementById("rcAcc");
-  acc.textContent = r.accessible ? "Ruta con escaleras" : "Ruta accesible (elevador)";
+  acc.textContent = r.accessible ? "Volver a la ruta normal" : "Ruta sin escaleras (elevador)";
+  const buy = document.getElementById("rcBuy"), buyGo = document.getElementById("rcBuyGo"), buyText = document.getElementById("rcBuyText");
+  buy.hidden = true; buyGo.hidden = true;
+  if(last && r.item.extra){
+    buy.hidden = false; buyGo.hidden = false;
+    buyText.textContent = "¿Aún no tienes tu Upgrade de Papás Juegan? Se adquiere en la Tienda interior.";
+  } else if(last && r.item.upgradeShop){
+    buy.hidden = false;
+    buyText.textContent = UPGRADE_SHOP_TEXT + ".";
+  }
   card.classList.add("show");
+  refreshChrome();
 }
 
 function drawRoute(){
@@ -1383,11 +1426,11 @@ document.getElementById("kioskClear").addEventListener("click", ()=>{
 });
 document.getElementById("kioskPlace").addEventListener("click", ()=>{
   state.pendingName = adminUI.name.value;
-  state.placing = true; adminEl.hidden = true; adminUI.banner.hidden = false;
+  state.placing = true; adminEl.hidden = true; adminUI.banner.hidden = false; refreshChrome();
   if(state.section === "more" || document.body.classList.contains("view-more")) setSection("map");
 });
 document.getElementById("placeCancel").addEventListener("click", ()=>{
-  state.placing = false; adminUI.banner.hidden = true; showAdminForm();
+  state.placing = false; adminUI.banner.hidden = true; showAdminForm(); refreshChrome();
 });
 function placeKioskAt(x, y){
   const f = DATA[state.floor];
@@ -1395,7 +1438,7 @@ function placeKioskAt(x, y){
                  x:Math.round(Math.max(0, Math.min(f.w, x))), y:Math.round(Math.max(0, Math.min(f.h, y)))};
   saveKiosk(state.kiosk);
   state.placing = false; adminUI.banner.hidden = true;
-  closeRoute(false); showAdminForm();
+  closeRoute(false); showAdminForm(); refreshChrome();
 }
 els.viewport.addEventListener("click", (e)=>{
   if(!state.placing || state._dragged) return;
@@ -1441,7 +1484,7 @@ els.viewport.addEventListener("click", (e)=>{
 /* init */
 buildChips();
 loadFloor(state.kiosk ? state.kiosk.floor : "baja");
-setTimeout(hideHint, 4500);
+refreshChrome();
 </script>
 
 </body>
