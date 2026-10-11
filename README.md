@@ -96,6 +96,8 @@ Actualmente: Baja → Hospital (Cirugía), Universidad, Restaurante, Pizzería, 
 Alta → Purina (Veterinaria), Adidas, Barra de Jugos, Estudio de Arte (Vinci), Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria,
 Fábrica de Dulces, Fábrica de Cuadernos, Fábrica de Mantequilla, Hamburguesería (McDonald's), Estudio de Televisión (Foro), Barra de Sushi.
 
-**Costo extra (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería son del sistema
-Papás Juegan pero **no están incluidas en el pase: tienen costo extra**. Se marcan con un asterisco en el pin, en la lista y en la tarjeta,
-con la nota "No incluida en el pase Papás Juegan: tiene costo extra". Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` dentro de `index.html`.
+**Upgrade de Papás Juegan (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería
+son actividades compartidas entre papás y niños incluidas en el **Upgrade de Papás Juegan** (brazalete amarillo). Se distinguen por un
+círculo/pin **partido en amarillo y negro** (como el brazalete) con un asterisco, y la tarjeta muestra, en amarillo con letras negras,
+"Actividad incluida dentro de tu Upgrade de Papás Juegan". El resto de Papás Juegan sigue en morado claro. Se editan en
+`PJ_EXTRA` / `PJ_EXTRA_POI` (lista) y `PJ_EXTRA_TEXT` (mensaje) dentro de `index.html`.
