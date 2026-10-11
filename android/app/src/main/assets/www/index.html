@@ -210,6 +210,14 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #infoCard .badge.pj{background:#b79cf2; color:#2e1065;}
 #infoCard .pill.pj{background:#e9defc; color:#4c1d95; margin-left:6px;}
 #infoCard .pill.pj::before{background:#b79cf2;}
+#infoCard .extra-note{color:#4c1d95; font-weight:700;}
+.pin.extra::after{
+  content:"*"; position:absolute; top:-9px; right:-9px; width:23px; height:23px; border-radius:50%;
+  background:#2e1065; color:#fff; font-weight:800; font-size:20px; line-height:30px; text-align:center;
+  border:1.5px solid #fff; box-sizing:border-box; pointer-events:none;
+}
+.row .ast{color:#6d28d9; font-size:15px;}
+.pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#efe7fd; color:#4c1d95; font-size:12.5px; font-weight:700;}
 
 #list{flex:1 1 auto; overflow-y:auto; padding:4px 10px 20px;}
 .cat-heading{
@@ -410,6 +418,7 @@ body.view-more #morePane{display:flex;}
         <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
         <span class="pill pj" id="infoPj" hidden>Papás Juegan</span>
         <p class="note" id="infoNote"></p>
+        <p class="note extra-note" id="infoExtra" hidden></p>
         <div class="route-ask" id="routeAsk" hidden>
           <span>¿Quieres que te ayude a llegar?</span>
           <button class="btn" id="routeGo" type="button">Cómo llegar</button>
@@ -554,6 +563,17 @@ const PAPAS_JUEGAN = {
 };
 // Los pines de ícono de esos mismos negocios también se pintan en morado claro.
 const PJ_POI = ["restaurante","pizzeria","heladeria","hamburgueseria","sushi"];
+// Dentro del pase Papás Juegan pero con costo extra (se marcan con asterisco *).
+const PJ_EXTRA = {
+  baja:[15,   // Pizzería
+        18],  // Fábrica de Pastelillos (Gansito)
+  alta:[5,    // Purina (Veterinaria)
+        7,    // Adidas
+        15,   // Escuela Culinaria
+        17]   // Fábrica de Cuadernos
+};
+const PJ_EXTRA_POI = ["pizzeria"];
+const PJ_EXTRA_TEXT = "Incluida en el pase Papás Juegan, con costo extra";
 function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
@@ -595,11 +615,12 @@ function normalize(s){
 function itemsForFloor(floor){
   const f = DATA[floor];
   if(f._items) return f._items;
-  const pjNums = PAPAS_JUEGAN[floor] || [];
-  const items = f.pins.map(p=>({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, pj:pjNums.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}));
+  const pjNums = PAPAS_JUEGAN[floor] || [], extraNums = PJ_EXTRA[floor] || [];
+  const items = f.pins.map(p=>({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, pj:pjNums.indexOf(p.num) >= 0,
+                                extra:extraNums.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}));
   Object.keys(f.pois || {}).forEach(id=>{
     const t = POI_TYPES[id];
-    items.push({key:"p:"+id, id:id, name:t.name, cat:t.cat, pj:PJ_POI.indexOf(id) >= 0, note:t.note || "", icon:"ico/"+id+".png",
+    items.push({key:"p:"+id, id:id, name:t.name, cat:t.cat, pj:PJ_POI.indexOf(id) >= 0, extra:PJ_EXTRA_POI.indexOf(id) >= 0, note:t.note || "", icon:"ico/"+id+".png",
                 points:f.pois[id].map(a=>({x:a[0], y:a[1]}))});
   });
   f._items = items;
@@ -644,7 +665,7 @@ function buildPins(){
   currentItems().forEach(it=>{
     it.points.forEach(pt=>{
       const btn = document.createElement("button");
-      btn.className = "pin" + (it.icon ? " poi" : "") + (it.pj ? " pj" : "");
+      btn.className = "pin" + (it.icon ? " poi" : "") + (it.pj ? " pj" : "") + (it.extra ? " extra" : "");
       btn.style.left = pt.x + "%";
       btn.style.top = pt.y + "%";
       btn.dataset.key = it.key;
@@ -708,6 +729,8 @@ function showInfo(it){
   }
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
+  const ex = document.getElementById("infoExtra");
+  ex.hidden = !it.extra; ex.textContent = it.extra ? "* " + PJ_EXTRA_TEXT : "";
   els.infoCat.textContent = it.cat;
   els.infoCat.style.setProperty("--pc", CAT_HEX[it.cat] || "#b50031");
   let note = "";
@@ -967,6 +990,12 @@ function renderList(){
     return;
   }
 
+  if(state.cat === PJ_NAME){
+    const note = document.createElement("div");
+    note.className = "pj-note";
+    note.textContent = "* " + PJ_EXTRA_TEXT;
+    els.list.appendChild(note);
+  }
   let lastCat = null;
   items.forEach(p=>{
     if(p.cat !== lastCat){
@@ -983,7 +1012,7 @@ function renderList(){
     row.style.setProperty("--pc", colorOf(p));
     const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
-    row.innerHTML = `${lead}<span class="name">${p.name}</span>${cnt}<span class="go">&rsaquo;</span>`;
+    row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + PJ_EXTRA_TEXT + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{
       selectPin(p.key, {locate:true});
       if(state.view==="list" && window.innerWidth<=680) setView("map");

@@ -95,3 +95,7 @@ La lista está en `PAPAS_JUEGAN` (números de pin por planta) dentro de `index.h
 Actualmente: Baja → Hospital, Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos, Teatro, Autobús Turístico.
 Alta → Purina, Adidas, Barra de Jugos, Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria, Fábrica de Dulces, Fábrica de Cuadernos,
 Fábrica de Mantequilla, Hamburguesería, Barra de Sushi. (Pendiente de confirmar: "Vinci".)
+
+**Costo extra (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería están incluidas
+en el pase Papás Juegan pero **con costo extra**. Se marcan con un asterisco en el pin, en la lista y en la tarjeta, con la nota
+"Incluida en el pase Papás Juegan, con costo extra". Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` dentro de `index.html`.
