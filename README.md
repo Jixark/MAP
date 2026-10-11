@@ -92,9 +92,9 @@ definen por dónde se camina; `WALK_PX_PER_MIN` calibra el tiempo estimado.
 ## Sistema "Papás Juegan"
 Las actividades del sistema Papás Juegan se marcan en **morado claro** en el mapa (pin, lista y tarjeta) y tienen su propio chip de filtro **Papás Juegan**.
 La lista está en `PAPAS_JUEGAN` (números de pin por planta) dentro de `index.html`; para agregar o quitar una actividad basta editar esa lista.
-Actualmente: Baja → Hospital, Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos, Teatro, Autobús Turístico.
-Alta → Purina, Adidas, Barra de Jugos, Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria, Fábrica de Dulces, Fábrica de Cuadernos,
-Fábrica de Mantequilla, Hamburguesería, Barra de Sushi. (Pendiente de confirmar: "Vinci".)
+Actualmente: Baja → Hospital (Cirugía), Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos (Gansito), Autobús Turístico (Turi).
+Alta → Purina (Veterinaria), Adidas, Barra de Jugos, Estudio de Arte (Vinci), Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria,
+Fábrica de Dulces, Fábrica de Cuadernos, Fábrica de Mantequilla, Hamburguesería (McDonald's), Estudio de Televisión (Foro), Barra de Sushi.
 
 **Costo extra (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería son del sistema
 Papás Juegan pero **no están incluidas en el pase: tienen costo extra**. Se marcan con un asterisco en el pin, en la lista y en la tarjeta,
