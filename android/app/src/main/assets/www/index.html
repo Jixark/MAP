@@ -1287,7 +1287,9 @@ function renderDownload(){
   document.getElementById("dlSteps").hidden = none;
 }
 function updateDownloadTab(){
-  const show = IS_KIOSK;   // siempre visible en el kiosko; sin enlaces muestra cómo configurarlos
+  // Solo en tablets configuradas como kiosko (con ubicación) o donde el administrador ya puso enlaces;
+  // la app que se instala un visitante (mismo código) no la muestra.
+  const l = loadDl(), show = IS_KIOSK && (!!state.kiosk || !!(l.web || l.apk));
   document.getElementById("dlTab").hidden = !show;
   if(!show && document.body.classList.contains("view-dl")) setSection("map");
 }
@@ -1519,7 +1521,7 @@ adminUI.name.addEventListener("input", ()=>{
   saveDl({web:adminUI.dlWeb.value.trim(), apk:adminUI.dlApk.value.trim()}); updateDownloadTab();
 }));
 document.getElementById("kioskClear").addEventListener("click", ()=>{
-  state.kiosk = null; saveKiosk(null); closeRoute(false); renderKioskState();
+  state.kiosk = null; saveKiosk(null); closeRoute(false); renderKioskState(); updateDownloadTab();
 });
 document.getElementById("kioskPlace").addEventListener("click", ()=>{
   state.pendingName = adminUI.name.value;
@@ -1535,7 +1537,7 @@ function placeKioskAt(x, y){
                  x:Math.round(Math.max(0, Math.min(f.w, x))), y:Math.round(Math.max(0, Math.min(f.h, y)))};
   saveKiosk(state.kiosk);
   state.placing = false; adminUI.banner.hidden = true;
-  closeRoute(false); showAdminForm(); refreshChrome();
+  closeRoute(false); showAdminForm(); refreshChrome(); updateDownloadTab();
 }
 els.viewport.addEventListener("click", (e)=>{
   if(!state.placing || state._dragged) return;
@@ -1564,9 +1566,10 @@ els.viewport.addEventListener("click", (e)=>{
 
 // Kiosk behaviour: after a while without touches, go back to the start screen of this kiosk.
 (function(){
-  if(!IS_KIOSK) return;   // el reinicio por inactividad es solo del kiosko
+  if(!IS_KIOSK) return;
   let t = null;
   function reset(){
+    if(!state.kiosk) return;   // el reinicio por inactividad es solo de las tablets configuradas como kiosko (no de la app de un visitante)
     if(state.placing || !adminEl.hidden) return;
     if(state.route) closeRoute(false);
     state.selected = null; hideInfo();

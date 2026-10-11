@@ -122,11 +122,11 @@ La tienda interior muestra "Adquiere aquí tu Upgrade para Papás Juegan", y cad
 - **Ruta:** el botón principal es **Siguiente / Listo**; "Ruta sin escaleras (elevador)" quedó como enlace discreto.
 
 ## Descarga por QR (el visitante se lleva el mapa en su celular)
-En el kiosko aparece siempre la pestaña **Descarga la app**. Muestra hasta dos códigos QR grandes (se dibujan dentro de la app, sin internet):
+En las tablets **configuradas como kiosko** (con su ubicación en el mapa) aparece la pestaña **Descarga la app**; la app que se instala un visitante no la muestra ni hace reinicio por inactividad. Muestra hasta dos códigos QR grandes (se dibujan dentro de la app, sin internet):
 1. **Abrir el mapa en tu celular (versión web):** iPhone y Android, sin instalar nada. *Es la opción recomendada.*
 2. **Descargar la app (APK):** solo Android; el celular puede pedir permiso para instalar desde ese origen.
 
-Mientras no haya enlaces, la pestaña muestra "Aún no hay enlaces de descarga configurados" con las instrucciones. Los enlaces se ponen de dos formas:
+Si el kiosko ya está configurado pero aún no hay enlaces, la pestaña muestra "Aún no hay enlaces de descarga configurados" con las instrucciones. Los enlaces se ponen de dos formas:
 - **En cada tablet:** 5 toques al logo → PIN → campos "Enlace del QR…" (tienen prioridad sobre el código).
 - **En el código (`index.html`):** `DOWNLOAD_WEB_URL` y `DOWNLOAD_APK_URL` (valen para todos los kioskos).
 
@@ -141,6 +141,13 @@ El QR se genera sin internet, pero **el celular del visitante necesita internet 
   GitHub: *Releases > Draft a new release* y adjunta el `.apk` (enlace: `https://github.com/Jixark/MAP/releases/download/v1.0/MapaKidZania.apk`; el repositorio es público).
   También sirve el servidor/SharePoint de tu empresa.
 - Para Google Play se sube el `.aab` (cuenta de desarrollador de pago).
+
+### Firmar la APK en Android Studio (*Build > Generate Signed App Bundle / APK > APK*)
+1. **Key store path:** pulsa **Create new…**, elige una carpeta segura y un nombre (p. ej. `kidzania-mapa.jks`). Pon una contraseña y anótala.
+2. **Key alias:** un nombre (p. ej. `kidzania`), con su contraseña. Validez: 25 años (por defecto). En *Certificate* basta con tu nombre y país (MX).
+3. **Next → Destination folder →** variante **release**, marca las firmas **V1 y V2 → Create**. El archivo queda en `android/app/release/app-release.apk`; renómbralo `MapaKidZania.apk`.
+4. **Guarda el `.jks` y las contraseñas en un lugar seguro (copia de respaldo): si se pierden no podrás publicar actualizaciones de la misma app.** No los subas al repositorio.
+5. Los kioskos instalados con *Run ▶* usan otra firma (de depuración): no instales sobre ellos la APK firmada sin desinstalar antes (se perdería la ubicación guardada del kiosko).
 
 ### Sin internet para el visitante
 Un archivo guardado dentro del kiosko solo se puede descargar si el celular del visitante llega al kiosko por la red (mismo Wi-Fi, sin aislamiento de clientes).
