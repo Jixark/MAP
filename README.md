@@ -104,5 +104,5 @@ Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` (lista) y `PJ_EXTRA_TEXT` (mensaje) den
 ## Dónde se vende el Upgrade
 El Upgrade de Papás Juegan se vende en la **KidZania Shop · Tienda interior** (Planta Baja, entre los pines 4 y 5); la tienda junto al avión es la
 **KidZania Shop · Tienda exterior**. Son dos entradas separadas en la lista ("Para comprar") y se pueden elegir por separado con "Cómo llegar".
-La tienda interior muestra "Aquí se vende el Upgrade de Papás Juegan", y cada actividad del Upgrade (con asterisco) tiene el botón
+La tienda interior muestra "Adquiere aquí tu Upgrade para Papás Juegan", y cada actividad del Upgrade (con asterisco) tiene el botón
 "Dónde comprarlo: Tienda interior", que cambia a Planta Baja y abre esa tienda. Datos: `POI_TYPES.kzshop_int` / `kzshop_ext`, `UPGRADE_SHOP_*` en `index.html`.
