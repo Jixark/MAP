@@ -203,25 +203,25 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .chip::before{content:""; margin-right:6px; flex:0 0 auto; width:7px; height:7px; border-radius:50%; background:var(--pc, currentColor);}
 .chip.active{background:var(--pc); border-color:var(--pc); color:#fff;}
 .chip.active::before{background:#fff;}
-.chip.pj::before{background:linear-gradient(135deg, #f2cd57 50%, #433f3c 50%);}
-.chip.pj.active{background:#f2cd57; border-color:#433f3c; color:#26221f;}
-.chip.pj.active::before{background:linear-gradient(135deg, #f2cd57 50%, #433f3c 50%); box-shadow:0 0 0 1px #433f3c;}
-#infoCard .pill.pj{background:#f2cd57; color:#26221f; margin-left:6px;}
-#infoCard .pill.pj::before{background:#433f3c;}
-#infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#f2cd57; color:#26221f; font-weight:800; font-size:12.5px; line-height:1.3;}
+.chip.pj::before{background:linear-gradient(135deg, #e2c677 50%, #615c57 50%);}
+.chip.pj.active{background:#e2c677; border-color:#615c57; color:#322e2b;}
+.chip.pj.active::before{background:linear-gradient(135deg, #e2c677 50%, #615c57 50%); box-shadow:0 0 0 1px #615c57;}
+#infoCard .pill.pj{background:#e2c677; color:#322e2b; margin-left:6px;}
+#infoCard .pill.pj::before{background:#615c57;}
+#infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#e2c677; color:#322e2b; font-weight:800; font-size:12.5px; line-height:1.3;}
 /* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
-.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #f2cd57 50%, #433f3c 50%) !important;}
+.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #e2c677 50%, #615c57 50%) !important;}
 #infoCard .badge.up, .row .num.up, .pin.pj .num{
-  color:#fff; text-shadow:-1px -1px 0 #2b2724, 1px -1px 0 #2b2724, -1px 1px 0 #2b2724, 1px 1px 0 #2b2724, 0 0 2px #2b2724;
+  color:#fff; text-shadow:-1px -1px 0 #524d49, 1px -1px 0 #524d49, -1px 1px 0 #524d49, 1px 1px 0 #524d49, 0 0 2px #524d49;
 }
 .pin.extra::after{
   content:"*"; position:absolute; top:-9px; right:-9px; width:23px; height:23px; border-radius:50%;
-  background:#f2cd57; color:#26221f; font-weight:800; font-size:20px; line-height:30px; text-align:center;
-  border:1.5px solid #26221f; box-sizing:border-box; pointer-events:none;
+  background:#e2c677; color:#322e2b; font-weight:800; font-size:20px; line-height:30px; text-align:center;
+  border:1.5px solid #322e2b; box-sizing:border-box; pointer-events:none;
 }
-.pin.poi.pj{border-color:#f2cd57 #433f3c #433f3c #f2cd57;}
-.row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#f2cd57; color:#26221f; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
-.pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#f2cd57; color:#26221f; font-size:12.5px; font-weight:800;}
+.pin.poi.pj{border-color:#e2c677 #615c57 #615c57 #e2c677;}
+.row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#e2c677; color:#322e2b; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
+.pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#e2c677; color:#322e2b; font-size:12.5px; font-weight:800;}
 
 #list{flex:1 1 auto; overflow-y:auto; padding:4px 10px 20px;}
 .cat-heading{
@@ -508,7 +508,7 @@ const CAT_HEX = {
   "Medios de Comunicación":"#0d9488","Residencial":"#16a34a","Restaurantes":"#ea580c","Salud":"#e11d48",
   "Servicio Financiero":"#4f46e5","Servicios Privados":"#a16207","Servicios Públicos":"#b50031",
   "Tecnología":"#0891b2","Transporte":"#64748b","Deportes":"#65a30d",
-  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f","Papás Juegan":"#f2cd57"
+  "Servicios":"#1f5fa8","Para comer":"#6b3a1f","Para comprar":"#2b2b2b","Circulación":"#2fa84f","Papás Juegan":"#e2c677"
 };
 
 // Services shown in the brochure legend (icons already drawn on the floor images).
@@ -542,7 +542,7 @@ const POI_TYPES = {
 };
 
 // Sistema "Papás Juegan": actividades marcadas con el círculo partido amarillo/negro (número de pin por planta).
-const PJ_NAME = "Papás Juegan", PJ_COLOR = "#f2cd57", PJ_INK = "#433f3c";
+const PJ_NAME = "Papás Juegan", PJ_COLOR = "#e2c677", PJ_INK = "#615c57";
 const PAPAS_JUEGAN = {
   baja:[2,   // Hospital (Cirugía)
         3,   // Universidad
@@ -579,7 +579,7 @@ const PJ_EXTRA = {
 };
 const PJ_EXTRA_POI = ["pizzeria"];
 const PJ_EXTRA_TEXT = "Actividad incluida dentro de tu Upgrade de Papás Juegan";
-const UP_YELLOW = "#f2cd57", UP_BLACK = "#433f3c";
+const UP_YELLOW = "#e2c677", UP_BLACK = "#615c57";
 function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
