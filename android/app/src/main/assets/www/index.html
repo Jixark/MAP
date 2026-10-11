@@ -563,7 +563,7 @@ const PAPAS_JUEGAN = {
 };
 // Los pines de ícono de esos mismos negocios también se pintan en morado claro.
 const PJ_POI = ["restaurante","pizzeria","heladeria","hamburgueseria","sushi"];
-// Dentro del pase Papás Juegan pero con costo extra (se marcan con asterisco *).
+// Actividades NO incluidas en el pase Papás Juegan (costo extra); se marcan con asterisco *.
 const PJ_EXTRA = {
   baja:[15,   // Pizzería
         18],  // Fábrica de Pastelillos (Gansito)
@@ -573,7 +573,7 @@ const PJ_EXTRA = {
         17]   // Fábrica de Cuadernos
 };
 const PJ_EXTRA_POI = ["pizzeria"];
-const PJ_EXTRA_TEXT = "Incluida en el pase Papás Juegan, con costo extra";
+const PJ_EXTRA_TEXT = "No incluida en el pase Papás Juegan: tiene costo extra";
 function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
