@@ -100,3 +100,9 @@ Fábrica de Dulces, Fábrica de Cuadernos, Fábrica de Mantequilla, Hamburgueser
 son las actividades incluidas en el **Upgrade de Papás Juegan**. Llevan el mismo círculo amarillo/negro que el resto del sistema, más un **asterisco**
 y, en la tarjeta, el mensaje en amarillo con letras negras "Actividad incluida dentro de tu Upgrade de Papás Juegan".
 Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` (lista) y `PJ_EXTRA_TEXT` (mensaje) dentro de `index.html`.
+
+## Dónde se vende el Upgrade
+El Upgrade de Papás Juegan se vende en la **KidZania Shop · Tienda interior** (Planta Baja, entre los pines 4 y 5); la tienda junto al avión es la
+**KidZania Shop · Tienda exterior**. Son dos entradas separadas en la lista ("Para comprar") y se pueden elegir por separado con "Cómo llegar".
+La tienda interior muestra "Aquí se vende el Upgrade de Papás Juegan", y cada actividad del Upgrade (con asterisco) tiene el botón
+"Dónde comprarlo: Tienda interior", que cambia a Planta Baja y abre esa tienda. Datos: `POI_TYPES.kzshop_int` / `kzshop_ext`, `UPGRADE_SHOP_*` en `index.html`.
