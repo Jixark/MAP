@@ -90,14 +90,14 @@ Tras 2 minutos sin tocar la pantalla el kiosko vuelve solo a su pantalla inicial
 definen por dónde se camina; `WALK_PX_PER_MIN` calibra el tiempo estimado.
 
 ## Sistema "Papás Juegan"
-Las actividades del sistema Papás Juegan se marcan con un círculo/pin **partido en amarillo y negro** (como el brazalete) en el mapa, la lista y la tarjeta, y tienen su propio chip de filtro **Papás Juegan**.
+Las actividades del sistema Papás Juegan se marcan con un círculo/pin **partido en amarillo (como el brazalete) y el color de su sección** (p. ej. Estudio de Televisión: amarillo y verde azulado, como Medios de Comunicación) en el mapa, la lista y la tarjeta, y tienen su propio chip de filtro **Papás Juegan**.
 La lista está en `PAPAS_JUEGAN` (números de pin por planta) dentro de `index.html`; para agregar o quitar una actividad basta editar esa lista.
 Actualmente: Baja → Hospital (Cirugía), Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos (Gansito), Autobús Turístico (Turi).
 Alta → Purina (Veterinaria), Adidas, Barra de Jugos, Estudio de Arte (Vinci), Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria,
 Fábrica de Dulces, Fábrica de Cuadernos, Fábrica de Mantequilla, Hamburguesería (McDonald's), Estudio de Televisión (Foro), Barra de Sushi.
 
 **Upgrade de Papás Juegan (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería
-son las actividades incluidas en el **Upgrade de Papás Juegan**. Llevan el mismo círculo amarillo/negro que el resto del sistema, más un **asterisco**
+son las actividades incluidas en el **Upgrade de Papás Juegan**. Llevan el mismo círculo partido que el resto del sistema, más un **asterisco**
 y, en la tarjeta, el mensaje en amarillo con letras negras "Actividad incluida dentro de tu Upgrade de Papás Juegan".
 Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` (lista) y `PJ_EXTRA_TEXT` (mensaje) dentro de `index.html`.
 

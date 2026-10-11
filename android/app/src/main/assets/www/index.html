@@ -202,7 +202,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #infoCard .pill.pj::before{background:#615c57;}
 #infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#e2c677; color:#322e2b; font-weight:800; font-size:12.5px; line-height:1.3;}
 /* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
-.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #e2c677 50%, #615c57 50%) !important;}
+.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #e2c677 50%, var(--cc, #615c57) 50%) !important;}
 #infoCard .badge.up, .row .num.up, .pin.pj .num{
   color:#fff; text-shadow:-1px -1px 0 #524d49, 1px -1px 0 #524d49, -1px 1px 0 #524d49, 1px 1px 0 #524d49, 0 0 2px #524d49;
 }
@@ -211,7 +211,7 @@ main{flex:1 1 auto; display:flex; min-height:0;}
   background:#e2c677; color:#322e2b; font-weight:800; font-size:20px; line-height:30px; text-align:center;
   border:1.5px solid #322e2b; box-sizing:border-box; pointer-events:none;
 }
-.pin.poi.pj{border-color:#e2c677 #615c57 #615c57 #e2c677;}
+.pin.poi.pj{border-color:#e2c677 var(--cc, #615c57) var(--cc, #615c57) #e2c677;}
 .row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#e2c677; color:#322e2b; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
 .pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#e2c677; color:#322e2b; font-size:12.5px; font-weight:800;}
 
@@ -698,12 +698,13 @@ function buildPins(){
       btn.setAttribute("aria-label", it.name);
       if(it.icon){
         btn.style.setProperty("--pc", colorOf(it));
+        btn.style.setProperty("--cc", CAT_HEX[it.cat] || UP_BLACK);
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
         let color = colorOf(it), defs = "";
         if(it.pj){   // Papás Juegan: pin partido en amarillo y negro
           color = "url(#up-" + it.key + ")";
-          defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + UP_YELLOW + '"/><stop offset="0.5" stop-color="' + UP_BLACK + '"/></linearGradient></defs>';
+          defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + UP_YELLOW + '"/><stop offset="0.5" stop-color="' + (CAT_HEX[it.cat] || UP_BLACK) + '"/></linearGradient></defs>';
         }
         btn.innerHTML = `
           <svg viewBox="0 0 34 42">${defs}
@@ -774,6 +775,7 @@ function showInfo(it){
     els.infoNum.className = "badge" + (it.pj ? " pj up" : "");
     els.infoNum.textContent = it.num;
   }
+  els.infoNum.style.setProperty("--cc", CAT_HEX[it.cat] || UP_BLACK);
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
   const ex = document.getElementById("infoExtra");
@@ -1070,6 +1072,7 @@ function renderList(){
     row.className = "row";
     row.dataset.key = p.key;
     row.style.setProperty("--pc", colorOf(p));
+    row.style.setProperty("--cc", CAT_HEX[p.cat] || UP_BLACK);
     const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj up" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
     row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + PJ_EXTRA_TEXT + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
