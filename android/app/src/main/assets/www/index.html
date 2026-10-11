@@ -337,6 +337,9 @@ body.view-dl #dlPane{display:block;}
 .dl-qr svg{display:block; width:100%; height:auto;}
 .dl-card b{display:block; font-family:'Baloo 2',system-ui,sans-serif; font-size:18px; margin-bottom:4px;}
 .dl-card span{display:block; font-size:13px; color:var(--text-muted); line-height:1.35;}
+.dl-empty{max-width:520px; margin:10px auto 0; padding:18px 20px; background:var(--surface); border:1px dashed var(--line); border-radius:16px;}
+.dl-empty b{display:block; font-size:16px; margin-bottom:6px;}
+.dl-empty p{margin:0; font-size:13.5px; color:var(--text-muted); line-height:1.45;}
 .dl-steps{margin:6px 0 0; font-size:15px; font-weight:600;}
 .dl-steps b{display:inline-block; width:22px; height:22px; line-height:22px; border-radius:50%; background:var(--red); color:#fff; font-size:13px; margin-right:4px;}
 #morePane{display:none; flex:1 1 auto; min-height:0; flex-direction:column;}
@@ -505,7 +508,11 @@ body.view-more #morePane{display:flex;}
         <span>Si tu celular lo pide, permite la instalación desde este origen.</span>
       </div>
     </div>
-    <p class="dl-steps"><b>1</b> Abre la cámara &nbsp;&nbsp; <b>2</b> Apunta al código &nbsp;&nbsp; <b>3</b> Toca el enlace</p>
+    <div class="dl-empty" id="dlEmpty" hidden>
+      <b>Aún no hay enlaces de descarga configurados</b>
+      <p>Administrador: toca 5 veces el logo de KidZania, escribe el PIN y pega el enlace de la versión web y/o de la APK. Los códigos QR aparecerán aquí.</p>
+    </div>
+    <p class="dl-steps" id="dlSteps"><b>1</b> Abre la cámara &nbsp;&nbsp; <b>2</b> Apunta al código &nbsp;&nbsp; <b>3</b> Toca el enlace</p>
   </div>
 </section>
 
@@ -526,7 +533,7 @@ body.view-more #morePane{display:flex;}
       <input id="dlWebUrl" type="url" placeholder="https://..." autocomplete="off" autocapitalize="off">
       <label for="dlApkUrl">Enlace del QR "Descargar la app" (APK)</label>
       <input id="dlApkUrl" type="url" placeholder="https://.../MapaKidZania.apk" autocomplete="off" autocapitalize="off">
-      <p>Si dejas un enlace vacío se usa el que esté en el código (<code>DOWNLOAD_WEB_URL</code> / <code>DOWNLOAD_APK_URL</code>). Sin enlaces no aparece la pestaña "Descarga la app".</p>
+      <p>Si dejas un enlace vacío se usa el que esté en el código (<code>DOWNLOAD_WEB_URL</code> / <code>DOWNLOAD_APK_URL</code>). Sin enlaces, la pestaña "Descarga la app" muestra cómo configurarlos.</p>
       <div class="m-btns">
         <button class="btn" id="kioskPlace" type="button">Colocar en el mapa</button>
         <button class="btn ghost" id="kioskClear" type="button">Quitar ubicación</button>
@@ -1275,9 +1282,12 @@ function renderDownload(){
   const web = document.getElementById("dlWebCard"), apk = document.getElementById("dlApkCard");
   web.hidden = !renderQr(document.getElementById("dlWebQr"), u.web);
   apk.hidden = !renderQr(document.getElementById("dlApkQr"), u.apk);
+  const none = web.hidden && apk.hidden;
+  document.getElementById("dlEmpty").hidden = !none;
+  document.getElementById("dlSteps").hidden = none;
 }
 function updateDownloadTab(){
-  const u = downloadUrls(), show = IS_KIOSK && !!(u.web || u.apk);
+  const show = IS_KIOSK;   // siempre visible en el kiosko; sin enlaces muestra cómo configurarlos
   document.getElementById("dlTab").hidden = !show;
   if(!show && document.body.classList.contains("view-dl")) setSection("map");
 }
