@@ -210,14 +210,20 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #infoCard .badge.pj{background:#b79cf2; color:#2e1065;}
 #infoCard .pill.pj{background:#e9defc; color:#4c1d95; margin-left:6px;}
 #infoCard .pill.pj::before{background:#b79cf2;}
-#infoCard .extra-note{color:#4c1d95; font-weight:700;}
+#infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#ffd400; color:#111; font-weight:800; font-size:12.5px; line-height:1.3;}
+/* Upgrade de Papás Juegan: círculo partido amarillo / negro (como el brazalete) */
+.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #ffd400 50%, #141414 50%) !important;}
+#infoCard .badge.up, .row .num.up, .pin.extra .num{
+  color:#fff; text-shadow:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 3px #000;
+}
 .pin.extra::after{
   content:"*"; position:absolute; top:-9px; right:-9px; width:23px; height:23px; border-radius:50%;
-  background:#2e1065; color:#fff; font-weight:800; font-size:20px; line-height:30px; text-align:center;
-  border:1.5px solid #fff; box-sizing:border-box; pointer-events:none;
+  background:#ffd400; color:#111; font-weight:800; font-size:20px; line-height:30px; text-align:center;
+  border:1.5px solid #111; box-sizing:border-box; pointer-events:none;
 }
-.row .ast{color:#6d28d9; font-size:15px;}
-.pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#efe7fd; color:#4c1d95; font-size:12.5px; font-weight:700;}
+.pin.poi.extra{border-color:#ffd400 #141414 #141414 #ffd400;}
+.row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#ffd400; color:#111; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
+.pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#ffd400; color:#111; font-size:12.5px; font-weight:800;}
 
 #list{flex:1 1 auto; overflow-y:auto; padding:4px 10px 20px;}
 .cat-heading{
@@ -564,7 +570,7 @@ const PAPAS_JUEGAN = {
 };
 // Los pines de ícono de esos mismos negocios también se pintan en morado claro.
 const PJ_POI = ["restaurante","pizzeria","heladeria","hamburgueseria","sushi"];
-// Actividades NO incluidas en el pase Papás Juegan (costo extra); se marcan con asterisco *.
+// Actividades incluidas en el Upgrade de Papás Juegan (brazalete amarillo); círculo partido amarillo/negro y asterisco *.
 const PJ_EXTRA = {
   baja:[15,   // Pizzería
         18],  // Fábrica de Pastelillos (Gansito)
@@ -574,7 +580,8 @@ const PJ_EXTRA = {
         17]   // Fábrica de Cuadernos
 };
 const PJ_EXTRA_POI = ["pizzeria"];
-const PJ_EXTRA_TEXT = "No incluida en el pase Papás Juegan: tiene costo extra";
+const PJ_EXTRA_TEXT = "Actividad incluida dentro de tu Upgrade de Papás Juegan";
+const UP_YELLOW = "#ffd400", UP_BLACK = "#141414";
 function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
@@ -675,9 +682,13 @@ function buildPins(){
         btn.style.setProperty("--pc", colorOf(it));
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
-        const color = colorOf(it);
+        let color = colorOf(it), defs = "";
+        if(it.extra){   // Upgrade de Papás Juegan: pin partido en amarillo y negro
+          color = "url(#up-" + it.key + ")";
+          defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + UP_YELLOW + '"/><stop offset="0.5" stop-color="' + UP_BLACK + '"/></linearGradient></defs>';
+        }
         btn.innerHTML = `
-          <svg viewBox="0 0 34 42">
+          <svg viewBox="0 0 34 42">${defs}
             <circle class="halo" cx="17" cy="15" r="15" fill="${color}"/>
             <path d="M17 41S2 24.8 2 15C2 7.3 8.6 1 17 1s15 6.3 15 14c0 9.8-15 26-15 26Z" fill="${color}" stroke="#fff" stroke-width="2"/>
           </svg>
@@ -722,16 +733,16 @@ function selectPin(key, opts){
 
 function showInfo(it){
   if(it.icon){
-    els.infoNum.className = "badge icon" + (it.pj ? " pj" : "");
+    els.infoNum.className = "badge icon" + (it.pj ? " pj" : "") + (it.extra ? " up" : "");
     els.infoNum.innerHTML = '<img src="'+it.icon+'" alt="">';
   } else {
-    els.infoNum.className = "badge" + (it.pj ? " pj" : "");
+    els.infoNum.className = "badge" + (it.pj ? " pj" : "") + (it.extra ? " up" : "");
     els.infoNum.textContent = it.num;
   }
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
   const ex = document.getElementById("infoExtra");
-  ex.hidden = !it.extra; ex.textContent = it.extra ? "* " + PJ_EXTRA_TEXT : "";
+  ex.hidden = !it.extra; ex.textContent = it.extra ? PJ_EXTRA_TEXT : "";
   els.infoCat.textContent = it.cat;
   els.infoCat.style.setProperty("--pc", CAT_HEX[it.cat] || "#b50031");
   let note = "";
@@ -1011,7 +1022,7 @@ function renderList(){
     row.className = "row";
     row.dataset.key = p.key;
     row.style.setProperty("--pc", colorOf(p));
-    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj" : ""}">${p.num}</span>`;
+    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj" : ""}${p.extra ? " up" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
     row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + PJ_EXTRA_TEXT + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{
