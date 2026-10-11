@@ -120,3 +120,20 @@ La tienda interior muestra "Adquiere aquí tu Upgrade para Papás Juegan", y cad
   con el botón **Llévame a la tienda**. Al terminar una ruta a una actividad del Upgrade vuelve a ofrecerlo.
 - **Tienda interior:** pregunta "¿Quieres que te ayude a llegar?" y al llegar muestra "Adquiere aquí tu Upgrade para Papás Juegan".
 - **Ruta:** el botón principal es **Siguiente / Listo**; "Ruta sin escaleras (elevador)" quedó como enlace discreto.
+
+## Descarga por QR (el visitante se lleva el mapa en su celular)
+En el kiosko aparece una pestaña **Descarga la app** con hasta dos códigos QR grandes (se dibujan dentro de la app, sin internet):
+1. **Abrir el mapa (web):** enlace a la versión web del mapa. Funciona en iPhone y Android, sin instalar nada. *Es la opción recomendada.*
+2. **Descargar la app (APK):** enlace al archivo `.apk`. Solo Android; el celular puede pedir permiso para instalar desde ese origen.
+
+La pestaña **solo aparece si hay al menos un enlace**. Se configuran de dos formas:
+- En el código (`index.html`): `DOWNLOAD_WEB_URL` y `DOWNLOAD_APK_URL` (valen para todos los kioskos).
+- En cada tablet: 5 toques al logo → PIN → campos "Enlace del QR…" (tienen prioridad sobre el código).
+
+**Versión web (para el QR 1):** sube el contenido de `android/app/src/main/assets/www/` tal cual a cualquier hosting (GitHub Pages, Netlify, tu servidor).
+Abierta por `http(s)` la página funciona como **versión de visitante**: sin reinicio por inactividad, sin administración y sin pestaña de QR.
+Dentro de la app de Android (`file://`) funciona como kiosko. Para forzar el modo kiosko en un navegador agrega `?kiosk` a la dirección.
+
+**APK (para el QR 2):** en Android Studio: *Build > Generate Signed App Bundle / APK > APK*, crea (y guarda a salvo) tu llave de firma, elige **release**.
+Sube el `.apk` a un enlace directo (tu hosting o GitHub Releases) y pega ese enlace. Para Google Play se sube el `.aab` (cuenta de desarrollador de pago).
+La librería de QR (`qrcode.js`, MIT, Kazuhiko Arase) va incluida en `www/`.

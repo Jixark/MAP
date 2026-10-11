@@ -323,8 +323,22 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 }
 .section-switch > * + *{margin-left:2px;}
 .section-switch button.active{background:var(--text); color:var(--surface);}
-body.view-more .floor-switch, body.view-more .search-wrap, body.view-more .view-toggle{display:none;}
-body.view-more main{display:none;}
+body.view-more .floor-switch, body.view-more .search-wrap, body.view-more .view-toggle,
+body.view-dl .floor-switch, body.view-dl .search-wrap, body.view-dl .view-toggle{display:none;}
+body.view-more main, body.view-dl main{display:none;}
+#dlPane{display:none; flex:1 1 auto; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+body.view-dl #dlPane{display:block;}
+.dl-inner{max-width:900px; margin:0 auto; padding:26px 16px 40px; text-align:center;}
+.dl-inner h2{margin:0 0 6px; font-size:28px; line-height:1.15; color:var(--red);}
+.dl-sub{margin:0 0 20px; color:var(--text-muted); font-size:15px; line-height:1.4;}
+.dl-grid{display:flex; flex-wrap:wrap; justify-content:center;}
+.dl-card{width:300px; max-width:100%; margin:0 12px 20px; padding:18px 16px 16px; box-sizing:border-box; background:var(--surface); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow);}
+.dl-qr{width:240px; max-width:100%; margin:0 auto 12px; padding:12px; box-sizing:border-box; background:#fff; border-radius:14px; border:1px solid #e6dccb;}
+.dl-qr svg{display:block; width:100%; height:auto;}
+.dl-card b{display:block; font-family:'Baloo 2',system-ui,sans-serif; font-size:18px; margin-bottom:4px;}
+.dl-card span{display:block; font-size:13px; color:var(--text-muted); line-height:1.35;}
+.dl-steps{margin:6px 0 0; font-size:15px; font-weight:600;}
+.dl-steps b{display:inline-block; width:22px; height:22px; line-height:22px; border-radius:50%; background:var(--red); color:#fff; font-size:13px; margin-right:4px;}
 #morePane{display:none; flex:1 1 auto; min-height:0; flex-direction:column;}
 body.view-more #morePane{display:flex;}
 .more-bar{flex:0 0 auto; display:flex; align-items:center; flex-wrap:wrap; padding:8px 12px 6px; background:var(--surface); border-bottom:1px solid var(--line);}
@@ -375,6 +389,7 @@ body.view-more #morePane{display:flex;}
   <div class="section-switch" id="sectionSwitch">
     <button data-section="map" class="active">Mapa</button>
     <button data-section="more">Conoce más</button>
+    <button data-section="dl" id="dlTab" hidden>Descarga la app</button>
   </div>
 
   <div class="floor-switch" id="floorSwitch">
@@ -474,6 +489,26 @@ body.view-more #morePane{display:flex;}
   <div id="viewerBody"><img id="viewerImg" alt="Tríptico KidZania Santa Fe"></div>
 </section>
 
+<section id="dlPane" aria-label="Descarga la app">
+  <div class="dl-inner">
+    <h2 class="display">¡Lleva el mapa en tu celular!</h2>
+    <p class="dl-sub">Abre la cámara de tu celular, apunta al código y toca el enlace que aparece.</p>
+    <div class="dl-grid">
+      <div class="dl-card" id="dlWebCard" hidden>
+        <div class="dl-qr" id="dlWebQr"></div>
+        <b>Abrir el mapa en tu celular</b>
+        <span>Funciona en iPhone y Android, sin instalar nada.</span>
+      </div>
+      <div class="dl-card" id="dlApkCard" hidden>
+        <div class="dl-qr" id="dlApkQr"></div>
+        <b>Descargar la app (Android)</b>
+        <span>Si tu celular lo pide, permite la instalación desde este origen.</span>
+      </div>
+    </div>
+    <p class="dl-steps"><b>1</b> Abre la cámara &nbsp;&nbsp; <b>2</b> Apunta al código &nbsp;&nbsp; <b>3</b> Toca el enlace</p>
+  </div>
+</section>
+
 <div class="modal" id="admin" hidden>
   <div class="modal-box">
     <h3>Configurar kiosko</h3>
@@ -487,6 +522,11 @@ body.view-more #morePane{display:flex;}
       <label for="kioskName">Nombre de este kiosko</label>
       <input id="kioskName" type="text" maxlength="40" placeholder="Ej. Kiosko Barra de Sushi" autocomplete="off">
       <p id="kioskState"></p>
+      <label for="dlWebUrl">Enlace del QR "Abrir el mapa" (web)</label>
+      <input id="dlWebUrl" type="url" placeholder="https://..." autocomplete="off" autocapitalize="off">
+      <label for="dlApkUrl">Enlace del QR "Descargar la app" (APK)</label>
+      <input id="dlApkUrl" type="url" placeholder="https://.../MapaKidZania.apk" autocomplete="off" autocapitalize="off">
+      <p>Si dejas un enlace vacío se usa el que esté en el código (<code>DOWNLOAD_WEB_URL</code> / <code>DOWNLOAD_APK_URL</code>). Sin enlaces no aparece la pestaña "Descarga la app".</p>
       <div class="m-btns">
         <button class="btn" id="kioskPlace" type="button">Colocar en el mapa</button>
         <button class="btn ghost" id="kioskClear" type="button">Quitar ubicación</button>
@@ -496,6 +536,7 @@ body.view-more #morePane{display:flex;}
   </div>
 </div>
 
+<script src="qrcode.js"></script>
 <script>
 // Older Android WebViews (kiosk tablets) lack a few conveniences; add them.
 if(window.NodeList && !NodeList.prototype.forEach){ NodeList.prototype.forEach = Array.prototype.forEach; }
@@ -1186,8 +1227,10 @@ window.addEventListener("resize", layoutViewer);
 
 function setSection(sec){
   document.body.classList.toggle("view-more", sec==="more");
+  document.body.classList.toggle("view-dl", sec==="dl");
   document.querySelectorAll("#sectionSwitch button").forEach(b=>b.classList.toggle("active", b.dataset.section===sec));
   if(sec==="more"){ if(viewer.page<0) showPage(0); else layoutViewer(); }
+  else if(sec==="dl"){ renderDownload(); }
   else requestAnimationFrame(fitToContainer);
 }
 document.getElementById("sectionSwitch").addEventListener("click", (e)=>{
@@ -1200,10 +1243,44 @@ window.handleBack = function(){
   if(!adminEl.hidden){ adminEl.hidden = true; return true; }
   if(state.placing){ document.getElementById("placeCancel").click(); return true; }
   if(state.route){ closeRoute(false); return true; }
-  if(document.body.classList.contains("view-more")){ setSection("map"); return true; }
+  if(document.body.classList.contains("view-more") || document.body.classList.contains("view-dl")){ setSection("map"); return true; }
   return false;
 };
 
+
+
+/* ---------------- Descarga por QR ---------------- */
+// Enlaces a los que apuntan los QR (también se pueden cambiar por tablet en el diálogo de administración).
+const DOWNLOAD_WEB_URL = "";   // p. ej. "https://tu-sitio.com/mapa/"  (versión web: iPhone y Android, sin instalar)
+const DOWNLOAD_APK_URL = "";   // p. ej. "https://tu-sitio.com/MapaKidZania.apk"  (solo Android)
+// Dentro de la app de Android (file://) la página funciona como kiosko; abierta desde un celular por http(s) es la versión de visitante.
+const IS_KIOSK = location.protocol === "file:" || /[?&]kiosk\b/.test(location.search);
+function loadDl(){ try{ const v = localStorage.getItem("kidzania_dl"); return v ? JSON.parse(v) : {}; }catch(_){ return {}; } }
+function saveDl(o){ try{ localStorage.setItem("kidzania_dl", JSON.stringify(o)); }catch(_){} }
+function downloadUrls(){
+  const o = loadDl();
+  return {web:(o.web && o.web.trim()) || DOWNLOAD_WEB_URL, apk:(o.apk && o.apk.trim()) || DOWNLOAD_APK_URL};
+}
+function renderQr(box, url){
+  box.innerHTML = "";
+  if(!url || !window.qrcode) return false;
+  try{
+    const q = qrcode(0, "M"); q.addData(url); q.make();
+    box.innerHTML = q.createSvgTag({cellSize:6, margin:0, scalable:true});
+    return true;
+  }catch(_){ return false; }
+}
+function renderDownload(){
+  const u = downloadUrls();
+  const web = document.getElementById("dlWebCard"), apk = document.getElementById("dlApkCard");
+  web.hidden = !renderQr(document.getElementById("dlWebQr"), u.web);
+  apk.hidden = !renderQr(document.getElementById("dlApkQr"), u.apk);
+}
+function updateDownloadTab(){
+  const u = downloadUrls(), show = IS_KIOSK && !!(u.web || u.apk);
+  document.getElementById("dlTab").hidden = !show;
+  if(!show && document.body.classList.contains("view-dl")) setSection("map");
+}
 
 /* ---------------- Kiosko + cómo llegar ---------------- */
 const ADMIN_PIN = "2468";          // PIN para configurar el kiosko (mantén pulsado el logo 2 s)
@@ -1400,7 +1477,7 @@ function youPoint(){
 const adminEl = document.getElementById("admin");
 const adminUI = {pin:document.getElementById("adminPin"), form:document.getElementById("adminForm"),
   pinInput:document.getElementById("pinInput"), pinErr:document.getElementById("pinErr"),
-  name:document.getElementById("kioskName"), stateP:document.getElementById("kioskState"), banner:document.getElementById("placeBanner")};
+  name:document.getElementById("kioskName"), dlWeb:document.getElementById("dlWebUrl"), dlApk:document.getElementById("dlApkUrl"), stateP:document.getElementById("kioskState"), banner:document.getElementById("placeBanner")};
 function renderKioskState(){
   const k = state.kiosk;
   adminUI.stateP.textContent = k ? "Ubicación guardada en " + FLOOR_NAMES[k.floor] + ". Las consultas en esta tablet ofrecerán rutas desde aquí."
@@ -1414,6 +1491,7 @@ function openAdmin(){
 function showAdminForm(){
   adminEl.hidden = false; adminUI.pin.hidden = true; adminUI.form.hidden = false;
   adminUI.name.value = state.kiosk ? state.kiosk.name : (state.pendingName || "");
+  const dl = loadDl(); adminUI.dlWeb.value = dl.web || ""; adminUI.dlApk.value = dl.apk || "";
   renderKioskState();
 }
 document.getElementById("pinOk").addEventListener("click", ()=>{
@@ -1427,13 +1505,16 @@ adminUI.name.addEventListener("input", ()=>{
   state.pendingName = adminUI.name.value;
   if(state.kiosk){ state.kiosk.name = adminUI.name.value; saveKiosk(state.kiosk); }
 });
+[adminUI.dlWeb, adminUI.dlApk].forEach(inp=>inp.addEventListener("input", ()=>{
+  saveDl({web:adminUI.dlWeb.value.trim(), apk:adminUI.dlApk.value.trim()}); updateDownloadTab();
+}));
 document.getElementById("kioskClear").addEventListener("click", ()=>{
   state.kiosk = null; saveKiosk(null); closeRoute(false); renderKioskState();
 });
 document.getElementById("kioskPlace").addEventListener("click", ()=>{
   state.pendingName = adminUI.name.value;
   state.placing = true; adminEl.hidden = true; adminUI.banner.hidden = false; refreshChrome();
-  if(state.section === "more" || document.body.classList.contains("view-more")) setSection("map");
+  if(document.body.classList.contains("view-more") || document.body.classList.contains("view-dl")) setSection("map");
 });
 document.getElementById("placeCancel").addEventListener("click", ()=>{
   state.placing = false; adminUI.banner.hidden = true; showAdminForm(); refreshChrome();
@@ -1453,6 +1534,7 @@ els.viewport.addEventListener("click", (e)=>{
 });
 // Admin dialog: tap the logo 5 times within 4 s, or press and hold it for 2 s.
 (function(){
+  if(!IS_KIOSK) return;   // en la versión de visitante (celular) no hay administración
   const brand = document.querySelector(".brand");
   let timer = null, sx = 0, sy = 0, taps = [];
   const startHold = (x, y)=>{ clearTimeout(timer); sx = x; sy = y; timer = setTimeout(openAdmin, 2000); };
@@ -1472,13 +1554,14 @@ els.viewport.addEventListener("click", (e)=>{
 
 // Kiosk behaviour: after a while without touches, go back to the start screen of this kiosk.
 (function(){
+  if(!IS_KIOSK) return;   // el reinicio por inactividad es solo del kiosko
   let t = null;
   function reset(){
     if(state.placing || !adminEl.hidden) return;
     if(state.route) closeRoute(false);
     state.selected = null; hideInfo();
     state.query = ""; els.search.value = ""; els.searchClear.classList.remove("show"); state.cat = null; buildChips();
-    if(document.body.classList.contains("view-more")) setSection("map");
+    if(document.body.classList.contains("view-more") || document.body.classList.contains("view-dl")) setSection("map");
     if(state.view === "list") setView("map");
     loadFloor(state.kiosk ? state.kiosk.floor : "baja");
   }
@@ -1488,6 +1571,7 @@ els.viewport.addEventListener("click", (e)=>{
 })();
 
 /* init */
+updateDownloadTab();
 buildChips();
 loadFloor(state.kiosk ? state.kiosk.floor : "baja");
 refreshChrome();
