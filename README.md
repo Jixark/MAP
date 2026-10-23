@@ -89,17 +89,20 @@ Tras 2 minutos sin tocar la pantalla el kiosko vuelve solo a su pantalla inicial
 **Ajustes en `index.html`:** `GRAPH` (red de pasillos por planta, en píxeles del mapa) y `LINKS` (escaleras/elevador que unen plantas)
 definen por dónde se camina; `WALK_PX_PER_MIN` calibra el tiempo estimado.
 
-## Sistema "Papás Juegan"
-Las actividades del sistema Papás Juegan se marcan con un círculo/pin **partido en amarillo (como el brazalete) y el color de su sección** (p. ej. Estudio de Televisión: amarillo y verde azulado, como Medios de Comunicación) en el mapa, la lista y la tarjeta, y tienen su propio chip de filtro **Papás Juegan**.
-La lista está en `PAPAS_JUEGAN` (números de pin por planta) dentro de `index.html`; para agregar o quitar una actividad basta editar esa lista.
-Actualmente: Baja → Hospital (Cirugía), Universidad, Restaurante, Pizzería, Supermercado, Fábrica de Pastelillos (Gansito), Autobús Turístico (Turi).
-Alta → Purina (Veterinaria), Adidas, Barra de Jugos, Estudio de Arte (Vinci), Estudio de Diseño, Heladería, Disco Lounge, Escuela Culinaria,
-Fábrica de Dulces, Fábrica de Cuadernos, Fábrica de Mantequilla, Hamburguesería (McDonald's), Estudio de Televisión (Foro), Barra de Sushi.
+## Categorías de actividades (listado "Papás Juegan SFE")
+Cada establecimiento se clasifica según el color que tiene en el Excel y se marca en el mapa, la lista y la tarjeta con un círculo/pin **partido en dos colores:
+el de su categoría + el color de su sección** (p. ej. Estudio de Televisión: amarillo y verde azulado, como Medios de Comunicación).
 
-**Upgrade de Papás Juegan (*)**: Cuadernos, Gansito (Fábrica de Pastelillos), Escuela Culinaria, Veterinaria (Purina), Adidas y Pizzería
-son las actividades incluidas en el **Upgrade de Papás Juegan**. Llevan el mismo círculo partido que el resto del sistema, más un **asterisco**
-y, en la tarjeta, el mensaje en amarillo con letras negras "Actividad incluida dentro de tu Upgrade de Papás Juegan".
-Se editan en `PJ_EXTRA` / `PJ_EXTRA_POI` (lista) y `PJ_EXTRA_TEXT` (mensaje) dentro de `index.html`.
+| Color en el Excel | Marca en el mapa | Leyenda en la tarjeta |
+|---|---|---|
+| Naranja | amarillo + color de la sección, con asterisco **\*** | "\* Actividad para papá incluida en el Upgrade" |
+| Blanco | amarillo + color de la sección | "Actividad para papás: elige las 3 que más te gusten" |
+| Rojo | rosa + color de la sección | "Actividad exclusiva para kids de 3 a 16 años, aplican restricciones" |
+| Azul | azul cielo + color de la sección | "Actividades para todos y en todo momento" |
+
+Filtros: **Papás Juegan** (naranja + blanco), **Solo kids 3-16** y **Para todos**; al activarlos, la lista muestra arriba la leyenda correspondiente.
+Los lugares sin color en el Excel o que no aparecen en él (Estudio de Foto, Tienda Departamental, Dulcería, Centro de Exposiciones, Fábrica de Fósforos, Oficina de Pasaportes)
+se quedan con su color normal. Para cambiar la categoría de un lugar edita `ACTIVITY_CLASS` (número de pin por planta) y los textos/colores en `CLASSES`, dentro de `index.html`.
 
 ## Dónde se vende el Upgrade
 El Upgrade de Papás Juegan se vende en la **KidZania Shop · Tienda interior** (Planta Baja, entre los pines 4 y 5); la tienda junto al avión es la

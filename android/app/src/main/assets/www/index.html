@@ -202,8 +202,8 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #infoCard .pill.pj::before{background:#615c57;}
 #infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#e2c677; color:#322e2b; font-weight:800; font-size:12.5px; line-height:1.3;}
 /* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
-.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, #e2c677 50%, var(--cc, #615c57) 50%) !important;}
-#infoCard .badge.up, .row .num.up, .pin.pj .num{
+.up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, var(--c1, #e2c677) 50%, var(--cc, #615c57) 50%) !important;}
+#infoCard .badge.up, .row .num.up, .pin.cls .num{
   color:#fff; text-shadow:-1px -1px 0 #524d49, 1px -1px 0 #524d49, -1px 1px 0 #524d49, 1px 1px 0 #524d49, 0 0 2px #524d49;
 }
 .pin.extra::after{
@@ -211,7 +211,9 @@ main{flex:1 1 auto; display:flex; min-height:0;}
   background:#e2c677; color:#322e2b; font-weight:800; font-size:20px; line-height:30px; text-align:center;
   border:1.5px solid #322e2b; box-sizing:border-box; pointer-events:none;
 }
-.pin.poi.pj{border-color:#e2c677 var(--cc, #615c57) var(--cc, #615c57) #e2c677;}
+.pin.poi.cls{border-color:var(--c1, #e2c677) var(--cc, #615c57) var(--cc, #615c57) var(--c1, #e2c677);}
+.chip.soft.active{color:#322e2b;}
+.chip.soft.active::before{background:#322e2b;}
 .row .ast{display:inline-block; min-width:17px; height:17px; border-radius:50%; background:#e2c677; color:#322e2b; font-size:14px; font-weight:800; line-height:21px; text-align:center; margin-left:4px;}
 .pj-note{margin:2px 8px 4px; padding:8px 10px; border-radius:10px; background:#e2c677; color:#322e2b; font-size:12.5px; font-weight:800;}
 
@@ -606,48 +608,30 @@ const POI_TYPES = {
   salida:{name:"Salidas de Emergencia",cat:"Circulación"}
 };
 
-// Sistema "Papás Juegan": actividades marcadas con el círculo partido amarillo/negro (número de pin por planta).
+// Clasificación de las actividades según el listado "Papás Juegan SFE" (color del establecimiento en el Excel):
+//   up   = naranja  -> actividad para papá incluida en el Upgrade (con *)
+//   kids = rojo     -> exclusiva para kids de 3 a 16 años, aplican restricciones
+//   all  = azul     -> actividades para todos y en todo momento
+//   pick = blanco   -> actividad para papás: elige las 3 que más te gusten
+// Cada una se marca con un círculo/pin partido: color de la categoría + color de la sección del lugar.
 const PJ_NAME = "Papás Juegan", PJ_COLOR = "#e2c677", PJ_INK = "#615c57";
-const PAPAS_JUEGAN = {
-  baja:[2,   // Hospital (Cirugía)
-        3,   // Universidad
-        14,  // Restaurante
-        15,  // Pizzería
-        16,  // Supermercado
-        18,  // Fábrica de Pastelillos (Gansito)
-        35], // Autobús Turístico (Turi)
-  alta:[5,   // Purina (Veterinaria)
-        7,   // Adidas
-        9,   // Barra de Jugos
-        10,  // Estudio de Arte (Vinci)
-        11,  // Estudio de Diseño
-        12,  // Heladería
-        13,  // Disco Lounge
-        15,  // Escuela Culinaria
-        16,  // Fábrica de Dulces
-        17,  // Fábrica de Cuadernos
-        19,  // Fábrica de Mantequilla
-        20,  // Hamburguesería (McDonald's)
-        21,  // Estudio de Televisión (Foro)
-        22]  // Barra de Sushi
+const CLASSES = {
+  up:   {color:"#e2c677", legend:"Actividad para papá incluida en el Upgrade", parents:true, star:true},
+  pick: {color:"#e2c677", legend:"Actividad para papás: elige las 3 que más te gusten", parents:true},
+  kids: {color:"#e39aa9", legend:"Actividad exclusiva para kids de 3 a 16 años, aplican restricciones"},
+  all:  {color:"#8cc7d9", legend:"Actividades para todos y en todo momento"}
 };
-// Los pines de ícono de esos mismos negocios también se pintan en morado claro.
-const PJ_POI = ["restaurante","pizzeria","heladeria","hamburgueseria","sushi"];
-// Actividades incluidas en el Upgrade de Papás Juegan (brazalete amarillo); círculo partido amarillo/negro y asterisco *.
-const PJ_EXTRA = {
-  baja:[15,   // Pizzería
-        18],  // Fábrica de Pastelillos (Gansito)
-  alta:[5,    // Purina (Veterinaria)
-        7,    // Adidas
-        15,   // Escuela Culinaria
-        17]   // Fábrica de Cuadernos
+// Número de pin -> categoría (los lugares que no aparecen aquí no tienen categoría en el Excel).
+const ACTIVITY_CLASS = {
+  baja:{2:"kids",3:"pick",5:"up",6:"pick",7:"pick",8:"up",9:"pick",10:"pick",12:"pick",13:"pick",14:"pick",15:"pick",16:"kids",18:"up",19:"pick",20:"pick",21:"pick",22:"up",23:"pick",24:"pick",25:"pick",26:"pick",27:"pick",28:"pick",30:"kids",31:"pick",32:"pick",35:"all",36:"kids"},
+  alta:{1:"kids",2:"up",3:"up",4:"pick",5:"kids",7:"up",9:"pick",10:"kids",11:"pick",12:"pick",13:"pick",14:"pick",15:"up",16:"up",17:"up",18:"kids",19:"up",20:"pick",21:"up",22:"pick",23:"all",24:"kids"}
 };
-const PJ_EXTRA_POI = ["pizzeria"];
-const PJ_EXTRA_TEXT = "Actividad incluida dentro de tu Upgrade de Papás Juegan";
+// Los pines de ícono de estos negocios (zona "Para comer") llevan la misma categoría que su establecimiento.
+const POI_CLASS = {restaurante:"pick", pizzeria:"pick", heladeria:"pick", hamburgueseria:"pick", sushi:"pick"};
 const UPGRADE_SHOP_TEXT = "Adquiere aquí tu Upgrade para Papás Juegan";
 const UPGRADE_SHOP_KEY = "p:kzshop_int", UPGRADE_SHOP_FLOOR = "baja";
 const UP_YELLOW = "#e2c677", UP_BLACK = "#615c57";
-function colorOf(it){ return it.pj ? PJ_COLOR : (CAT_HEX[it.cat] || "#b50031"); }
+function colorOf(it){ return it.cls ? CLASSES[it.cls].color : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
 
@@ -687,13 +671,13 @@ function normalize(s){
 function itemsForFloor(floor){
   const f = DATA[floor];
   if(f._items) return f._items;
-  const pjNums = PAPAS_JUEGAN[floor] || [], extraNums = PJ_EXTRA[floor] || [];
-  const items = f.pins.map(p=>({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, pj:pjNums.indexOf(p.num) >= 0,
-                                extra:extraNums.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}));
+  const cm = ACTIVITY_CLASS[floor] || {};
+  const flags = c => ({cls:c || null, pj:!!(c && CLASSES[c].parents), extra:!!(c && CLASSES[c].star)});
+  const items = f.pins.map(p=>Object.assign({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, points:[{x:p.x, y:p.y}]}, flags(cm[p.num])));
   Object.keys(f.pois || {}).forEach(id=>{
     const t = POI_TYPES[id];
-    items.push({key:"p:"+id, id:id, name:t.name, cat:t.cat, pj:PJ_POI.indexOf(id) >= 0, extra:PJ_EXTRA_POI.indexOf(id) >= 0, note:t.note || "", upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
-                points:f.pois[id].map(a=>({x:a[0], y:a[1]}))});
+    items.push(Object.assign({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
+                points:f.pois[id].map(a=>({x:a[0], y:a[1]}))}, flags(POI_CLASS[id])));
   });
   f._items = items;
   return items;
@@ -705,7 +689,7 @@ function filteredItems(){
   return currentItems().filter(p=>{
     const g = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
     if(g){
-      if(g.pj){ if(!p.pj || p.icon) return false; }   // el ícono de servicio del mismo negocio no se repite en la lista
+      if(g.cls){ if(p.icon || g.cls.indexOf(p.cls) < 0) return false; }   // el ícono de servicio del mismo negocio no se repite en la lista
       else if(g.cats.indexOf(p.cat) < 0) return false;
     }
     if(q && !normalize(p.name).includes(q)) return false;
@@ -739,7 +723,7 @@ function buildPins(){
   currentItems().forEach(it=>{
     it.points.forEach(pt=>{
       const btn = document.createElement("button");
-      btn.className = "pin" + (it.icon ? " poi" : "") + (it.pj ? " pj" : "") + (it.extra ? " extra" : "");
+      btn.className = "pin" + (it.icon ? " poi" : "") + (it.cls ? " cls" : "") + (it.pj ? " pj" : "") + (it.extra ? " extra" : "");
       btn.style.left = pt.x + "%";
       btn.style.top = pt.y + "%";
       btn.dataset.key = it.key;
@@ -747,12 +731,13 @@ function buildPins(){
       if(it.icon){
         btn.style.setProperty("--pc", colorOf(it));
         btn.style.setProperty("--cc", CAT_HEX[it.cat] || UP_BLACK);
+        if(it.cls) btn.style.setProperty("--c1", CLASSES[it.cls].color);
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
         let color = colorOf(it), defs = "";
-        if(it.pj){   // Papás Juegan: pin partido en amarillo y negro
+        if(it.cls){   // categoría del Excel: pin partido en el color de la categoría y el de la sección
           color = "url(#up-" + it.key + ")";
-          defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + UP_YELLOW + '"/><stop offset="0.5" stop-color="' + (CAT_HEX[it.cat] || UP_BLACK) + '"/></linearGradient></defs>';
+          defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + CLASSES[it.cls].color + '"/><stop offset="0.5" stop-color="' + (CAT_HEX[it.cat] || UP_BLACK) + '"/></linearGradient></defs>';
         }
         btn.innerHTML = `
           <svg viewBox="0 0 34 42">${defs}
@@ -817,18 +802,21 @@ function routeToUpgradeShop(){
 
 function showInfo(it){
   if(it.icon){
-    els.infoNum.className = "badge icon" + (it.pj ? " pj up" : "");
+    els.infoNum.className = "badge icon" + (it.cls ? " up" : "");
     els.infoNum.innerHTML = '<img src="'+it.icon+'" alt="">';
   } else {
-    els.infoNum.className = "badge" + (it.pj ? " pj up" : "");
+    els.infoNum.className = "badge" + (it.cls ? " up" : "");
     els.infoNum.textContent = it.num;
   }
   els.infoNum.style.setProperty("--cc", CAT_HEX[it.cat] || UP_BLACK);
+  els.infoNum.style.setProperty("--c1", it.cls ? CLASSES[it.cls].color : UP_YELLOW);
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
   const ex = document.getElementById("infoExtra");
-  ex.hidden = !(it.extra || it.upgradeShop);
-  ex.textContent = it.upgradeShop ? UPGRADE_SHOP_TEXT : (it.extra ? PJ_EXTRA_TEXT : "");
+  const legend = it.upgradeShop ? UPGRADE_SHOP_TEXT : (it.cls ? (CLASSES[it.cls].star ? "* " : "") + CLASSES[it.cls].legend : "");
+  ex.hidden = !legend;
+  ex.textContent = legend;
+  ex.style.background = it.cls ? CLASSES[it.cls].color : UP_YELLOW;
   els.infoCat.textContent = it.cat;
   els.infoCat.style.setProperty("--pc", CAT_HEX[it.cat] || "#b50031");
   let note = "";
@@ -1062,7 +1050,9 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
 
 // Filtros simples (en vez de una categoría por cada tipo de lugar).
 const CHIP_GROUPS = [
-  {name:PJ_NAME, pj:true},
+  {name:PJ_NAME, cls:["up","pick"], pj:true},
+  {name:"Solo kids 3-16", cls:["kids"], color:CLASSES.kids.color, soft:true},
+  {name:"Para todos", cls:["all"], color:CLASSES.all.color, soft:true},
   {name:"Comer", cats:["Restaurantes","Para comer"], color:"#6b3a1f"},
   {name:"Tiendas", cats:["Para comprar"], color:"#2b2b2b"},
   {name:"Servicios", cats:["Servicios"], color:"#1f5fa8"},
@@ -1081,8 +1071,8 @@ function buildChips(){
   mk("Todos", "", "#8a7f78", null);
   const items = currentItems();
   CHIP_GROUPS.forEach(g=>{
-    const has = g.pj ? items.some(p=>p.pj && !p.icon) : items.some(p=>g.cats.indexOf(p.cat) >= 0);
-    if(has) mk(g.name, g.pj ? "pj" : "", g.pj ? PJ_COLOR : g.color, g.name);
+    const has = g.cls ? items.some(p=>!p.icon && g.cls.indexOf(p.cls) >= 0) : items.some(p=>g.cats.indexOf(p.cat) >= 0);
+    if(has) mk(g.name, g.pj ? "pj" : (g.soft ? "soft" : ""), g.pj ? PJ_COLOR : g.color, g.name);
   });
 }
 
@@ -1100,11 +1090,15 @@ function renderList(){
     return;
   }
 
-  if(state.cat === PJ_NAME){
-    const note = document.createElement("div");
-    note.className = "pj-note";
-    note.textContent = "* " + PJ_EXTRA_TEXT;
-    els.list.appendChild(note);
+  const grp = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
+  if(grp && grp.cls){   // leyenda de cada categoría del filtro activo
+    grp.cls.forEach(c=>{
+      const note = document.createElement("div");
+      note.className = "pj-note";
+      note.style.background = CLASSES[c].color;
+      note.textContent = (CLASSES[c].star ? "* " : "") + CLASSES[c].legend;
+      els.list.appendChild(note);
+    });
   }
   let lastCat = null;
   items.forEach(p=>{
@@ -1121,9 +1115,10 @@ function renderList(){
     row.dataset.key = p.key;
     row.style.setProperty("--pc", colorOf(p));
     row.style.setProperty("--cc", CAT_HEX[p.cat] || UP_BLACK);
-    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.pj ? " pj up" : ""}">${p.num}</span>`;
+    if(p.cls) row.style.setProperty("--c1", CLASSES[p.cls].color);
+    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.cls ? " up" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
-    row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + PJ_EXTRA_TEXT + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
+    row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + CLASSES.up.legend + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{
       selectPin(p.key, {locate:true});
       if(state.view==="list" && window.innerWidth<=680) setView("map");
