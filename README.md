@@ -97,10 +97,10 @@ el de su categoría + el color de su sección** (p. ej. Estudio de Televisión: 
 |---|---|---|
 | Naranja | amarillo + color de la sección, con asterisco **\*** | "\* Actividad para papá incluida en el Upgrade" |
 | Blanco | amarillo + color de la sección | "Actividad para papás: elige las 3 que más te gusten" |
-| Rojo | rosa + color de la sección | "Actividad exclusiva para kids de 3 a 16 años, aplican restricciones" |
+| Rojo | rosa + color de la sección | "Actividad exclusiva para Kals de 3 a 16 años, aplican restricciones" |
 | Azul | azul cielo + color de la sección | "Actividades para todos y en todo momento" |
 
-Filtros: **Papás Juegan** (naranja + blanco), **Solo kids 3-16** y **Para todos**; al activarlos, la lista muestra arriba la leyenda correspondiente.
+Filtros: **Papás Juegan** (naranja + blanco), **Solo Kals 3-16** y **Para todos**; al activarlos, la lista muestra arriba la leyenda correspondiente.
 Los lugares sin color en el Excel o que no aparecen en él (Estudio de Foto, Tienda Departamental, Dulcería, Centro de Exposiciones, Fábrica de Fósforos, Oficina de Pasaportes)
 se quedan con su color normal. Para cambiar la categoría de un lugar edita `ACTIVITY_CLASS` (número de pin por planta) y los textos/colores en `CLASSES`, dentro de `index.html`.
 

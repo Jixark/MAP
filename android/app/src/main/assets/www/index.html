@@ -610,7 +610,7 @@ const POI_TYPES = {
 
 // Clasificación de las actividades según el listado "Papás Juegan SFE" (color del establecimiento en el Excel):
 //   up   = naranja  -> actividad para papá incluida en el Upgrade (con *)
-//   kids = rojo     -> exclusiva para kids de 3 a 16 años, aplican restricciones
+//   kids = rojo     -> exclusiva para Kals de 3 a 16 años, aplican restricciones
 //   all  = azul     -> actividades para todos y en todo momento
 //   pick = blanco   -> actividad para papás: elige las 3 que más te gusten
 // Cada una se marca con un círculo/pin partido: color de la categoría + color de la sección del lugar.
@@ -618,7 +618,7 @@ const PJ_NAME = "Papás Juegan", PJ_COLOR = "#e2c677", PJ_INK = "#615c57";
 const CLASSES = {
   up:   {color:"#e2c677", legend:"Actividad para papá incluida en el Upgrade", parents:true, star:true},
   pick: {color:"#e2c677", legend:"Actividad para papás: elige las 3 que más te gusten", parents:true},
-  kids: {color:"#e39aa9", legend:"Actividad exclusiva para kids de 3 a 16 años, aplican restricciones"},
+  kids: {color:"#e39aa9", legend:"Actividad exclusiva para Kals de 3 a 16 años, aplican restricciones"},
   all:  {color:"#8cc7d9", legend:"Actividades para todos y en todo momento"}
 };
 // Número de pin -> categoría (los lugares que no aparecen aquí no tienen categoría en el Excel).
@@ -1051,7 +1051,7 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
 // Filtros simples (en vez de una categoría por cada tipo de lugar).
 const CHIP_GROUPS = [
   {name:PJ_NAME, cls:["up","pick"], pj:true},
-  {name:"Solo kids 3-16", cls:["kids"], color:CLASSES.kids.color, soft:true},
+  {name:"Solo Kals 3-16", cls:["kids"], color:CLASSES.kids.color, soft:true},
   {name:"Para todos", cls:["all"], color:CLASSES.all.color, soft:true},
   {name:"Comer", cats:["Restaurantes","Para comer"], color:"#6b3a1f"},
   {name:"Tiendas", cats:["Para comprar"], color:"#2b2b2b"},
