@@ -202,6 +202,13 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 #infoCard .pill.pj::before{background:#615c57;}
 #infoCard .pill.inf{background:#8fd0b0; color:#1f3d2e; margin-left:6px;}
 #infoCard .pill.inf::before{background:#1f3d2e;}
+/* actividades de temporada: morado oscuro de miedo (tiene prioridad sobre las demás marcas) */
+#infoCard .pill.sea{background:#5b21b6; color:#fff; margin-left:6px;}
+#infoCard .pill.sea::before{background:#c4b5fd;}
+#infoCard .sea-act{margin:6px 0 0; font-size:13px; font-weight:800; color:#5b21b6;}
+#infoCard .badge.sea, .row .num.sea, #infoCard .badge.up.sea, .row .num.up.sea{background:#5b21b6 !important; color:#fff; text-shadow:none;}
+.pin.poi.sea{border-color:#5b21b6; box-shadow:0 0 0 3px rgba(91,33,182,.4);}
+.pin.sea:not(.poi) svg{filter:drop-shadow(0 0 5px rgba(91,33,182,.75));}
 #infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#e2c677; color:#322e2b; font-weight:800; font-size:12.5px; line-height:1.3;}
 /* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
 .up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, var(--c1, #e2c677) 50%, var(--cc, #615c57) 50%) !important;}
@@ -456,6 +463,8 @@ body.view-more #morePane{display:flex;}
         <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
         <span class="pill pj" id="infoPj" hidden>Papás Juegan</span>
         <span class="pill inf" id="infoInf" hidden>Kals de 1 a 3 años</span>
+        <span class="pill sea" id="infoSea" hidden>Actividad de temporada</span>
+        <p class="note sea-act" id="infoSeaAct" hidden></p>
         <p class="note" id="infoNote"></p>
         <p class="note extra-note" id="infoExtra" hidden></p>
         <div class="route-ask" id="routeAsk" hidden>
@@ -638,11 +647,21 @@ const INFANT = {
   alta:[1,9,10,11,12,13,16,20,22]            // Aviación (cabina), Barra de Jugos, Estudio de Arte, Estudio de Diseño, Heladería, Disco, Fáb. de Dulces, Hamburguesería, Sushi
 };
 const INFANT_POI = ["pintacaritas","tatuajes"];
+// Actividades de temporada (Día de Muertos): lugares que participan y qué ofrecen. Pines en morado oscuro.
+const SEASON_NAME = "Actividades de temporada", SEASON_COLOR = "#5b21b6";
+const SEASON_NOTE = "Día de Muertos: estos establecimientos participan en la dinámica de temporada.";
+const SEASON = {
+  baja:{21:"Teatro de sombras, Sensorama y Obra de teatro",   // Teatro
+        14:"Taller de donas"},                                  // Restaurante
+  alta:{6:"Elabora tu elixir",                                  // Taller de Elixir
+        18:"Taller de apapachos"}                               // Fábrica de Apapachos
+};
+const SEASON_POI = {tatuajes:"Tatuaje", cafe:"Crepa"};          // íconos de servicio (Tatuajes, Café)
 const POI_CLASS = {restaurante:"pick", pizzeria:"pick", heladeria:"pick", hamburgueseria:"pick", sushi:"pick"};
 const UPGRADE_SHOP_TEXT = "Adquiere aquí tu Upgrade para Papás Juegan";
 const UPGRADE_SHOP_KEY = "p:kzshop_int", UPGRADE_SHOP_FLOOR = "baja";
 const UP_YELLOW = "#e2c677", UP_BLACK = "#615c57";
-function colorOf(it){ return it.cls ? CLASSES[it.cls].color : (CAT_HEX[it.cat] || "#b50031"); }
+function colorOf(it){ return it.sea ? SEASON_COLOR : it.cls ? CLASSES[it.cls].color : (CAT_HEX[it.cat] || "#b50031"); }
 
 const FLOOR_NAMES = {baja:"Planta Baja", alta:"Planta Alta"};
 
@@ -685,10 +704,10 @@ function itemsForFloor(floor){
   const cm = ACTIVITY_CLASS[floor] || {};
   const flags = c => ({cls:c || null, pj:!!(c && CLASSES[c].parents), extra:!!(c && CLASSES[c].star)});
   const inf = INFANT[floor] || [];
-  const items = f.pins.map(p=>Object.assign({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, inf:inf.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}, flags(cm[p.num])));
+  const items = f.pins.map(p=>Object.assign({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, inf:inf.indexOf(p.num) >= 0, sea:(SEASON[floor] || {})[p.num] || null, points:[{x:p.x, y:p.y}]}, flags(cm[p.num])));
   Object.keys(f.pois || {}).forEach(id=>{
     const t = POI_TYPES[id];
-    items.push(Object.assign({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", inf:INFANT_POI.indexOf(id) >= 0, upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
+    items.push(Object.assign({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", inf:INFANT_POI.indexOf(id) >= 0, sea:SEASON_POI[id] || null, upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
                 points:f.pois[id].map(a=>({x:a[0], y:a[1]}))}, flags(POI_CLASS[id])));
   });
   f._items = items;
@@ -700,6 +719,7 @@ function currentItems(){ return itemsForFloor(state.floor); }
 function inFilter(p){
   const g = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
   if(!g) return true;
+  if(g.sea) return !!p.sea;
   if(g.inf) return !!p.inf;
   if(g.cls) return !p.icon && g.cls.indexOf(p.cls) >= 0;   // el ícono de servicio del mismo negocio no se repite
   return g.cats.indexOf(p.cat) >= 0;
@@ -751,7 +771,7 @@ function buildPins(){
   currentItems().filter(inFilter).forEach(it=>{
     it.points.forEach(pt=>{
       const btn = document.createElement("button");
-      btn.className = "pin" + (it.icon ? " poi" : "") + (it.cls ? " cls" : "") + (it.pj ? " pj" : "") + (it.extra ? " extra" : "");
+      btn.className = "pin" + (it.icon ? " poi" : "") + (it.cls ? " cls" : "") + (it.sea ? " sea" : "") + (it.pj ? " pj" : "") + (it.extra ? " extra" : "");
       btn.style.left = pt.x + "%";
       btn.style.top = pt.y + "%";
       btn.dataset.key = it.key;
@@ -763,7 +783,7 @@ function buildPins(){
         btn.innerHTML = '<img src="'+it.icon+'" alt="">';
       } else {
         let color = colorOf(it), defs = "";
-        if(it.cls){   // categoría del Excel: pin partido en el color de la categoría y el de la sección
+        if(it.cls && !it.sea){   // categoría del Excel: pin partido en el color de la categoría y el de la sección
           color = "url(#up-" + it.key + ")";
           defs = '<defs><linearGradient id="up-' + it.key + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0.5" stop-color="' + CLASSES[it.cls].color + '"/><stop offset="0.5" stop-color="' + (CAT_HEX[it.cat] || UP_BLACK) + '"/></linearGradient></defs>';
         }
@@ -830,10 +850,10 @@ function routeToUpgradeShop(){
 
 function showInfo(it){
   if(it.icon){
-    els.infoNum.className = "badge icon" + (it.cls ? " up" : "");
+    els.infoNum.className = "badge icon" + (it.cls ? " up" : "") + (it.sea ? " sea" : "");
     els.infoNum.innerHTML = '<img src="'+it.icon+'" alt="">';
   } else {
-    els.infoNum.className = "badge" + (it.cls ? " up" : "");
+    els.infoNum.className = "badge" + (it.cls ? " up" : "") + (it.sea ? " sea" : "");
     els.infoNum.textContent = it.num;
   }
   els.infoNum.style.setProperty("--cc", CAT_HEX[it.cat] || UP_BLACK);
@@ -841,6 +861,8 @@ function showInfo(it){
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
   document.getElementById("infoInf").hidden = !it.inf;
+  document.getElementById("infoSea").hidden = !it.sea;
+  const sa = document.getElementById("infoSeaAct"); sa.hidden = !it.sea; sa.textContent = it.sea ? "Actividad: " + it.sea : "";
   const ex = document.getElementById("infoExtra");
   const legend = it.upgradeShop ? UPGRADE_SHOP_TEXT : (it.cls ? (CLASSES[it.cls].star ? "* " : "") + CLASSES[it.cls].legend : "");
   ex.hidden = !legend;
@@ -1082,6 +1104,7 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
 const CHIP_GROUPS = [
   {name:PJ_NAME, cls:["up","pick"], legends:["up"], pj:true},
   {name:INFANT_NAME, inf:true, color:INFANT_COLOR, soft:true, note:INFANT_NOTE},
+  {name:SEASON_NAME, sea:true, color:SEASON_COLOR, note:SEASON_NOTE, noteInk:"#fff"},
   {name:"Comer", cats:["Restaurantes","Para comer"], color:"#6b3a1f"},
   {name:"Tiendas", cats:["Para comprar"], color:"#2b2b2b"},
   {name:"Servicios", cats:["Servicios"], color:"#1f5fa8"},
@@ -1100,7 +1123,7 @@ function buildChips(){
   mk("Todos", "", "#8a7f78", null);
   const items = currentItems();
   CHIP_GROUPS.forEach(g=>{
-    const has = g.inf ? items.some(p=>p.inf) : (g.cls ? items.some(p=>!p.icon && g.cls.indexOf(p.cls) >= 0) : items.some(p=>g.cats.indexOf(p.cat) >= 0));
+    const has = g.sea ? items.some(p=>p.sea) : g.inf ? items.some(p=>p.inf) : (g.cls ? items.some(p=>!p.icon && g.cls.indexOf(p.cls) >= 0) : items.some(p=>g.cats.indexOf(p.cat) >= 0));
     if(has) mk(g.name, g.pj ? "pj" : (g.soft ? "soft" : ""), g.pj ? PJ_COLOR : g.color, g.name);
   });
 }
@@ -1123,6 +1146,7 @@ function renderList(){
   if(grp && grp.note){
     const note = document.createElement("div");
     note.className = "pj-note"; note.style.background = grp.color; note.textContent = grp.note;
+    if(grp.noteInk) note.style.color = grp.noteInk;
     els.list.appendChild(note);
   }
   if(grp && grp.cls){   // leyenda de cada categoría del filtro activo
@@ -1150,7 +1174,7 @@ function renderList(){
     row.style.setProperty("--pc", colorOf(p));
     row.style.setProperty("--cc", CAT_HEX[p.cat] || UP_BLACK);
     if(p.cls) row.style.setProperty("--c1", CLASSES[p.cls].color);
-    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.cls ? " up" : ""}">${p.num}</span>`;
+    const lead = p.icon ? `<span class="num icon"><img src="${p.icon}" alt=""></span>` : `<span class="num${p.cls ? " up" : ""}${p.sea ? " sea" : ""}">${p.num}</span>`;
     const cnt = p.icon && p.points.length>1 ? `<span class="cnt">&times;${p.points.length}</span>` : "";
     row.innerHTML = `${lead}<span class="name">${p.name}${p.extra ? ' <b class="ast" title="' + CLASSES.up.legend + '">*</b>' : ""}</span>${cnt}<span class="go">&rsaquo;</span>`;
     row.addEventListener("click", ()=>{

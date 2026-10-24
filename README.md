@@ -167,3 +167,11 @@ Eso requiere un pequeño servidor dentro de la app y una red Wi-Fi propia; **no 
 - **Vecindario (Planta Baja):** pin 29 "Vecindario" (categoría Residencial) en el centro de la zona, incluido en el filtro de 1 a 3 años (Baja: 14 actividades).
 - **Planta Alta:** el pin 18 (antes "Ducto de Aire Acondicionado") ahora es **Fábrica de Apapachos**, y se agregó **Taller de Elixir** (pin 6, en el hueco de la numeración entre Adidas y Purina).
 - El aviso del Upgrade ("¿Quieres tu Upgrade…?") aparece solo en el filtro **Papás Juegan**.
+
+## Actividades de temporada (Día de Muertos)
+Filtro **Actividades de temporada**: muestra solo los lugares que participan en la dinámica de temporada, con pin/círculo en **morado oscuro** (tiene prioridad sobre las demás marcas, también en **Todos**).
+La tarjeta muestra la etiqueta "Actividad de temporada" y la actividad que ofrece:
+- Teatro (Baja): Teatro de sombras, Sensorama y Obra de teatro · Restaurante (Baja): Taller de donas
+- Taller de Elixir (Alta): Elabora tu elixir · Fábrica de Apapachos (Alta): Taller de apapachos
+- Tatuajes (Alta): Tatuaje · Café (Alta): Crepa
+Se edita en `SEASON` y `SEASON_POI` (lugares y actividades), `SEASON_NAME`, `SEASON_COLOR` y `SEASON_NOTE`, dentro de `index.html`. Para terminar la temporada, vacía esas listas (el filtro desaparece solo).
