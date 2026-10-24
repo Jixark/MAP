@@ -100,7 +100,11 @@ el de su categoría + el color de su sección** (p. ej. Estudio de Televisión: 
 | Rojo | rosa + color de la sección | "Actividad exclusiva para Kals de 3 a 16 años, aplican restricciones" |
 | Azul | azul cielo + color de la sección | "Actividades para todos y en todo momento" |
 
-Filtros: **Papás Juegan** (naranja + blanco), **Solo Kals 3-16** y **Para todos**; al activarlos, la lista muestra arriba la leyenda correspondiente.
+**Filtros y mapa:** al elegir un filtro (**Papás Juegan** = naranja + blanco, **Comer**, **Tiendas**, **Servicios**, **Escaleras y salidas**) el mapa muestra **solo los puntos de esa categoría**;
+con **Todos** se ve todo. En la lista de Papás Juegan solo aparece la leyenda del Upgrade; la leyenda de las actividades "elige las 3" (blancas) se ve al tocar cada una.
+Las categorías rojas (solo Kals de 3 a 16 años) y azules (para todos) no tienen botón: su leyenda sale al tocar la actividad.
+Técnicamente, el mapa original trae los pines dibujados en la imagen; con un filtro activo se usa `map_*_clean.jpg` (la misma imagen sin pines, generada automáticamente: puede
+verse alguna mancha leve al acercar mucho) y se dibujan solo los puntos del filtro. Si cambias la imagen original, hay que regenerar la `_clean`.
 Los lugares sin color en el Excel o que no aparecen en él (Estudio de Foto, Tienda Departamental, Dulcería, Centro de Exposiciones, Fábrica de Fósforos, Oficina de Pasaportes)
 se quedan con su color normal. Para cambiar la categoría de un lugar edita `ACTIVITY_CLASS` (número de pin por planta) y los textos/colores en `CLASSES`, dentro de `index.html`.
 
