@@ -164,5 +164,6 @@ Eso requiere un pequeño servidor dentro de la app y una red Wi-Fi propia; **no 
 - **Filtro "Kals de 1 a 3 años":** muestra en el mapa y la lista solo las actividades del folleto del Vecindario (Baja: 13, Alta: 10), con la nota del folleto
   ("Todas las actividades están sujetas a disponibilidad. Las de Puntos de Venta Interactivos tienen costo extra. Siempre con la ayuda de un adulto."). Cada una lleva la etiqueta
   "Kals de 1 a 3 años" en su tarjeta. Se edita en `INFANT` / `INFANT_POI` (número de pin por planta), `INFANT_NOTE` y `INFANT_NAME` dentro de `index.html`.
+- **Vecindario (Planta Baja):** pin 29 "Vecindario" (categoría Residencial) en el centro de la zona, incluido en el filtro de 1 a 3 años (Baja: 14 actividades).
 - **Planta Alta:** el pin 18 (antes "Ducto de Aire Acondicionado") ahora es **Fábrica de Apapachos**, y se agregó **Taller de Elixir** (pin 6, en el hueco de la numeración entre Adidas y Purina).
 - El aviso del Upgrade ("¿Quieres tu Upgrade…?") aparece solo en el filtro **Papás Juegan**.
