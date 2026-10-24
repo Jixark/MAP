@@ -200,6 +200,8 @@ main{flex:1 1 auto; display:flex; min-height:0;}
 .chip.pj.active::before{background:linear-gradient(135deg, #e2c677 50%, #615c57 50%); box-shadow:0 0 0 1px #615c57;}
 #infoCard .pill.pj{background:#e2c677; color:#322e2b; margin-left:6px;}
 #infoCard .pill.pj::before{background:#615c57;}
+#infoCard .pill.inf{background:#8fd0b0; color:#1f3d2e; margin-left:6px;}
+#infoCard .pill.inf::before{background:#1f3d2e;}
 #infoCard .extra-note{display:inline-block; margin-top:8px; padding:6px 11px; border-radius:10px; background:#e2c677; color:#322e2b; font-weight:800; font-size:12.5px; line-height:1.3;}
 /* Papás Juegan: círculo partido amarillo / negro (como el brazalete). El asterisco y el mensaje solo van en las del Upgrade. */
 .up-split, #infoCard .badge.up, .row .num.up{background:linear-gradient(135deg, var(--c1, #e2c677) 50%, var(--cc, #615c57) 50%) !important;}
@@ -453,6 +455,7 @@ body.view-more #morePane{display:flex;}
         <p class="name" id="infoName">&nbsp;</p>
         <span class="pill" id="infoCat" style="--pc:#b50031">Categoría</span>
         <span class="pill pj" id="infoPj" hidden>Papás Juegan</span>
+        <span class="pill inf" id="infoInf" hidden>Kals de 1 a 3 años</span>
         <p class="note" id="infoNote"></p>
         <p class="note extra-note" id="infoExtra" hidden></p>
         <div class="route-ask" id="routeAsk" hidden>
@@ -559,7 +562,7 @@ window.addEventListener("error", function(ev){
     b.textContent += (ev.message||"error") + " (" + (ev.lineno||"?") + ")\n";
   }catch(_){}
 });
-const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":26.35,"y":48.94},{"num":2,"name":"Hospital","cat":"Salud","x":26.35,"y":45.16},{"num":3,"name":"Universidad","cat":"Educación","x":26.35,"y":40.77},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":26.35,"y":37.55},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":26.03,"y":32.33},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":26.19,"y":29.75},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":26.19,"y":26.57},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":26.35,"y":24.03},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":26.19,"y":21.41},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":26.35,"y":13.49},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":43.79,"y":13.49},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":56.11,"y":13.49},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":66.91,"y":13.49},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":71.39,"y":17.36},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":71.39,"y":21.41},{"num":16,"name":"Supermercado","cat":"Comercio","x":69.39,"y":27.73},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":65.63,"y":32.33},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":65.63,"y":35.62},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":65.63,"y":38.16},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":65.63,"y":40.73},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":65.63,"y":45.16},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":65.63,"y":53.0},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":77.39,"y":53.0},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":84.03,"y":60.17},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":77.39,"y":63.27},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":84.67,"y":66.04},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":77.39,"y":68.49},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":71.39,"y":68.49},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":51.31,"y":53.0},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":51.31,"y":32.33},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":43.79,"y":32.33},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":43.79,"y":26.57},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":56.11,"y":24.03},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":43.79,"y":21.41},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":56.11,"y":21.41}],"pois":{"atencion":[[51.28,74.25]],"banos":[[77.36,35.25]],"bebe":[[71.44,74.25]],"aeropuerto":[[26.32,77.3]],"inmigracion":[[32.16,52.96]],"primeros":[[77.36,74.21]],"visitante":[[32.24,60.2]],"dulceria":[[69.6,32.47]],"fuente":[[43.76,40.68]],"pizzeria":[[77.36,21.33]],"restaurante":[[77.36,17.18]],"caricaturista":[[65.6,68.57]],"souvenirs":[[38.88,21.33]],"fotografia":[[14.96,48.97]],"pintacaritas":[[65.76,65.92]],"elevador":[[84.08,53.0]],"escaleras":[[51.44,17.3],[43.92,29.7],[32.16,56.94],[43.84,63.26],[71.52,71.35]],"salida":[[51.36,10.06],[83.92,40.64],[83.92,48.85],[32.32,63.18],[84.64,63.18]],"kzshop_int":[[26.24,35.21]],"kzshop_ext":[[14.96,71.31]]},"clean":"map_baja_clean.jpg"},"alta":{"img":"map_alta.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":16.91,"y":59.52},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":16.91,"y":55.54},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":16.91,"y":52.04},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":16.91,"y":46.97},{"num":5,"name":"Purina","cat":"Salud","x":16.91,"y":41.58},{"num":7,"name":"Adidas","cat":"Tecnología","x":16.91,"y":30.03},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":16.91,"y":21.86},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":16.91,"y":18.4},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":26.11,"y":16.14},{"num":12,"name":"Heladería","cat":"Restaurantes","x":36.83,"y":16.14},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":54.35,"y":16.14},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":65.71,"y":10.88},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":71.15,"y":18.4},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":71.15,"y":24.99},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":71.15,"y":27.57},{"num":18,"name":"Ducto de Aire Acondicionado","cat":"Industria","x":71.15,"y":30.03},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":71.15,"y":32.52},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":71.15,"y":38.07},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":85.31,"y":55.54},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":85.31,"y":63.23},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":85.31,"y":70.27},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":54.35,"y":70.27}],"pois":{"salones":[[54.4,10.95]],"banos":[[36.8,13.48],[71.12,75.21]],"heladeria":[[41.2,16.26]],"cafe":[[47.76,35.57]],"hamburgueseria":[[71.2,35.57]],"snacks":[[26.96,51.95]],"sushi":[[89.84,63.34]],"tatuajes":[[65.6,18.47]],"elevador":[[81.04,55.53]],"escaleras":[[36.8,18.83],[38.64,35.57],[27.04,59.48],[47.76,66.64],[65.68,70.22]],"salida":[[41.2,10.78],[80.96,29.94],[65.6,75.13]]},"clean":"map_alta_clean.jpg"}};
+const DATA = {"baja":{"img":"map_baja.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Estudio de Foto","cat":"Comercio","x":26.35,"y":48.94},{"num":2,"name":"Hospital","cat":"Salud","x":26.35,"y":45.16},{"num":3,"name":"Universidad","cat":"Educación","x":26.35,"y":40.77},{"num":4,"name":"Oficina de Pasaportes","cat":"Servicios Públicos","x":26.35,"y":37.55},{"num":5,"name":"Estación de Radio","cat":"Medios de Comunicación","x":26.03,"y":32.33},{"num":6,"name":"HUB Internet de las Cosas","cat":"Tecnología","x":26.19,"y":29.75},{"num":7,"name":"Instituto de Asistencia Privada","cat":"Servicios Privados","x":26.19,"y":26.57},{"num":8,"name":"Centro de Operaciones E-commerce","cat":"Servicios Privados","x":26.35,"y":24.03},{"num":9,"name":"Instituto de Participación Ciudadana","cat":"Servicios Públicos","x":26.19,"y":21.41},{"num":10,"name":"Salón de Estilo","cat":"Servicios Privados","x":26.35,"y":13.49},{"num":11,"name":"Tienda Departamental","cat":"Comercio","x":43.79,"y":13.49},{"num":12,"name":"Banco","cat":"Servicio Financiero","x":56.11,"y":13.49},{"num":13,"name":"Hotel","cat":"Servicios Privados","x":66.91,"y":13.49},{"num":14,"name":"Restaurante","cat":"Restaurantes","x":71.39,"y":17.36},{"num":15,"name":"Pizzería","cat":"Restaurantes","x":71.39,"y":21.41},{"num":16,"name":"Supermercado","cat":"Comercio","x":69.39,"y":27.73},{"num":17,"name":"Dulcería","cat":"Restaurantes","x":65.63,"y":32.33},{"num":18,"name":"Fábrica de Pastelillos","cat":"Industria","x":65.63,"y":35.62},{"num":19,"name":"Estudio de Moda","cat":"Comercio","x":65.63,"y":38.16},{"num":20,"name":"MetLife","cat":"Servicios Privados","x":65.63,"y":40.73},{"num":21,"name":"Teatro","cat":"Entretenimiento","x":65.63,"y":45.16},{"num":22,"name":"Academia de Actuación","cat":"Educación","x":65.63,"y":53.0},{"num":23,"name":"Vecindario - Merendero","cat":"Residencial","x":77.39,"y":53.0},{"num":24,"name":"Vecindario - Escenario Abierto","cat":"Residencial","x":84.03,"y":60.17},{"num":25,"name":"Vecindario - Circuito de Manejo","cat":"Residencial","x":77.39,"y":63.27},{"num":26,"name":"Vecindario - Laboratorio de Burbujas","cat":"Residencial","x":84.67,"y":66.04},{"num":27,"name":"Vecindario - Sitio en Construcción","cat":"Residencial","x":77.39,"y":68.49},{"num":28,"name":"Vecindario - Laboratorio de Ciencias","cat":"Residencial","x":71.39,"y":68.49},{"num":30,"name":"Estación de Bomberos","cat":"Servicios Públicos","x":51.31,"y":53.0},{"num":31,"name":"Kaspersky","cat":"Servicios Públicos","x":51.31,"y":32.33},{"num":32,"name":"Estación de Policía","cat":"Servicios Públicos","x":43.79,"y":32.33},{"num":33,"name":"Centro de Exposiciones","cat":"Comercio","x":43.79,"y":26.57},{"num":34,"name":"Fábrica de Fósforos","cat":"Industria","x":56.11,"y":24.03},{"num":35,"name":"Autobús Turístico","cat":"Transporte","x":43.79,"y":21.41},{"num":36,"name":"Infraestructura Subterránea","cat":"Entretenimiento","x":56.11,"y":21.41}],"pois":{"atencion":[[51.28,74.25]],"banos":[[77.36,35.25]],"bebe":[[71.44,74.25]],"aeropuerto":[[26.32,77.3]],"inmigracion":[[32.16,52.96]],"primeros":[[77.36,74.21]],"visitante":[[32.24,60.2]],"dulceria":[[69.6,32.47]],"fuente":[[43.76,40.68]],"pizzeria":[[77.36,21.33]],"restaurante":[[77.36,17.18]],"caricaturista":[[65.6,68.57]],"souvenirs":[[38.88,21.33]],"fotografia":[[14.96,48.97]],"pintacaritas":[[65.76,65.92]],"elevador":[[84.08,53.0]],"escaleras":[[51.44,17.3],[43.92,29.7],[32.16,56.94],[43.84,63.26],[71.52,71.35]],"salida":[[51.36,10.06],[83.92,40.64],[83.92,48.85],[32.32,63.18],[84.64,63.18]],"kzshop_int":[[26.24,35.21]],"kzshop_ext":[[14.96,71.31]]},"clean":"map_baja_clean.jpg"},"alta":{"img":"map_alta.jpg","w":1250,"h":2485,"pins":[{"num":1,"name":"Academia de Aviación","cat":"Educación","x":16.91,"y":59.52},{"num":2,"name":"Torre de Control Aéreo","cat":"Educación","x":16.91,"y":55.54},{"num":3,"name":"Centro de Medios","cat":"Medios de Comunicación","x":16.91,"y":52.04},{"num":4,"name":"Estudio de Animación","cat":"Tecnología","x":16.91,"y":46.97},{"num":5,"name":"Purina","cat":"Salud","x":16.91,"y":41.58},{"num":6,"name":"Taller de Elixir","cat":"Industria","x":15.84,"y":36.14},{"num":7,"name":"Adidas","cat":"Tecnología","x":16.91,"y":30.03},{"num":9,"name":"Barra de Jugos","cat":"Restaurantes","x":16.91,"y":21.86},{"num":10,"name":"Estudio de Arte","cat":"Educación","x":16.91,"y":18.4},{"num":11,"name":"Estudio de Diseño","cat":"Educación","x":26.11,"y":16.14},{"num":12,"name":"Heladería","cat":"Restaurantes","x":36.83,"y":16.14},{"num":13,"name":"Disco Lounge","cat":"Entretenimiento","x":54.35,"y":16.14},{"num":14,"name":"Fábrica de Chocolates","cat":"Industria","x":65.71,"y":10.88},{"num":15,"name":"Escuela Culinaria","cat":"Educación","x":71.15,"y":18.4},{"num":16,"name":"Fábrica de Dulces","cat":"Industria","x":71.15,"y":24.99},{"num":17,"name":"Fábrica de Cuadernos","cat":"Industria","x":71.15,"y":27.57},{"num":18,"name":"Fábrica de Apapachos","cat":"Industria","x":71.15,"y":30.03},{"num":19,"name":"Fábrica de Mantequilla","cat":"Industria","x":71.15,"y":32.52},{"num":20,"name":"Hamburguesería","cat":"Restaurantes","x":71.15,"y":38.07},{"num":21,"name":"Estudio de Televisión","cat":"Medios de Comunicación","x":85.31,"y":55.54},{"num":22,"name":"Barra de Sushi","cat":"Restaurantes","x":85.31,"y":63.23},{"num":23,"name":"Agencia Espacial","cat":"Tecnología","x":85.31,"y":70.27},{"num":24,"name":"Edificios para Escalar","cat":"Deportes","x":54.35,"y":70.27}],"pois":{"salones":[[54.4,10.95]],"banos":[[36.8,13.48],[71.12,75.21]],"heladeria":[[41.2,16.26]],"cafe":[[47.76,35.57]],"hamburgueseria":[[71.2,35.57]],"snacks":[[26.96,51.95]],"sushi":[[89.84,63.34]],"tatuajes":[[65.6,18.47]],"elevador":[[81.04,55.53]],"escaleras":[[36.8,18.83],[38.64,35.57],[27.04,59.48],[47.76,66.64],[65.68,70.22]],"salida":[[41.2,10.78],[80.96,29.94],[65.6,75.13]]},"clean":"map_alta_clean.jpg"}};
 
 const CAT_COLOR = {
   "Comercio":"var(--cat-comercio)","Educación":"var(--cat-educacion)","Entretenimiento":"var(--cat-entretenimiento)",
@@ -627,6 +630,14 @@ const ACTIVITY_CLASS = {
   alta:{1:"kids",2:"up",3:"up",4:"pick",5:"kids",7:"up",9:"pick",10:"kids",11:"pick",12:"pick",13:"pick",14:"pick",15:"up",16:"up",17:"up",18:"kids",19:"up",20:"pick",21:"up",22:"pick",23:"all",24:"kids"}
 };
 // Los pines de ícono de estos negocios (zona "Para comer") llevan la misma categoría que su establecimiento.
+// Actividades para Kals de 1 a 3 años (folleto del Vecindario): número de pin por planta.
+const INFANT_NAME = "Kals de 1 a 3 años", INFANT_COLOR = "#8fd0b0";
+const INFANT_NOTE = "Todas las actividades están sujetas a disponibilidad. Las de Puntos de Venta Interactivos tienen costo extra. Siempre con la ayuda de un adulto.";
+const INFANT = {
+  baja:[2,3,4,9,10,11,12,15,16,18,19,32],   // Hospital (Cuneros), Universidad, Of. Pasaportes, Inst. Participación, Salón de Estilo, Tienda Departamental, Banco, Pizzería, Supermercado, Fáb. Pastelitos, Estudio de Modas, Est. de Policía
+  alta:[1,9,10,11,12,13,16,20,22]            // Aviación (cabina), Barra de Jugos, Estudio de Arte, Estudio de Diseño, Heladería, Disco, Fáb. de Dulces, Hamburguesería, Sushi
+};
+const INFANT_POI = ["pintacaritas","tatuajes"];
 const POI_CLASS = {restaurante:"pick", pizzeria:"pick", heladeria:"pick", hamburgueseria:"pick", sushi:"pick"};
 const UPGRADE_SHOP_TEXT = "Adquiere aquí tu Upgrade para Papás Juegan";
 const UPGRADE_SHOP_KEY = "p:kzshop_int", UPGRADE_SHOP_FLOOR = "baja";
@@ -673,10 +684,11 @@ function itemsForFloor(floor){
   if(f._items) return f._items;
   const cm = ACTIVITY_CLASS[floor] || {};
   const flags = c => ({cls:c || null, pj:!!(c && CLASSES[c].parents), extra:!!(c && CLASSES[c].star)});
-  const items = f.pins.map(p=>Object.assign({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, points:[{x:p.x, y:p.y}]}, flags(cm[p.num])));
+  const inf = INFANT[floor] || [];
+  const items = f.pins.map(p=>Object.assign({key:"n"+p.num, num:p.num, name:p.name, cat:p.cat, inf:inf.indexOf(p.num) >= 0, points:[{x:p.x, y:p.y}]}, flags(cm[p.num])));
   Object.keys(f.pois || {}).forEach(id=>{
     const t = POI_TYPES[id];
-    items.push(Object.assign({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
+    items.push(Object.assign({key:"p:"+id, id:id, name:t.name, cat:t.cat, note:t.note || "", inf:INFANT_POI.indexOf(id) >= 0, upgradeShop:!!t.upgradeShop, icon:"ico/"+(t.icon || id)+".png",
                 points:f.pois[id].map(a=>({x:a[0], y:a[1]}))}, flags(POI_CLASS[id])));
   });
   f._items = items;
@@ -688,6 +700,7 @@ function currentItems(){ return itemsForFloor(state.floor); }
 function inFilter(p){
   const g = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
   if(!g) return true;
+  if(g.inf) return !!p.inf;
   if(g.cls) return !p.icon && g.cls.indexOf(p.cls) >= 0;   // el ícono de servicio del mismo negocio no se repite
   return g.cats.indexOf(p.cat) >= 0;
 }
@@ -827,6 +840,7 @@ function showInfo(it){
   els.infoNum.style.setProperty("--c1", it.cls ? CLASSES[it.cls].color : UP_YELLOW);
   els.infoName.textContent = it.name;
   document.getElementById("infoPj").hidden = !it.pj;
+  document.getElementById("infoInf").hidden = !it.inf;
   const ex = document.getElementById("infoExtra");
   const legend = it.upgradeShop ? UPGRADE_SHOP_TEXT : (it.cls ? (CLASSES[it.cls].star ? "* " : "") + CLASSES[it.cls].legend : "");
   ex.hidden = !legend;
@@ -856,7 +870,8 @@ function refreshChrome(){
   document.getElementById("hint").hidden = busy;
   // El aviso del Upgrade solo aparece cuando hay un filtro activo y la lista incluye una actividad del Upgrade
   // (ventana de Papás Juegan, o p. ej. "Comer" en Planta Baja por la Pizzería); no en la pantalla inicial.
-  document.getElementById("upBar").hidden = busy || state.cat === null || !filteredItems().some(i=>i.extra);
+  const gActive = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
+  document.getElementById("upBar").hidden = busy || !(gActive && gActive.pj) || !filteredItems().some(i=>i.extra);
   const label = state.kiosk ? "Cómo llegar" : "Ver tienda";
   document.getElementById("upGo").textContent = label;
   document.getElementById("buyGo").textContent = state.kiosk ? "Llévame a la tienda" : "Ver tienda";
@@ -1066,6 +1081,7 @@ const ALL_CATS = ["Comercio","Educación","Entretenimiento","Industria","Medios 
 // Filtros simples (en vez de una categoría por cada tipo de lugar).
 const CHIP_GROUPS = [
   {name:PJ_NAME, cls:["up","pick"], legends:["up"], pj:true},
+  {name:INFANT_NAME, inf:true, color:INFANT_COLOR, soft:true, note:INFANT_NOTE},
   {name:"Comer", cats:["Restaurantes","Para comer"], color:"#6b3a1f"},
   {name:"Tiendas", cats:["Para comprar"], color:"#2b2b2b"},
   {name:"Servicios", cats:["Servicios"], color:"#1f5fa8"},
@@ -1084,7 +1100,7 @@ function buildChips(){
   mk("Todos", "", "#8a7f78", null);
   const items = currentItems();
   CHIP_GROUPS.forEach(g=>{
-    const has = g.cls ? items.some(p=>!p.icon && g.cls.indexOf(p.cls) >= 0) : items.some(p=>g.cats.indexOf(p.cat) >= 0);
+    const has = g.inf ? items.some(p=>p.inf) : (g.cls ? items.some(p=>!p.icon && g.cls.indexOf(p.cls) >= 0) : items.some(p=>g.cats.indexOf(p.cat) >= 0));
     if(has) mk(g.name, g.pj ? "pj" : (g.soft ? "soft" : ""), g.pj ? PJ_COLOR : g.color, g.name);
   });
 }
@@ -1104,6 +1120,11 @@ function renderList(){
   }
 
   const grp = state.cat ? CHIP_GROUPS.find(x=>x.name === state.cat) : null;
+  if(grp && grp.note){
+    const note = document.createElement("div");
+    note.className = "pj-note"; note.style.background = grp.color; note.textContent = grp.note;
+    els.list.appendChild(note);
+  }
   if(grp && grp.cls){   // leyenda de cada categoría del filtro activo
     (grp.legends || grp.cls).forEach(c=>{
       const note = document.createElement("div");

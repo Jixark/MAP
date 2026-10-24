@@ -159,3 +159,10 @@ El QR se genera sin internet, pero **el celular del visitante necesita internet 
 ### Sin internet para el visitante
 Un archivo guardado dentro del kiosko solo se puede descargar si el celular del visitante llega al kiosko por la red (mismo Wi-Fi, sin aislamiento de clientes).
 Eso requiere un pequeño servidor dentro de la app y una red Wi-Fi propia; **no está implementado**. La librería de QR (`qrcode.js`, MIT, Kazuhiko Arase) va incluida en `www/`.
+
+## Kals de 1 a 3 años (Vecindario) y cambios en Planta Alta
+- **Filtro "Kals de 1 a 3 años":** muestra en el mapa y la lista solo las actividades del folleto del Vecindario (Baja: 13, Alta: 10), con la nota del folleto
+  ("Todas las actividades están sujetas a disponibilidad. Las de Puntos de Venta Interactivos tienen costo extra. Siempre con la ayuda de un adulto."). Cada una lleva la etiqueta
+  "Kals de 1 a 3 años" en su tarjeta. Se edita en `INFANT` / `INFANT_POI` (número de pin por planta), `INFANT_NOTE` y `INFANT_NAME` dentro de `index.html`.
+- **Planta Alta:** el pin 18 (antes "Ducto de Aire Acondicionado") ahora es **Fábrica de Apapachos**, y se agregó **Taller de Elixir** (pin 6, en el hueco de la numeración entre Adidas y Purina).
+- El aviso del Upgrade ("¿Quieres tu Upgrade…?") aparece solo en el filtro **Papás Juegan**.
